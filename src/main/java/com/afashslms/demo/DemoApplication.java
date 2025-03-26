@@ -1,5 +1,4 @@
 package com.afashslms.demo;
-
 import com.afashslms.demo.domain.Role;
 import com.afashslms.demo.domain.User;
 import com.afashslms.demo.repository.UserRepository;
@@ -12,6 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class DemoApplication {
