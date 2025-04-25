@@ -17,6 +17,9 @@ import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -42,6 +45,7 @@ public class SecurityConfig {
             new DefaultRedirectStrategy().sendRedirect(request, response, "/");  // "/"로 리디렉션
         };
     }
+    private final PasswordEncoder passwordEncoder; // 이제 주입만 받음!
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

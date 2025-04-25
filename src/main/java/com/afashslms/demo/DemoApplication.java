@@ -12,8 +12,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+import com.afashslms.demo.domain.Role;
+import com.afashslms.demo.domain.User;
+import com.afashslms.demo.repository.UserRepository;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @SpringBootApplication
 public class DemoApplication {

@@ -12,13 +12,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder; // 🔥 추가!
-
     public CustomUserDetailsService(UserRepository repo, PasswordEncoder passwordEncoder) {
         this.userRepository = repo;
         this.passwordEncoder = passwordEncoder;
@@ -55,5 +55,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .password(user.getPassword())
                 .roles(user.getRole())
                 .build();
+
     }
 }
