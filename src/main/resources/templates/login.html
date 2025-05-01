@@ -3,6 +3,7 @@
 <head>
     <title>로그인</title>
     <meta charset="UTF-8">
+    <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
 </head>
 <body>
 <h2>로그인</h2>
@@ -12,6 +13,7 @@
     아이디 또는 비밀번호가 올바르지 않습니다.
 </div>
 
+<!-- 기존 로그인 폼 -->
 <form th:action="@{/login}" method="post">
     <label for="userId">아이디:</label><br>
     <input type="text" id="userId" name="userId" required><br><br>
@@ -21,5 +23,32 @@
 
     <button type="submit">로그인</button>
 </form>
+
+<!-- 카카오 로그인 버튼 -->
+<h3>카카오로 로그인</h3>
+<a href="/oauth2/authorization/kakao">
+    <button type="button">카카오로 로그인</button>
+</a>
+
+<script type="text/javascript">
+    // 카카오 SDK 초기화 (여기서 YOUR_KAKAO_JAVASCRIPT_KEY는 실제 발급받은 카카오 JavaScript Key로 교체해야 합니다.)
+    Kakao.init('534c7cd4e44b95384d3bf3a5f27b0de4');
+
+    // 카카오 로그인 버튼 클릭 시 실행될 코드
+    document.getElementById('kakao-login-btn').onclick = function () {
+        Kakao.Auth.login({
+            success: function (authObj) {
+                console.log(authObj); // 로그인 성공 후 인증 객체 로그 출력
+
+                // 서버로 로그인 정보 전달 (예시: 토큰 전송 및 로그인 처리)
+                window.location.href = '/login/oauth2/code/kakao';  // 로그인 후 리디렉션 URL
+            },
+            fail: function (err) {
+                alert(JSON.stringify(err));
+            }
+        });
+    };
+</script>
+
 </body>
 </html>
