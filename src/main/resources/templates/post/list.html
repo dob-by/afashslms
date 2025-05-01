@@ -20,6 +20,7 @@
             <a th:href="@{/posts/{id}(id=${post.postId})}" th:text="${post.title}">제목</a>
         </td>
         <td th:text="${post.user.username}">작성자</td>
+
     </tr>
 </table>
 </body>
