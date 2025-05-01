@@ -18,7 +18,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -66,6 +68,7 @@ public class SecurityConfig {
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login") // 로그인 페이지
                         //.defaultSuccessUrl("/", true) // 성공 후 리디렉션 URL
+                        .defaultSuccessUrl("/", true) // 성공 후 리디렉션 URL
                         //.failureUrl("/login?error=true") // 실패 시 URL
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)

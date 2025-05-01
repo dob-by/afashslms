@@ -78,3 +78,4 @@ logging:
     org.springframework.web.client.RestTemplate: DEBUG
     org.springframework.security.web: DEBUG
     org.hibernate.SQL: debug
+    org.springframework.security.web: DEBUG

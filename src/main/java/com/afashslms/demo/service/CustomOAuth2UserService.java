@@ -58,6 +58,23 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 Collections.singleton(new SimpleGrantedAuthority(user.getRole().name())),
                 attributes,
                 userNameAttributeName
+        //기존 회원 있는지 확인
+        User user = userRepository.findByEmail(email)
+                .orElseGet(() -> {
+                    //없으면 새로 가입
+                    User newUser = new User();
+                    newUser.setUserId(UUID.randomUUID().toString());
+                    newUser.setEmail(email);
+                    newUser.setUsername("kakao_user_" + email);
+                    newUser.setProvider("kakao");
+                    newUser.setRole(Role.USER);  // 기본 권한
+                    return userRepository.save(newUser);
+                });
+        return new DefaultOAuth2User(
+                Collections.singleton(new SimpleGrantedAuthority(user.getRole().name())),
+                attributes,
+                "id" //카카오에서 고유 식별자 (attributes에 "id"있음)
+
         );
     }
 
@@ -70,14 +87,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (registrationId.equals("kakao")) {
             Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
             email = (String) kakaoAccount.get("email");
+
         } else if (registrationId.equals("google")) {
             email = (String) attributes.get("email"); // 구글은 그냥 email 키에 들어있음
         }
-
-
+        }
         if (email == null) {
             throw new OAuth2AuthenticationException("카카오 계정에 이메일이 없습니다.");
         }
         return email;
     }
-}
+
