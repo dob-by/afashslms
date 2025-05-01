@@ -38,17 +38,10 @@ spring:
   config:
     import: "application.yml"
   jpa:
-    hibernate:
-      ddl-auto: create
-    defer-datasource-initialization: true
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-
     url: jdbc:h2:mem:testdb  #jdbc:mysql://localhost:3306/laptopdb
     driver-class-name: org.h2.Driver  #com.mysql.cj.jdbc.Driver
     username: sa
     password:
-  jpa:
     hibernate:
       ddl-auto: create
     defer-datasource-initialization: true
@@ -72,10 +65,8 @@ server:
 
 logging:
   level:
-    org.hibernate.SQL: debug
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
     org.springframework.web.client.RestTemplate: DEBUG
-    org.springframework.security.web: DEBUG
     org.hibernate.SQL: debug
     org.springframework.security.web: DEBUG

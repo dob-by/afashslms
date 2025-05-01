@@ -17,11 +17,6 @@ import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.DefaultRedirectStrategy;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -35,19 +30,14 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler successHandler() {
         return (request, response, authentication) -> {
-            // 인증 후 SecurityContext에 담긴 사용자 정보 확인
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth != null && auth.isAuthenticated()) {
-                System.out.println("Authenticated User: " + auth.getName()); // 사용자 정보 출력
+                System.out.println("Authenticated User: " + auth.getName());
                 System.out.println("Granted Authorities: " + auth.getAuthorities());
-            } else {
-                System.out.println("No authenticated user found.");
             }
-            // 로그인 성공 시 리디렉션 URL 설정
-            new DefaultRedirectStrategy().sendRedirect(request, response, "/");  // "/"로 리디렉션
+            new DefaultRedirectStrategy().sendRedirect(request, response, "/");
         };
     }
-    private final PasswordEncoder passwordEncoder; // 이제 주입만 받음!
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -66,16 +56,13 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/login") // 로그인 페이지
-                        //.defaultSuccessUrl("/", true) // 성공 후 리디렉션 URL
-                        .defaultSuccessUrl("/", true) // 성공 후 리디렉션 URL
-                        //.failureUrl("/login?error=true") // 실패 시 URL
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/", true)
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
                         .successHandler(successHandler())
                         .failureHandler((request, response, exception) -> {
-                            // 로그 추가로 실패 이유 확인
                             System.out.println("OAuth2 Login Failed: " + exception.getMessage());
                             response.sendRedirect("/login?error=true");
                         })
@@ -101,6 +88,4 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .build();
     }
-
-
 }
