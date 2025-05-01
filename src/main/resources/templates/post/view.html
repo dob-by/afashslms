@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>게시글 상세</title>
+    <meta charset="UTF-8" />
+</head>
+<body>
+<h2 th:text="${post.title}">제목</h2>
+<p th:text="${post.content}">내용</p>
+<p><strong>작성자:</strong> <span th:text="${post.user.username}">작성자</span></p>
+
+<a th:href="@{/posts/{id}/edit(id=${post.postId})}">수정</a>
+<form th:action="@{/posts/{id}/delete(id=${post.postId})}" method="post" style="display:inline;">
+    <button type="submit">삭제</button>
+</form>
+<br><br>
+<a href="/posts">목록으로</a>
+</body>
+</html>
