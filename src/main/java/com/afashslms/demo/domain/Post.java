@@ -15,7 +15,7 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "post_id")
-    private String id;
+    private String postId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")  // 작성자
@@ -25,6 +25,8 @@ public class Post {
 
     @Column(columnDefinition = "TEXT")
     private String content;
+
+    private String author; // 작성자 이름 or ID
 
     private LocalDateTime createdAt;
 

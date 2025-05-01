@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -41,11 +42,18 @@ public class PostController {
         return "post/new"; // templates/post/new.html
     }
 
+    @GetMapping("/post/new")
+    public String showPostForm(Model model) {
+        model.addAttribute("post", new Post());
+        return "post/form"; // templates/post/form.html
+    }
+
     // 글 등록 처리
     @PostMapping
     public String createPost(@RequestParam String title,
                              @RequestParam String content,
                              Principal principal) {
+        System.out.println(">> Principal.getName(): " + principal.getName());
         String userId = principal.getName();  // 로그인된 사용자 ID
         postService.createPost(userId, title, content);
         return "redirect:/posts";

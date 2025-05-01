@@ -1,0 +1,9 @@
+<form th:action="@{/posts}" method="post" th:object="${post}">
+    <label>제목</label>
+    <input type="text" th:field="*{title}" required><br>
+
+    <label>내용</label>
+    <textarea th:field="*{content}" required></textarea><br>
+
+    <button type="submit">등록</button>
+</form>
