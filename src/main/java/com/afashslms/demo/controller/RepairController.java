@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,7 +53,6 @@ public class RepairController {
                 throw new IllegalStateException("로그인 사용자 정보를 가져올 수 없습니다.");
             }
         }
-
         // 공통 처리
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
@@ -114,22 +114,94 @@ public class RepairController {
         return "repair/list";
     }
 
-    @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model, Principal principal) {
-        RepairRequest repair = repairService.getRepairById(id);
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        System.out.println("✅ showEditForm() 호출됨");
 
-        // 로그인한 사용자와 요청 작성자가 같은지 확인 (보안!)
-        if (!repair.getUser().getUserId().equals(principal.getName())) {
+        // ✅ 로그인한 사용자 이메일 가져오기 (로컬 + 소셜 통합 방식)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail;
+
+        if (authentication instanceof OAuth2AuthenticationToken oauthToken) {
+            Map<String, Object> attributes = oauthToken.getPrincipal().getAttributes();
+            if (attributes.containsKey("kakao_account")) {
+                Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+                userEmail = (String) kakaoAccount.get("email");
+            } else {
+                userEmail = (String) attributes.get("email");
+            }
+        } else if (authentication.getPrincipal() instanceof UserDetails userDetails) {
+            userEmail = userDetails.getUsername();  // 로컬 로그인은 email이 username
+        } else {
+            throw new RuntimeException("사용자 인증 정보를 찾을 수 없습니다.");
+        }
+
+        System.out.println("📬 로그인된 사용자 이메일: " + userEmail);
+
+        try {
+            RepairRequest repair = repairService.getRepairById(id);
+            System.out.println("🔍 불러온 수리 요청 작성자 이메일: " + repair.getStudentEmail());
+
+            if (!userEmail.equals(repair.getStudentEmail())) {
+                System.out.println("⛔ 본인 요청 아님! 접근 차단");
+                throw new IllegalArgumentException("본인의 요청만 수정할 수 있습니다.");
+            }
+
+            model.addAttribute("repairRequest", repair);
+            return "repair/edit";
+        } catch (Exception e) {
+            System.out.println("🔥 예외 발생: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+//    @PostMapping("/{id}/edit")
+//    public String updateRepair(@PathVariable Long id,
+//                               @ModelAttribute RepairRequest updatedRequest,
+//                               @AuthenticationPrincipal OAuth2User principal) {
+//        String email = (String) principal.getAttributes().get("email");
+//        repairService.updateRepair(id, updatedRequest, email);
+//        return "redirect:/repairs";
+//    }
+
+    @PostMapping("/{id}/edit")
+    public String updateRepair(@PathVariable Long id,
+                               @ModelAttribute RepairRequest updatedRequest) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail;
+
+        if (authentication instanceof OAuth2AuthenticationToken oauthToken) {
+            Map<String, Object> attributes = oauthToken.getPrincipal().getAttributes();
+            if (attributes.containsKey("kakao_account")) {
+                Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+                userEmail = (String) kakaoAccount.get("email");
+            } else {
+                userEmail = (String) attributes.get("email");
+            }
+        } else if (authentication.getPrincipal() instanceof UserDetails userDetails) {
+            userEmail = userDetails.getUsername();  // 로컬 로그인은 email을 username으로 씀
+        } else {
+            throw new RuntimeException("사용자 인증 정보를 찾을 수 없습니다.");
+        }
+
+        System.out.println("✏️ 수정 요청 사용자 이메일: " + userEmail);
+
+        RepairRequest existing = repairService.getRepairById(id);
+        if (!userEmail.equals(existing.getStudentEmail())) {
             throw new IllegalArgumentException("본인의 요청만 수정할 수 있습니다.");
         }
 
-        model.addAttribute("repairRequest", repair);
-        return "repair/edit";  // 수정 폼으로 이동
-    }
+        // 수정할 필드 업데이트
+        existing.setCategory(updatedRequest.getCategory());
+        existing.setDetailType(updatedRequest.getDetailType());
+        existing.setDescription(updatedRequest.getDescription());
+        existing.setManager(updatedRequest.getManager());
+        existing.setCmosPassword(updatedRequest.getCmosPassword());
+        existing.setWindowsPassword(updatedRequest.getWindowsPassword());
 
-    @PostMapping("/edit/{id}")
-    public String updateRepair(@PathVariable Long id, @ModelAttribute RepairRequest updatedRequest, Principal principal) {
-        repairService.updateRepair(id, updatedRequest, principal.getName());
+        repairService.saveRepairRequest(existing);
         return "redirect:/repairs";
     }
 

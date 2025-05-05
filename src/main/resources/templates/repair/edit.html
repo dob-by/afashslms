@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>수리 요청 수정</title>
+
+    <script th:inline="javascript">
+        const hwAssignees = ["김하늘", "박철수", "이강민"];
+        const swAssignees = ["최지원", "정유진", "홍서준"];
+
+        const hwDetails = ["화면 이상", "부팅 불가", "소리 문제"];
+        const swDetails = ["프로그램 오류", "로그인 불가", "업데이트 실패"];
+
+        function updateDynamicFields(selectedDetail, selectedAssignee) {
+            const type = document.getElementById("type").value;
+            const detailSelect = document.getElementById("problemDetail");
+            const assigneeSelect = document.getElementById("assignee");
+
+            detailSelect.innerHTML = '<option value="">-- 문제를 선택하세요 --</option>';
+            assigneeSelect.innerHTML = '<option value="">-- 담당자를 선택하세요 --</option>';
+
+            let details = [];
+            let assignees = [];
+
+            if (type === "HW") {
+                details = hwDetails;
+                assignees = hwAssignees;
+            } else if (type === "SW") {
+                details = swDetails;
+                assignees = swAssignees;
+            }
+
+            details.forEach(d => {
+                const option = document.createElement("option");
+                option.value = d;
+                option.text = d;
+                if (d === selectedDetail) option.selected = true;
+                detailSelect.appendChild(option);
+            });
+
+            assignees.forEach(a => {
+                const option = document.createElement("option");
+                option.value = a;
+                option.text = a;
+                if (a === selectedAssignee) option.selected = true;
+                assigneeSelect.appendChild(option);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const selectedDetail = /*[[${repairRequest.detailType}]]*/ '';
+            const selectedAssignee = /*[[${repairRequest.manager}]]*/ '';
+            // wait for category to be applied, then populate others
+            setTimeout(() => {
+                updateDynamicFields(selectedDetail, selectedAssignee);
+            }, 50);
+        });
+    </script>
+</head>
+<body>
+<h1>수리 요청 수정</h1>
+
+<form th:action="@{|/repairs/${repairRequest.id}/edit|}" method="post" th:object="${repairRequest}">
+    <input type="hidden" th:field="*{id}" />
+
+    <label for="type">문제 유형:</label>
+    <select id="type" th:field="*{category}" onchange="updateDynamicFields()" required>
+        <option value="">-- 선택하세요 --</option>
+        <option value="HW">하드웨어 문제</option>
+        <option value="SW">소프트웨어 문제</option>
+    </select>
+    <br><br>
+
+    <label for="problemDetail">세부 문제:</label>
+    <select id="problemDetail" name="detailType" required>
+        <option value="">-- 문제 유형 먼저 선택 --</option>
+    </select>
+    <br><br>
+
+    <label for="description">상세 사유:</label><br>
+    <textarea id="description" th:field="*{description}" rows="4" cols="50" placeholder="문제의 구체적인 상황을 작성해주세요" required></textarea>
+    <br><br>
+
+    <label for="assignee">담당자:</label>
+    <select id="assignee" name="manager" required>
+        <option value="">-- 문제 유형 먼저 선택 --</option>
+    </select>
+    <br><br>
+
+    <label for="cmosPassword">CMOS 비밀번호:</label>
+    <input type="text" id="cmosPassword" th:field="*{cmosPassword}" required />
+    <br><br>
+
+    <label for="windowsPassword">Windows 비밀번호:</label>
+    <input type="text" id="windowsPassword" th:field="*{windowsPassword}" required />
+    <br><br>
+
+    <button type="submit">수정 완료</button>
+</form>
+
+</body>
+</html>

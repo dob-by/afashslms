@@ -19,7 +19,7 @@ public class RepairRequest {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(referencedColumnName = "email", name = "student_email")
     private User user;
 
     private String deviceSerial; // 기기 번호
@@ -30,6 +30,9 @@ public class RepairRequest {
     private String cmosPassword;
     private String windowsPassword;
 
+//    @Column(name = "student_email")
+//    private String studentEmail;
+
     private String manager; // 담당자
     private String status; // 상태: 접수중, 완료 등
 
@@ -39,6 +42,10 @@ public class RepairRequest {
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
         if (this.status == null) this.status = "접수중";
+    }
+
+    public String getStudentEmail() {
+        return user != null ? user.getEmail() : null;
     }
 
     public Long getId() {

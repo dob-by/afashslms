@@ -70,3 +70,6 @@ logging:
     org.springframework.web.client.RestTemplate: DEBUG
     org.hibernate.SQL: debug
     org.springframework.security.web: DEBUG
+
+thymeleaf:
+  cache: false
