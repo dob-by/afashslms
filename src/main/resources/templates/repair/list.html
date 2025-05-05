@@ -44,6 +44,12 @@
         <td th:text="${repair.detailType}"></td>
         <td th:text="${repair.manager}"></td>
         <td th:text="${repair.status}"></td>
+        <td>
+            <a th:href="@{/repairs/edit/{id}(id=${repair.id})}">✏ 수정</a> |
+            <form th:action="@{/repairs/delete/{id}(id=${repair.id})}" method="post" style="display:inline;">
+                <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?')">🗑 삭제</button>
+            </form>
+        </td>
     </tr>
     </tbody>
 </table>

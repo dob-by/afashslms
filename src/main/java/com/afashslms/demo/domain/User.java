@@ -22,6 +22,7 @@ public class User {
 
     private String username;
 
+    @Column(unique = true, nullable = false)
     private String email;
 
     private String provider; //'local', 'kakao', 'google'
