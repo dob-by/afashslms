@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>수리 요청</title>
+    <meta charset="UTF-8" />
+    <script>
+        const hwAssignees = ["김하늘", "박철수", "이강민"];
+        const swAssignees = ["최지원", "정유진", "홍서준"];
+
+        const hwDetails = ["화면 이상", "부팅 불가", "소리 문제"];
+        const swDetails = ["프로그램 오류", "로그인 불가", "업데이트 실패"];
+
+        function updateDynamicFields() {
+            const type = document.getElementById("type").value;
+            const detailSelect = document.getElementById("problemDetail");
+            const assigneeSelect = document.getElementById("assignee");
+
+            detailSelect.innerHTML = '<option value="">-- 문제를 선택하세요 --</option>';
+            assigneeSelect.innerHTML = '<option value="">-- 담당자를 선택하세요 --</option>';
+
+            let details = [];
+            let assignees = [];
+
+            if (type === "HW") {
+                details = hwDetails;
+                assignees = hwAssignees;
+            } else if (type === "SW") {
+                details = swDetails;
+                assignees = swAssignees;
+            }
+
+            details.forEach(d => {
+                const option = document.createElement("option");
+                option.value = d;
+                option.text = d;
+                detailSelect.appendChild(option);
+            });
+
+            assignees.forEach(a => {
+                const option = document.createElement("option");
+                option.value = a;
+                option.text = a;
+                assigneeSelect.appendChild(option);
+            });
+        }
+    </script>
+</head>
+<body>
+<h2>수리 요청서 작성</h2>
+
+<form th:action="@{/repairs}" method="post">
+    <label for="type">문제 유형:</label>
+    <select id="type" name="category" onchange="updateDynamicFields()" required>
+        <option value="">-- 선택하세요 --</option>
+        <option value="HW">하드웨어 문제</option>
+        <option value="SW">소프트웨어 문제</option>
+    </select>
+    <br><br>
+
+    <label for="problemDetail">세부 문제:</label>
+    <select id="problemDetail" name="detailType" required>
+        <option value="">-- 문제 유형 먼저 선택 --</option>
+    </select>
+    <br><br>
+
+    <label for="details">상세 사유:</label><br>
+    <textarea id="details" name="details" rows="4" cols="50" placeholder="문제의 구체적인 상황을 작성해주세요" required></textarea>
+    <br><br>
+
+    <label for="assignee">담당자:</label>
+    <select id="assignee" name="manager" required>
+        <option value="">-- 문제 유형 먼저 선택 --</option>
+    </select>
+    <br><br>
+
+    <label for="cmosPw">CMOS 비밀번호:</label>
+    <input type="text" id="cmosPw" name="cmosPw" required />
+    <br><br>
+
+    <label for="windowsPw">Windows 비밀번호:</label>
+    <input type="text" id="windowsPw" name="windowsPw" required />
+    <br><br>
+
+    <button type="submit">요청 제출</button>
+</form>
+</body>
+</html>

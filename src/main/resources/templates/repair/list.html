@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>수리 요청 내역</title>
+    <meta charset="UTF-8" />
+</head>
+<body>
+<h2>수리 요청 결과 및 내역</h2>
+
+<!-- 최근 수리 요청 요약 -->
+<div th:if="${recentRepair != null}">
+    <h3>최근 제출한 수리 요청</h3>
+    <ul>
+        <li><strong>요청일시:</strong> <span th:text="${#temporals.format(recentRepair.createdAt, 'yyyy-MM-dd HH:mm')}"></span></li>
+        <li><strong>문제유형:</strong> <span th:text="${recentRepair.category}"></span></li>
+        <li><strong>세부문제:</strong> <span th:text="${recentRepair.detailType}"></span></li>
+        <li><strong>담당자:</strong> <span th:text="${recentRepair.manager}"></span></li>
+        <li><strong>진행상태:</strong> <span th:text="${recentRepair.status}"></span></li>
+    </ul>
+    <hr />
+</div>
+
+<!-- 처리중 요청 알림 -->
+<div th:if="${openRepairsCount > 0}" style="color: red;">
+    현재 처리 중인 요청이 <strong th:text="${openRepairsCount}"></strong>건 있습니다.
+</div>
+
+<!-- 전체 수리 요청 내역 -->
+<h3>나의 수리 요청 히스토리</h3>
+<table border="1">
+    <thead>
+    <tr>
+        <th>요청일</th>
+        <th>문제유형</th>
+        <th>세부문제</th>
+        <th>담당자</th>
+        <th>상태</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="repair : ${repairs}">
+        <td th:text="${#temporals.format(repair.createdAt, 'yyyy-MM-dd')}"></td>
+        <td th:text="${repair.category}"></td>
+        <td th:text="${repair.detailType}"></td>
+        <td th:text="${repair.manager}"></td>
+        <td th:text="${repair.status}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<br />
+<a href="/repairs/new"><button>새 수리 요청 하기</button></a>
+</body>
+</html>
