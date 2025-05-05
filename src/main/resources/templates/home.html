@@ -66,8 +66,9 @@
   <!-- 노트북 정보 -->
   <div class="mb-4">
     <div class="d-flex gap-3">
-      <a href="#" class="btn btn-outline-primary">노트북 정보 보기</a>
-      <a href="#" class="btn btn-outline-secondary">수리 요청하기</a>
+      <!-- @{/laptop}페이지는 나중에 구현 예정-->
+      <a th:href="@{/laptop}" class="btn btn-outline-primary">노트북 정보 보기</a>
+      <a th:href="@{/repairs/new}" class="btn btn-outline-secondary">수리 요청하기</a>
     </div>
   </div>
 
