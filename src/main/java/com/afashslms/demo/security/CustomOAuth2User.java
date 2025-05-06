@@ -39,4 +39,10 @@ public class CustomOAuth2User implements OAuth2User {
     public Role getRole() {
         return user.getRole();
     }
+
+    public String getEmail() {
+        return user.getEmail();
+    }
+
+
 }

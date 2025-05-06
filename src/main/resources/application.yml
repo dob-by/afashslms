@@ -73,3 +73,7 @@ logging:
 
 thymeleaf:
   cache: false
+
+security:
+  csrf:
+    enabled: true
