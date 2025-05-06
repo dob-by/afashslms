@@ -31,6 +31,7 @@ public class PostController {
     // 게시글 상세
     @GetMapping("/{postId}")
     public String viewPost(@PathVariable String postId, Model model) {
+        postService.incrementViewCount(postId); // 👈 조회수 증가 먼저
         Post post = postService.getPost(postId);
         model.addAttribute("post", post);
         return "post/view"; // templates/post/view.html

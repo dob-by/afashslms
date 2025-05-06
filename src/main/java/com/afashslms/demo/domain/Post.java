@@ -2,6 +2,8 @@ package com.afashslms.demo.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -28,10 +30,21 @@ public class Post {
 
     private String author; // 작성자 이름 or ID
 
+    @CreationTimestamp
     private LocalDateTime createdAt;
+
+    private int viewCount = 0;
 
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
+    }
+
+    public int getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(int viewCount) {
+        this.viewCount = viewCount;
     }
 }

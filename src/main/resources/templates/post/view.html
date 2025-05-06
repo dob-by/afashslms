@@ -8,7 +8,8 @@
 <h2 th:text="${post.title}">제목</h2>
 <p th:text="${post.content}">내용</p>
 <p><strong>작성자:</strong> <span th:text="${post.user.username}">작성자</span></p>
-
+<p><strong>작성일:</strong> <span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></span></p>
+<p><strong>조회수:</strong> <span th:text="${post.viewCount}"></span></p>
 <a th:href="@{/posts/{id}/edit(id=${post.postId})}">수정</a>
 <form th:action="@{/posts/{id}/delete(id=${post.postId})}" method="post" style="display:inline;">
     <button type="submit">삭제</button>

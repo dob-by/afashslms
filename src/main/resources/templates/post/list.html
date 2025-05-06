@@ -14,13 +14,16 @@
     <tr>
         <th>제목</th>
         <th>작성자</th>
+        <th>작성일</th>
+        <th>조회수</th>
     </tr>
     <tr th:each="post : ${posts}">
         <td>
             <a th:href="@{/posts/{id}(id=${post.postId})}" th:text="${post.title}">제목</a>
         </td>
         <td th:text="${post.user.username}">작성자</td>
-
+        <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></td> <!-- 작성일 표시 -->
+        <td th:text="${post.viewCount}"></td> <!-- 조회수 표시 -->
     </tr>
 </table>
 </body>

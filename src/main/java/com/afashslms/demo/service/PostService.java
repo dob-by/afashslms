@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -69,6 +70,13 @@ public class PostService {
     // 게시글 목록
     public List<Post> getAllPosts() {
         return postRepository.findAllByOrderByCreatedAtDesc();
+    }
+
+    @Transactional
+    public void incrementViewCount(String postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+        post.setViewCount(post.getViewCount() + 1);
     }
 
     // 게시글 단건 조회
