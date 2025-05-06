@@ -156,4 +156,5 @@ public class PostController {
         commentService.addComment(postId, content, email);
         return "redirect:/posts/" + postId;
     }
+
 }

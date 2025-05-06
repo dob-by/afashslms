@@ -9,6 +9,7 @@ import com.afashslms.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import org.springframework.security.access.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,5 +41,33 @@ public class CommentService {
         return commentRepository.findByPost_PostIdOrderByCreatedAtAsc(postId);
     }
 
-    // TODO: 수정/삭제 기능 추가
+    public Comment getCommentById(Long id) {
+        return commentRepository.findById(id).orElseThrow();
+    }
+
+    public void updateComment(Long id, String content, String email) {
+        Comment comment = commentRepository.findById(id).orElseThrow();
+
+        if (!comment.getUser().getEmail().equals(email)) {
+            throw new RuntimeException("수정 권한 없음");
+        }
+
+        comment.setContent(content);
+        comment.setUpdatedAt(LocalDateTime.now());
+        commentRepository.save(comment);
+    }
+
+    public void deleteComment(Long commentId, String currentUserEmail) {
+        Comment comment = getCommentById(commentId);
+        String commentAuthorEmail = comment.getUser().getEmail();
+        String role = comment.getUser().getRole().name(); // "USER", "ADMIN", 등
+
+        if (!currentUserEmail.equals(commentAuthorEmail) && !role.equals("ADMIN")) {
+            throw new RuntimeException("댓글 삭제 권한이 없습니다.");
+        }
+
+        commentRepository.delete(comment);
+    }
+
+
 }
