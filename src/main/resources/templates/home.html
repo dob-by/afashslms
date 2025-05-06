@@ -57,18 +57,30 @@
   <!-- 아랫줄: 사용자 정보 + 로그아웃 버튼 -->
   <div class="d-flex justify-content-center align-items-center gap-3">
     <span class="user-info">사용자 : 로제</span>
+    <!-- 역할 확인 -->
+    <p>현재 역할: <span th:text="${userRole}"></span></p>
     <a href="#" class="btn btn-sm btn-outline-light">로그아웃</a>
   </div>
 </header>
 
 <!-- 💻 메인 콘텐츠 -->
 <main class="container my-5 flex-grow-1">
-  <!-- 노트북 정보 -->
+  <!-- 노트북 정보 및 수리 요청 버튼 -->
   <div class="mb-4">
     <div class="d-flex gap-3">
-      <!-- @{/laptop}페이지는 나중에 구현 예정-->
-      <a th:href="@{/laptop}" class="btn btn-outline-primary">노트북 정보 보기</a>
-      <a th:href="@{/repairs/new}" class="btn btn-outline-secondary">수리 요청하기</a>
+
+      <!-- 학생 전용 버튼 -->
+      <div th:if="${userRole == 'STUDENT'}">
+        <a th:href="@{/laptop}" class="btn btn-outline-primary">내 노트북 정보 보기</a>
+        <a th:href="@{/repairs/new}" class="btn btn-outline-secondary">수리 요청하기</a>
+      </div>
+
+      <!-- 관리자 전용 버튼 -->
+      <div th:if="${userRole == 'MID_ADMIN' or userRole == 'TOP_ADMIN'}">
+        <a th:href="@{/admin/laptops}" class="btn btn-outline-primary">전체 노트북 정보 보기</a>
+        <a th:href="@{/admin/repairs}" class="btn btn-outline-secondary">수리 요청 현황 보기</a>
+      </div>
+
     </div>
   </div>
 

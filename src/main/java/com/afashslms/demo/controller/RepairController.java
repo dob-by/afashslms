@@ -76,9 +76,9 @@ public class RepairController {
 
 
     @GetMapping
-    public String showRepairList(Model model) {
+    public String showRepairList(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
         String email = extractAuthenticatedEmail();
-
+        User userEntity = userDetails.getUser();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("사용자 정보를 찾을 수 없습니다."));
 
@@ -86,6 +86,10 @@ public class RepairController {
         model.addAttribute("repairs", repairs);
         model.addAttribute("recentRepair", repairs.isEmpty() ? null : repairs.get(0));
         model.addAttribute("openRepairsCount", repairs.stream().filter(r -> !"완료".equals(r.getStatus())).count());
+
+        //역할 정보를 모델에 추가
+        model.addAttribute("userRole", userEntity.getRole().name()); // "STUDENT", "MID_ADMIN", "TOP_ADMIN"
+
         return "repair/list";
     }
 

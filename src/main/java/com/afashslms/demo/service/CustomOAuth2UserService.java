@@ -3,6 +3,7 @@ package com.afashslms.demo.service;
 import com.afashslms.demo.domain.Role;
 import com.afashslms.demo.domain.User;
 import com.afashslms.demo.repository.UserRepository;
+import com.afashslms.demo.security.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -46,15 +47,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     newUser.setEmail(email);
                     newUser.setUsername(registrationId + "_user_" + email);
                     newUser.setProvider(registrationId);
-                    newUser.setRole(Role.USER);
+                    newUser.setRole(Role.STUDENT);
                     return userRepository.save(newUser);
                 });
 
-        return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority(user.getRole().name())),
-                attributes,
-                userNameAttributeName
-        );
+        return new CustomOAuth2User(user, attributes);
     }
 
     private static String getEmail(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
