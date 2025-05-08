@@ -1,5 +1,7 @@
 package com.afashslms.demo.controller;
 
+import com.afashslms.demo.domain.Post;
+import com.afashslms.demo.repository.PostRepository;
 import com.afashslms.demo.security.CustomOAuth2User;
 import com.afashslms.demo.security.CustomUserDetails;
 import org.springframework.security.core.Authentication;
@@ -8,8 +10,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.List;
+
 @Controller
 public class HomeController {
+
+    private final PostRepository postRepository;
+
+    public HomeController(PostRepository postRepository) {
+        this.postRepository = postRepository;
+    }
 
     @GetMapping("/")
     public String showHome(Model model, Authentication authentication) {
@@ -22,6 +32,11 @@ public class HomeController {
         }
 
         model.addAttribute("userRole", roleName);
+
+        // 최신 게시글 5개 가져오기
+        List<Post> latestPosts = postRepository.findTop5ByOrderByCreatedAtDesc();
+        model.addAttribute("latestPosts", latestPosts);
+
         return "home";
     }
 }

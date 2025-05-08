@@ -12,4 +12,7 @@ public interface PostRepository extends JpaRepository<Post, String> {
 
     // 특정 유저가 작성한 글 목록 (선택)
     List<Post> findByUser_UserId(String userId);
+
+    // PostRepository.java
+    List<Post> findTop5ByOrderByCreatedAtDesc();
 }

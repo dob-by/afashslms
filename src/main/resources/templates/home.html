@@ -57,8 +57,8 @@
   <!-- 아랫줄: 사용자 정보 + 로그아웃 버튼 -->
   <div class="d-flex justify-content-center align-items-center gap-3">
     <span class="user-info">사용자 : 로제</span>
-    <!-- 역할 확인 -->
-    <p>현재 역할: <span th:text="${userRole}"></span></p>
+<!--    &lt;!&ndash; 역할 확인 &ndash;&gt;-->
+<!--    <p>현재 역할: <span th:text="${userRole}"></span></p>-->
     <a href="#" class="btn btn-sm btn-outline-light">로그아웃</a>
   </div>
 </header>
@@ -89,8 +89,9 @@
     <!-- 공지사항 -->
     <div class="col-md-6 mb-3">
       <div class="card">
-        <div class="card-header bg-info text-white">
-          📢 최근 공지사항
+        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+          <span>📢 최근 공지사항</span>
+          <a th:href="@{/notices}" class="btn btn-sm btn-outline-light">공지사항 바로가기</a>
         </div>
         <ul class="list-group list-group-flush">
           <li class="list-group-item">[공지] 노트북 정기 점검 안내 (5/10)</li>
@@ -105,15 +106,20 @@
     <!-- 문의 게시판 -->
     <div class="col-md-6 mb-3">
       <div class="card">
-        <div class="card-header bg-warning text-dark">
-          ❓ 최근 문의 게시글
-        </div>
+        <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+        <span>❓ 최근 문의 게시글</span>
+        <a th:href="@{/posts}" class="btn btn-sm btn-outline-dark">게시판 바로가기</a>
+      </div>
         <ul class="list-group list-group-flush">
           <li class="list-group-item">노트북 충전기 분실 시 어떻게 하나요?</li>
           <li class="list-group-item">대여 기간 연장 신청은 어떻게 하나요?</li>
           <li class="list-group-item">로그인 비밀번호를 잊었어요</li>
           <li class="list-group-item">윈도우 업데이트가 안됩니다</li>
           <li class="list-group-item">배터리 수명이 짧아졌어요</li>
+          <li class="list-group-item" th:each="post : ${latestPosts}">
+            <a th:href="@{|/posts/${post.postId}|}" th:text="${post.title}">게시글 제목</a>
+            <span class="text-muted float-end" th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd')}"></span>
+          </li>
         </ul>
       </div>
     </div>
