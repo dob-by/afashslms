@@ -19,7 +19,7 @@
 
 <div class="container d-flex justify-content-center align-items-center vh-100">
     <div class="card p-4 shadow-lg" style="min-width: 350px; max-width: 400px; width: 100%;">
-        <h3 class="text-center mb-4">로그인</h3>
+        <h3 class="text-center mb-4">AFASHS LMS</h3>
 
         <!-- 로그인 실패 메시지 -->
         <div th:if="${param.error}" class="alert alert-danger text-center" role="alert">
@@ -41,6 +41,9 @@
             <div class="d-grid">
                 <button type="submit" class="btn btn-primary">로그인</button>
             </div>
+            <div class="d-grid mt-2">
+                <a href="/signup" class="btn btn-outline-secondary">회원가입</a>
+            </div>
         </form>
 
         <hr class="my-4">
@@ -51,6 +54,7 @@
                 <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png" alt="Kakao" width="20" height="20">
                 카카오로 로그인
             </a>
+            <small class="text-muted text-center">처음 로그인하시면 자동으로 회원가입됩니다.</small>
         </div>
 
         <!-- 구글 로그인 -->
@@ -60,6 +64,7 @@
                      alt="Google G" width="20" height="20">
                 구글로 로그인
             </a>
+            <small class="text-muted text-center">처음 로그인하시면 자동으로 회원가입됩니다.</small>
         </div>
     </div>
 </div>
