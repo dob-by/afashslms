@@ -59,7 +59,10 @@
     <span class="user-info">사용자 : <span th:text="${username}">사용자이름</span></span>
 <!--    &lt;!&ndash; 역할 확인 &ndash;&gt;-->
 <!--    <p>현재 역할: <span th:text="${userRole}"></span></p>-->
-    <a href="/logout" class="btn btn-sm btn-outline-light">로그아웃</a>
+    <form th:action="@{/logout}" method="post">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+      <button type="submit" class="btn btn-outline-danger">로그아웃</button>
+    </form>
   </div>
 </header>
 
