@@ -56,7 +56,7 @@
 
   <!-- 아랫줄: 사용자 정보 + 로그아웃 버튼 -->
   <div class="d-flex justify-content-center align-items-center gap-3">
-    <span class="user-info">사용자 : 로제</span>
+    <span class="user-info">사용자 : <span th:text="${username}">사용자이름</span></span>
 <!--    &lt;!&ndash; 역할 확인 &ndash;&gt;-->
 <!--    <p>현재 역할: <span th:text="${userRole}"></span></p>-->
     <a href="/logout" class="btn btn-sm btn-outline-light">로그아웃</a>

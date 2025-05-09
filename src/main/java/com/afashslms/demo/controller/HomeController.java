@@ -24,14 +24,18 @@ public class HomeController {
     @GetMapping("/")
     public String showHome(Model model, Authentication authentication) {
         String roleName = "GUEST"; // 기본값
+        String username = "비회원";
 
         if (authentication != null && authentication.getPrincipal() instanceof CustomOAuth2User oAuth2User) {
             roleName = oAuth2User.getUser().getRole().name(); // STUDENT 등
+            username = oAuth2User.getUser().getUsername();
         } else if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
             roleName = userDetails.getUser().getRole().name();
+            username = userDetails.getUser().getUsername();
         }
 
         model.addAttribute("userRole", roleName);
+        model.addAttribute("username", username);
 
         // 최신 게시글 5개 가져오기
         List<Post> latestPosts = postRepository.findTop5ByOrderByCreatedAtDesc();

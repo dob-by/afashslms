@@ -33,4 +33,7 @@ public class User {
     private Role role;  //STUDENT, MID_ADMIN, TOP_ADMIN
 
     private Timestamp createdAt;
+
+    @Column(name = "military_id", unique = true)
+    private String militaryId; //가군번
 }

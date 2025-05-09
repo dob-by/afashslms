@@ -1,4 +1,3 @@
-<!-- src/main/resources/templates/signup.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -12,12 +11,29 @@
     <div class="card p-4 shadow-lg" style="min-width: 350px; max-width: 400px; width: 100%;">
         <h3 class="text-center mb-4">회원가입</h3>
 
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
         <form th:action="@{/signup}" method="post">
+            <div class="mb-3">
+                <label class="form-label">사용자 유형</label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="role" id="student" value="STUDENT" required>
+                    <label class="form-check-label" for="student">학생</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="role" id="staff" value="MID_ADMIN">
+                    <label class="form-check-label" for="staff">교직원</label>
+                </div>
+            </div>
             <div class="mb-3">
                 <label for="userId" class="form-label">아이디</label>
                 <input type="text" id="userId" name="userId" class="form-control" required />
+                <small id="userIdWarning" class="form-text text-danger"></small>
             </div>
-
+            <div class="mb-3">
+                <label for="militaryId" class="form-label">군번</label>
+                <input type="text" id="militaryId" name="militaryId" class="form-control" required />
+                <small id="militaryIdWarning" class="form-text text-danger"></small>
+            </div>
             <div class="mb-3">
                 <label for="username" class="form-label">이름</label>
                 <input type="text" id="username" name="username" class="form-control" required />
@@ -26,6 +42,7 @@
             <div class="mb-3">
                 <label for="email" class="form-label">이메일</label>
                 <input type="email" id="email" name="email" class="form-control" required />
+                <small id="emailWarning" class="form-text text-danger"></small>
             </div>
 
             <div class="mb-3">
@@ -39,6 +56,68 @@
         </form>
     </div>
 </div>
+<script>
+    const userIdInput = document.getElementById("userId");
+    const userIdWarning = document.getElementById("userIdWarning");
+    const emailInput = document.getElementById("email");
+    const emailWarning = document.getElementById("emailWarning");
+    const signupButton = document.querySelector("button[type='submit']");
+
+    let isUserIdValid = false;
+    let isEmailValid = false;
+
+    async function toggleSignupButton() {
+        signupButton.disabled = !(isUserIdValid && isEmailValid);
+    }
+
+    userIdInput.addEventListener("blur", async () => {
+        const userId = userIdInput.value.trim();
+        if (!userId) return;
+
+        try {
+            const response = await fetch(`/users/check-userid?userId=${encodeURIComponent(userId)}`);
+            const isAvailable = await response.json();
+
+            if (!isAvailable) {
+                userIdWarning.innerText = "이미 존재하는 아이디입니다.";
+                isUserIdValid = false;
+            } else {
+                userIdWarning.innerText = "";
+                isUserIdValid = true;
+            }
+            toggleSignupButton();
+        } catch (error) {
+            console.error("아이디 중복 확인 중 오류 발생", error);
+            userIdWarning.innerText = "서버 오류가 발생했습니다.";
+            isUserIdValid = false;
+            toggleSignupButton();
+        }
+    });
+
+    emailInput.addEventListener("blur", async () => {
+        const email = emailInput.value.trim();
+        if (!email) return;
+
+        try {
+            const response = await fetch(`/users/check-email?email=${encodeURIComponent(email)}`);
+            const isDuplicate = await response.json();
+
+            if (isDuplicate) {
+                emailWarning.innerText = "이미 존재하는 이메일입니다.";
+                isEmailValid = false;
+            } else {
+                emailWarning.innerText = "";
+                isEmailValid = true;
+            }
+            toggleSignupButton();
+        } catch (error) {
+            console.error("이메일 중복 확인 중 오류 발생", error);
+            emailWarning.innerText = "서버 오류가 발생했습니다.";
+            isEmailValid = false;
+            toggleSignupButton();
+        }
+    });
+</script>
 
 </body>
 </html>
