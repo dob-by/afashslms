@@ -1,39 +1,53 @@
-<!--사용자 관리 페이지-->
+<!-- templates/admin/user-list.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::body})}">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>사용자 관리</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<main class="container my-5">
-    <h3 class="mb-4">👥 사용자 목록</h3>
-
-    <table class="table table-bordered table-hover text-center">
+<div class="container mt-5">
+    <h2 class="mb-4">사용자 목록</h2>
+    <table class="table table-striped table-hover">
         <thead class="table-dark">
         <tr>
-            <th>ID</th>
-            <th>이름</th>
+            <th>사용자 ID</th>
+            <th>이름(username)</th>
             <th>이메일</th>
+            <th>군번</th>
+            <th>로그인 방식</th>
             <th>역할</th>
-            <th>가입방식</th>
+            <th>가입일</th>
             <th>관리</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="user : ${users}">
-            <td th:text="${user.userId}">12345</td>
-            <td th:text="${user.username}">홍길동</td>
-            <td th:text="${user.email}">email@example.com</td>
-            <td th:text="${user.role}">STUDENT</td>
-            <td th:text="${user.provider}">local</td>
+            <td th:text="${user.userId}">user_id</td>
+            <td th:text="${user.username}">username</td>
+            <td th:text="${user.email}">email</td>
+            <td th:text="${user.militaryId}">militaryId</td>
+            <td th:text="${user.provider}">provider</td>
             <td>
-                <a href="#" class="btn btn-sm btn-outline-primary">수정</a>
-                <a href="#" class="btn btn-sm btn-outline-danger">삭제</a>
+                <form th:action="@{'/admin/users/' + ${user.userId} + '/role'}" method="post">
+                    <div class="input-group">
+                        <select class="form-select form-select-sm" name="newRole">
+                            <option value="STUDENT" th:selected="${user.role.name() == 'STUDENT'}">STUDENT</option>
+                            <option value="MID_ADMIN" th:selected="${user.role.name() == 'MID_ADMIN'}">MID_ADMIN</option>
+                            <option value="TOP_ADMIN" th:selected="${user.role.name() == 'TOP_ADMIN'}">TOP_ADMIN</option>
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-outline-success">변경</button>
+                    </div>
+                </form>
+            </td>
+            <td th:text="${#temporals.format(user.createdAt.toLocalDateTime(), 'yyyy-MM-dd')}">createdAt</td>
+            <td>
+                <a th:href="@{'/admin/users/' + ${user.userId}}" class="btn btn-sm btn-outline-secondary">상세보기</a>
             </td>
         </tr>
         </tbody>
     </table>
-</main>
+</div>
 </body>
 </html>
