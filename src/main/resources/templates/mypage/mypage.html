@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지</title>
+    <style>
+        .profile-card {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .profile-card {
+            background-color: #1e1e1e;
+            color: #eaeaea;
+            border: 1px solid #444;
+        }
+
+        .section-title {
+            font-weight: bold;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+<main class="container my-5 flex-grow-1">
+    <div class="profile-card">
+        <h4>👤 내 정보</h4>
+        <p><strong>이름:</strong> <span th:text="${username}">이름</span></p>
+        <p><strong>이메일:</strong> <span th:text="${email}">email@example.com</span></p>
+        <p><strong>역할:</strong> <span th:text="${userRole}">STUDENT</span></p>
+    </div>
+
+    <!-- 학생 전용: 노트북 정보 & 수리 요청 내역 -->
+    <div th:if="${userRole == 'STUDENT' and laptop != null}">
+        <h5 class="section-title">💻 내 노트북 정보</h5>
+        <div class="card mb-4">
+            <div class="card-body">
+                <p><strong>모델명:</strong> <span th:text="${laptop.model}">Dell XPS 13</span></p>
+                <p><strong>일련번호:</strong> <span th:text="${laptop.serialNumber}">SN-123456</span></p>
+                <p><strong>대여일자:</strong> <span th:text="${#temporals.format(laptop.issuedAt, 'yyyy-MM-dd')}">2025-03-01</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${userRole == 'STUDENT' and repairs != null}">
+        <h5 class="section-title">🛠 수리 요청 내역</h5>
+        <table class="table table-sm table-hover">
+            <thead>
+            <tr>
+                <th>요청일</th>
+                <th>수리내용</th>
+                <th>상태</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="repair : ${repairs}">
+                <td th:text="${#temporals.format(repair.requestedAt, 'yyyy-MM-dd')}">2025-04-12</td>
+                <td th:text="${repair.reason}">배터리 교체</td>
+                <td th:text="${repair.status}">완료</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 관리자 전용: 간단 안내 -->
+    <div th:if="${userRole == 'MID_ADMIN' or userRole == 'TOP_ADMIN'}">
+        <h5 class="section-title">🔧 관리자 안내</h5>
+        <p>이 페이지에서는 관리자 정보만 간단히 표시됩니다.<br>
+            노트북/사용자 관리는 상단 메뉴에서 접근해주세요.</p>
+    </div>
+</main>
+</body>
+</html>
