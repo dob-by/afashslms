@@ -53,13 +53,13 @@ class CommentServiceTest {
         user = new User();
         user.setUserId("user1");
         user.setEmail("user@test.com");
-        user.setRole(Role.USER);
+        user.setRole(Role.STUDENT);
         userRepository.save(user);
 
         user2 = new User();
         user2.setUserId("user2");
         user2.setEmail("other@test.com");
-        user2.setRole(Role.USER);
+        user2.setRole(Role.STUDENT);
         userRepository.save(user2);
 
         // admin 계정 중복 체크
