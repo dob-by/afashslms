@@ -1,101 +1,35 @@
 <!-- src/main/resources/templates/home.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::body})}">
 <head>
   <meta charset="UTF-8" />
   <title>노트북 관리 시스템</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
-        background: linear-gradient(135deg, #C2E9FB, #A1C4FD); /* 배경 전체 그라디언트 */
-        background-attachment: fixed;
+      background: linear-gradient(135deg, #C2E9FB, #A1C4FD);
+      background-attachment: fixed;
     }
-
-    .glass-header {
-        backdrop-filter: blur(10px);
-        background-color: rgba(255, 255, 255, 0.25);
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        padding: 1rem 2rem;
-        margin: 1rem auto;
-        max-width: 1000px;
+    .clickable-card {
+      text-decoration: none;
+      color: inherit;
     }
-
-    .glass-header h4 {
-        font-weight: 700;
-        color: #333;
-    }
-
-    .glass-header .user-info {
-        font-weight: 500;
-        color: #222;
-    }
-
-    .glass-header .btn-outline-light {
-        border: 1px solid rgba(255, 255, 255, 0.6);
-        color: white;
-        backdrop-filter: blur(5px);
-    }
-    .glass-header .btn-outline-light {
-    border: 1px solid rgba(100, 100, 100, 0.3); /* 밝은 회색 테두리 */
-    color: #333; /* 진한 회색 글자 */
-    background-color: rgba(255, 255, 255, 0.2); /* 아주 약한 배경 */
-    transition: all 0.3s;
-    }
-    .glass-header .btn-outline-light:hover {
-    background-color: rgba(255, 255, 255, 0.4);
+    .clickable-card:hover {
+      transform: scale(1.01);
+      transition: all 0.2s;
     }
   </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
-<!-- 🔐 사용자 정보 헤더 -->
-<header class="glass-header text-center">
-  <!-- 윗줄: 시스템 명 -->
-  <h4 class="mb-3">💻 항과고 노트북 관리 시스템</h4>
-
-  <!-- 아랫줄: 사용자 정보 + 로그아웃 버튼 -->
-  <div class="d-flex justify-content-center align-items-center gap-3">
-    <span class="user-info">사용자 : <span th:text="${username}">사용자이름</span></span>
-<!--    &lt;!&ndash; 역할 확인 &ndash;&gt;-->
-<!--    <p>현재 역할: <span th:text="${userRole}"></span></p>-->
-    <form th:action="@{/logout}" method="post">
-      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-      <button type="submit" class="btn btn-outline-danger">로그아웃</button>
-    </form>
-  </div>
-</header>
-
-<!-- 💻 메인 콘텐츠 -->
 <main class="container my-5 flex-grow-1">
-  <!-- 노트북 정보 및 수리 요청 버튼 -->
-  <div class="mb-4">
-    <div class="d-flex gap-3">
-
-      <!-- 학생 전용 버튼 -->
-      <div th:if="${userRole == 'STUDENT'}">
-        <a th:href="@{/laptop}" class="btn btn-outline-primary">내 노트북 정보 보기</a>
-        <a th:href="@{/repairs/new}" class="btn btn-outline-secondary">수리 요청하기</a>
-      </div>
-
-      <!-- 관리자 전용 버튼 -->
-      <div th:if="${userRole == 'MID_ADMIN' or userRole == 'TOP_ADMIN'}">
-        <a th:href="@{/admin/laptops}" class="btn btn-outline-primary">전체 노트북 정보 보기</a>
-        <a th:href="@{/admin/repairs}" class="btn btn-outline-secondary">수리 요청 현황 보기</a>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- 공지사항 및 문의 게시판 -->
   <div class="row">
-    <!-- 공지사항 -->
-    <div class="col-md-6 mb-3">
-      <div class="card">
-        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
-          <span>📢 최근 공지사항</span>
-          <a th:href="@{/notices}" class="btn btn-sm btn-outline-light">공지사항 바로가기</a>
-        </div>
+    <!-- 📢 최근 공지사항 카드 (링크화) -->
+    <!-- 공지사항 카드 -->
+    <a th:href="@{/notices}" class="clickable-card">
+      <div class="card h-100">
+        <div class="card-header bg-info text-white">📢 최근 공지사항</div>
         <ul class="list-group list-group-flush">
           <li class="list-group-item">[공지] 노트북 정기 점검 안내 (5/10)</li>
           <li class="list-group-item">[공지] 신규 노트북 대여 신청 공지</li>
@@ -104,15 +38,12 @@
           <li class="list-group-item">[공지] 2025년 1차 대여 현황 업데이트</li>
         </ul>
       </div>
-    </div>
+    </a>
 
-    <!-- 문의 게시판 -->
-    <div class="col-md-6 mb-3">
-      <div class="card">
-        <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
-        <span>❓ 최근 문의 게시글</span>
-        <a th:href="@{/posts}" class="btn btn-sm btn-outline-dark">게시판 바로가기</a>
-      </div>
+    <!-- 문의 게시판 카드 -->
+    <a th:href="@{/posts}" class="clickable-card">
+      <div class="card h-100">
+        <div class="card-header bg-warning text-dark">❓ 최근 문의 게시글</div>
         <ul class="list-group list-group-flush">
           <li class="list-group-item">노트북 충전기 분실 시 어떻게 하나요?</li>
           <li class="list-group-item">대여 기간 연장 신청은 어떻게 하나요?</li>
@@ -120,19 +51,67 @@
           <li class="list-group-item">윈도우 업데이트가 안됩니다</li>
           <li class="list-group-item">배터리 수명이 짧아졌어요</li>
           <li class="list-group-item" th:each="post : ${latestPosts}">
-            <a th:href="@{|/posts/${post.postId}|}" th:text="${post.title}">게시글 제목</a>
+            <a th:href="@{|/posts/${post.postId}|}"
+               th:text="${post.title}"
+               class="post-link"></a>
             <span class="text-muted float-end" th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd')}"></span>
           </li>
         </ul>
       </div>
-    </div>
+    </a>
   </div>
 </main>
 
-<!-- 🧾 푸터 -->
 <footer class="bg-light text-center text-muted py-3 mt-auto">
   © 2025 AFASH SLMS. All rights reserved.
 </footer>
+<style>
+  body {
+    background: linear-gradient(135deg, #C2E9FB, #A1C4FD);
+    background-attachment: fixed;
+  }
 
+  /* 카드 전체 hover 효과 */
+  .clickable-card {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .clickable-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* 게시글 제목 링크 전용 */
+  .post-link {
+    text-decoration: none;
+    color: #333;
+    display: inline-block;
+    padding: 0.3rem 0.5rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s ease;
+  }
+
+  .post-link:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  /* 리스트 항목 사이 구분감 */
+  .list-group-item {
+    border: none;
+    border-bottom: 1px solid #eee;
+  }
+
+  /* 카드 헤더 버튼 */
+  .card-header a.btn {
+    font-size: 0.85rem;
+    padding: 0.3rem 0.6rem;
+  }
+</style>
 </body>
 </html>

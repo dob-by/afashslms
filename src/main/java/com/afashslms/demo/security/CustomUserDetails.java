@@ -1,5 +1,6 @@
 package com.afashslms.demo.security;
 
+import com.afashslms.demo.domain.Role;
 import com.afashslms.demo.domain.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,6 +17,11 @@ public class CustomUserDetails implements UserDetails {
     public CustomUserDetails(User user) {
         this.user = user;
     }
+
+    public Role getRole() {
+        return user.getRole();
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
