@@ -1,0 +1,39 @@
+<!--사용자 관리 페이지-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>사용자 관리</title>
+</head>
+<body>
+<main class="container my-5">
+    <h3 class="mb-4">👥 사용자 목록</h3>
+
+    <table class="table table-bordered table-hover text-center">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>이름</th>
+            <th>이메일</th>
+            <th>역할</th>
+            <th>가입방식</th>
+            <th>관리</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.userId}">12345</td>
+            <td th:text="${user.username}">홍길동</td>
+            <td th:text="${user.email}">email@example.com</td>
+            <td th:text="${user.role}">STUDENT</td>
+            <td th:text="${user.provider}">local</td>
+            <td>
+                <a href="#" class="btn btn-sm btn-outline-primary">수정</a>
+                <a href="#" class="btn btn-sm btn-outline-danger">삭제</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

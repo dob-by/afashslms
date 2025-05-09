@@ -1,0 +1,36 @@
+<!--노트북 관리 페이지-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>노트북 관리</title>
+</head>
+<body>
+<main class="container my-5">
+    <h3 class="mb-4">💻 노트북 목록</h3>
+
+    <table class="table table-bordered table-hover text-center">
+        <thead class="table-dark">
+        <tr>
+            <th>모델명</th>
+            <th>일련번호</th>
+            <th>소유자</th>
+            <th>대여일자</th>
+            <th>관리</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="laptop : ${laptops}">
+            <td th:text="${laptop.model}">Dell XPS 13</td>
+            <td th:text="${laptop.serialNumber}">SN-12345</td>
+            <td th:text="${laptop.owner.username}">홍길동</td>
+            <td th:text="${#temporals.format(laptop.issuedAt, 'yyyy-MM-dd')}">2025-03-01</td>
+            <td>
+                <a href="#" class="btn btn-sm btn-outline-primary">수정</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>
