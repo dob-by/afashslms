@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -36,4 +38,7 @@ public class User {
 
     @Column(name = "military_id", unique = true)
     private String militaryId; //가군번
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Laptop> laptops = new ArrayList<>();
 }

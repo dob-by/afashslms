@@ -41,7 +41,7 @@
                     </div>
                 </form>
             </td>
-            <td th:text="${#temporals.format(user.createdAt.toLocalDateTime(), 'yyyy-MM-dd')}">createdAt</td>
+            <td th:text="${user.createdAt != null ? #temporals.format(user.createdAt.toLocalDateTime(), 'yyyy-MM-dd') : 'N/A'}">createdAt</td>
             <td>
                 <a th:href="@{'/admin/users/' + ${user.userId}}" class="btn btn-sm btn-outline-secondary">상세보기</a>
             </td>

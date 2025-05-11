@@ -9,6 +9,6 @@ public interface UserService {
     List<User> getAllUsers();
 
     void changeRole(String userId, String newRole);
-
     User findByEmail(String email);
+    User findByUserId(String userId);
 }

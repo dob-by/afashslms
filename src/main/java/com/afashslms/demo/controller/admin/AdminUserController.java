@@ -1,9 +1,11 @@
 package com.afashslms.demo.controller.admin;
 
+import com.afashslms.demo.domain.Laptop;
 import com.afashslms.demo.domain.Role;
 import com.afashslms.demo.domain.User;
 import com.afashslms.demo.security.CustomUserDetails;
 import com.afashslms.demo.service.UserService;
+import com.afashslms.demo.repository.LaptopRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -20,6 +22,7 @@ import java.util.List;
 public class AdminUserController {
 
     private final UserService userService;
+    private final LaptopRepository laptopRepository;
 
     @GetMapping("/admin/users")
     public String showUserList(Model model) {
@@ -45,5 +48,20 @@ public class AdminUserController {
 
         userService.changeRole(userId, newRole);
         return "redirect:/admin/users";
+    }
+
+    @GetMapping("/admin/users/{userId}")
+    public String getUserDetail(@PathVariable String userId, Model model,
+                                @AuthenticationPrincipal CustomUserDetails loginUser) throws AccessDeniedException {
+        if (loginUser == null || loginUser.getRole() != Role.TOP_ADMIN) {
+            throw new AccessDeniedException("접근 권한이 없습니다.");
+        }
+
+        User user = userService.findByUserId(userId);
+        List<Laptop> laptops = laptopRepository.findByUser_UserId(userId);
+
+        model.addAttribute("user", user);
+        model.addAttribute("laptops", laptops);
+        return "admin/user-detail";
     }
 }
