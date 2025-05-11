@@ -1,6 +1,6 @@
 package com.afashslms.demo;
-import com.afashslms.demo.domain.Role;
-import com.afashslms.demo.domain.User;
+import com.afashslms.demo.domain.*;
+import com.afashslms.demo.repository.LaptopRepository;
 import com.afashslms.demo.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -57,6 +57,35 @@ public class DemoApplication {
 			} else {
 				System.out.println("⛔ 이미 admin 유저가 DB에 있음");
 			}
+		};
+
+
+	}
+
+	@Bean
+	CommandLineRunner runner(UserRepository userRepository, LaptopRepository laptopRepository) {
+		return args -> {
+			User user = new User();
+			user.setUserId("testuser1");
+			user.setUsername("김도비");
+			user.setEmail("test@naver.com");
+			user.setPassword("abc123");
+			user.setProvider("local");
+			user.setRole(Role.STUDENT);
+			user.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+			userRepository.save(user);
+
+			Laptop laptop = new Laptop();
+			laptop.setDeviceId("TEST-123");
+			laptop.setModelName("LG Gram");
+			laptop.setIp("192.168.0.10");
+			laptop.setStatus(LaptopStatus.AVAILABLE);
+			laptop.setCurrentState("학생보유");
+			laptop.setManageNumber(999);
+			laptop.setUser(user);
+			laptopRepository.save(laptop);
+
+			System.out.println("✅ 테스트 laptop 생성 완료 (main에서)");
 		};
 	}
 }

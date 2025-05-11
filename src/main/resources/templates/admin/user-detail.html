@@ -1,6 +1,7 @@
 <!--관리자용 상세페이지: 타 사용자 정보 열람 및 관리-->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::body})}">
 <head>
     <meta charset="UTF-8">
     <title>사용자 상세</title>
@@ -22,11 +23,16 @@
     <table class="table table-sm table-striped">
         <thead class="table-light">
         <tr>
+        <tr class="table-light">
             <th>모델명</th>
             <th>일련번호</th>
-            <th>IP 정보</th>
+            <th>IP</th>
             <th>상태</th>
             <th>관리번호</th>
+            <th>상세보기</th>
+            </td>
+        </tr>
+
         </tr>
         </thead>
         <tbody>
@@ -34,8 +40,30 @@
             <td th:text="${laptop.modelName}">모델명</td>
             <td th:text="${laptop.deviceId}">일련번호</td>
             <td th:text="${laptop.ip}">IP</td>
-            <td th:text="${laptop.status}">상태</td>
+
+            <!-- ✅ 상태 변경 + 저장 버튼을 form 하나로 묶음 (한 td 안에서 처리) -->
+            <td>
+                <form th:action="@{'/admin/users/' + ${user.userId} + '/laptops/' + ${laptop.deviceId} + '/status'}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <select class="form-select form-select-sm" name="newStatus">
+                        <option value="IN_USE" th:selected="${laptop.status.name() == 'IN_USE'}">사용 중</option>
+                        <option value="IN_REPAIR" th:selected="${laptop.status.name() == 'IN_REPAIR'}">수리 중</option>
+                        <option value="REPAIR_REQUESTED" th:selected="${laptop.status.name() == 'REPAIR_REQUESTED'}">수리 요청됨</option>
+                        <option value="AVAILABLE" th:selected="${laptop.status.name() == 'AVAILABLE'}">대기 중</option>
+                    </select>
+                    <div class="d-flex gap-1 mt-2">
+                        <button type="submit" class="btn btn-sm btn-success">저장</button>
+                    </div>
+                </form>
+            </td>
+
+            <!-- ✅ 관리번호 -->
             <td th:text="${laptop.manageNumber}">관리번호</td>
+
+            <!-- ✅ 상세보기 링크만 따로 td에서 처리 -->
+            <td>
+                <a th:href="@{'/admin/laptops/' + ${laptop.deviceId}}" class="btn btn-sm btn-outline-primary">상세</a>
+            </td>
         </tr>
         </tbody>
     </table>

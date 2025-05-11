@@ -15,3 +15,9 @@ INSERT INTO users (
              'TOP_ADMIN',
              CURRENT_TIMESTAMP
          );
+
+INSERT INTO users (user_id, username, email, password, provider, role, created_at)
+VALUES ('testuser1', '김도비', 'test@naver.com', 'abc123', 'local', 'STUDENT', CURRENT_TIMESTAMP);
+
+INSERT INTO laptop (device_id, model_name, ip, status, current_state, manage_number, user_id)
+VALUES ('TEST-123', 'LG Gram', '192.168.0.10', 'AVAILABLE', '학생보유', 999, 'testuser1');
