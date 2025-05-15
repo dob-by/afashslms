@@ -29,9 +29,15 @@ public class AdminUserController {
     private final LaptopRepository laptopRepository;
 
     @GetMapping("/admin/users")
-    public String showUserList(Model model) {
+    public String showUserList(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
         List<User> users = userService.getAllUsers();
-        model.addAttribute("users", users);
+
+        if (userDetails != null) {
+            model.addAttribute("users", users);
+            model.addAttribute("username", userDetails.getUser().getUsername());
+            model.addAttribute("userRole", userDetails.getRole().name());
+        }
+
         return "admin/user-list";
     }
 

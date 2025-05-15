@@ -24,9 +24,15 @@ public class AdminLaptopController {
     private final LaptopRepository laptopRepository;
 
     @GetMapping("/admin/laptops")
-    public String showLaptopList(Model model) {
+    public String showLaptopList(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
         List<LaptopViewDto> laptops = laptopService.getAllLaptopsForAdmin();
         model.addAttribute("laptops", laptops);
+
+        if (userDetails != null) {
+            model.addAttribute("username", userDetails.getUser().getUsername());
+            model.addAttribute("userRole", userDetails.getRole().name());
+        }
+
         return "admin/laptop-list";
     }
 
