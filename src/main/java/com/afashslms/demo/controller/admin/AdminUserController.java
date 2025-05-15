@@ -63,6 +63,14 @@ public class AdminUserController {
     @GetMapping("/admin/users/{userId}")
     public String getUserDetail(@PathVariable String userId, Model model,
                                 @AuthenticationPrincipal CustomUserDetails loginUser) throws AccessDeniedException {
+        List<User> users = userService.getAllUsers();
+
+        if (loginUser != null) {
+            model.addAttribute("users", users);
+            model.addAttribute("username", loginUser.getUser().getUsername());
+            model.addAttribute("userRole", loginUser.getRole().name());
+        }
+
         if (loginUser == null || loginUser.getRole() != Role.TOP_ADMIN) {
             throw new AccessDeniedException("접근 권한이 없습니다.");
         }

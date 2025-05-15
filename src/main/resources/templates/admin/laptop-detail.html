@@ -21,9 +21,28 @@
         </tr>
     </table>
 
+    <!-- ✅ 소유 이력 테이블 추가 -->
+    <h4 class="mt-5">소유 이력</h4>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>이전 사용자</th>
+            <th>이전 역할</th>
+            <th>변경일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="history : ${ownershipHistoryList}">
+            <td th:text="${history.user.username}">사용자이름</td>
+            <td th:text="${history.user.role}">역할</td>
+            <td th:text="${#temporals.format(history.changedAt, 'yyyy-MM-dd HH:mm')}">변경일시</td>
+        </tr>
+        </tbody>
+    </table>
+
+
     <a th:href="@{/admin/laptops}" class="btn btn-secondary mt-3">← 목록으로</a>
-    <a th:href="@{'/admin/laptops/' + ${laptop.deviceId} + '/ownership'}"
-       class="btn btn-outline-primary mt-3">소유 이력 보기</a>
+
 </div>
 </body>
 </html>

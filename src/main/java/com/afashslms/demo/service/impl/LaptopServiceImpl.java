@@ -1,12 +1,19 @@
 package com.afashslms.demo.service.impl;
 
 import com.afashslms.demo.domain.Laptop;
+import com.afashslms.demo.domain.OwnershipHistory;
+import com.afashslms.demo.domain.User;
 import com.afashslms.demo.dto.LaptopViewDto;
 import com.afashslms.demo.repository.LaptopRepository;
+import com.afashslms.demo.repository.OwnershipHistoryRepository;
 import com.afashslms.demo.service.LaptopService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -14,6 +21,12 @@ import java.util.stream.Collectors;
 public class LaptopServiceImpl implements LaptopService {
 
     private final LaptopRepository laptopRepository;
+    private final OwnershipHistoryRepository ownershipHistoryRepository;
+
+    @Override
+    public Optional<Laptop> findById(String deviceId) {
+        return laptopRepository.findById(deviceId);
+    }
 
     @Override
     public List<LaptopViewDto> getAllLaptopsForAdmin() {
@@ -21,5 +34,27 @@ public class LaptopServiceImpl implements LaptopService {
         return laptops.stream()
                 .map(LaptopViewDto::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void changeLaptopOwner(String deviceId, User newOwner) {
+        Laptop laptop = laptopRepository.findById(deviceId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 노트북 없음"));
+
+        // 기존 소유자 저장
+        User oldOwner = laptop.getUser();
+
+        // 이력 기록
+        if (oldOwner != null) {
+            OwnershipHistory history = new OwnershipHistory();
+            history.setLaptop(laptop);
+            history.setUser(oldOwner);
+            history.setChangedAt(LocalDateTime.now());
+            ownershipHistoryRepository.save(history);
+        }
+
+        // 실제 소유자 변경
+        laptop.setUser(newOwner);
+        laptopRepository.save(laptop);
     }
 }

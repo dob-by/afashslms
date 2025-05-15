@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::body})}">
+<head>
+    <meta charset="UTF-8">
+    <title>노트북 소유 이력</title>
+</head>
+<body>
+<div class="container mt-5">
+    <h2 th:text="'[' + ${laptop.deviceId} + '] 소유 이력'">소유 이력</h2>
+    <table class="table table-bordered mt-4">
+        <thead>
+        <tr>
+            <th>순번</th>
+            <th>이전 사용자</th>
+            <th>이전 역할</th>
+            <th>변경일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="history, stat : ${ownershipHistoryList}">
+            <td th:text="${stat.count}">1</td>
+            <td th:text="${history.user.username}">사용자이름</td>
+            <td th:text="${history.user.role}">역할</td>
+            <td th:text="${#temporals.format(history.changedAt, 'yyyy-MM-dd HH:mm')}">변경일시</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{/admin/laptops}" class="btn btn-secondary mt-3">← 목록으로</a>
+</div>
+</body>
+</html>

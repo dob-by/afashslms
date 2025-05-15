@@ -1,11 +1,11 @@
 package com.afashslms.demo.controller.admin;
 
-import com.afashslms.demo.domain.Laptop;
-import com.afashslms.demo.domain.LaptopStatus;
-import com.afashslms.demo.domain.Role;
+import com.afashslms.demo.domain.*;
 import com.afashslms.demo.dto.LaptopViewDto;
 import com.afashslms.demo.repository.LaptopRepository;
+import com.afashslms.demo.repository.OwnershipHistoryRepository;
 import com.afashslms.demo.service.LaptopService;
+import com.afashslms.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -20,15 +20,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminLaptopController {
 
+    private final UserService userService;
     private final LaptopService laptopService;
     private final LaptopRepository laptopRepository;
+    private final OwnershipHistoryRepository ownershipHistoryRepository;
 
     @GetMapping("/admin/laptops")
     public String showLaptopList(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
         List<LaptopViewDto> laptops = laptopService.getAllLaptopsForAdmin();
+        List<User> users = userService.getAllUsers();
         model.addAttribute("laptops", laptops);
 
         if (userDetails != null) {
+            model.addAttribute("users", users);
             model.addAttribute("username", userDetails.getUser().getUsername());
             model.addAttribute("userRole", userDetails.getRole().name());
         }
@@ -40,14 +44,23 @@ public class AdminLaptopController {
     public String laptopDetail(@PathVariable String deviceId,
                                @AuthenticationPrincipal CustomUserDetails loginUser,
                                Model model) throws AccessDeniedException {
+
         if (loginUser == null || loginUser.getRole() != Role.TOP_ADMIN) {
             throw new AccessDeniedException("접근 권한이 없습니다.");
         }
 
-        Laptop laptop = laptopRepository.findById(deviceId)
+        Laptop laptop = laptopService.findById(deviceId)
                 .orElseThrow(() -> new IllegalArgumentException("노트북을 찾을 수 없습니다."));
 
+        List<User> users = userService.getAllUsers();
+        List<OwnershipHistory> ownershipHistoryList = ownershipHistoryRepository.findByLaptop_DeviceId(deviceId);
+
         model.addAttribute("laptop", laptop);
+        model.addAttribute("users", users); // 소유자 선택용
+        model.addAttribute("ownershipHistoryList", ownershipHistoryList);
+        model.addAttribute("username", loginUser.getUser().getUsername());
+        model.addAttribute("userRole", loginUser.getRole().name());
+
         return "admin/laptop-detail";
     }
 
@@ -63,4 +76,35 @@ public class AdminLaptopController {
         // 기존 페이지로 리다이렉트 (ex: 사용자 상세 페이지)
         return "redirect:" + referer;
     }
+
+    @GetMapping("/admin/laptops/{deviceId}/ownership")
+    public String showOwnershipHistory(@PathVariable String deviceId,
+                                       @AuthenticationPrincipal CustomUserDetails loginUser,
+                                       Model model) throws AccessDeniedException {
+
+        if (loginUser == null || loginUser.getRole() != Role.TOP_ADMIN) {
+            throw new AccessDeniedException("접근 권한이 없습니다.");
+        }
+
+        // 노트북 정보 가져오기
+        Laptop laptop = laptopService.findById(deviceId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 노트북이 존재하지 않습니다."));
+
+        if (laptop == null) {
+            throw new IllegalArgumentException("해당 노트북이 존재하지 않습니다.");
+        }
+
+        // 소유 이력 가져오기
+        List<OwnershipHistory> ownershipHistoryList = ownershipHistoryRepository.findByLaptop_DeviceId(deviceId);
+
+        // 모델에 값 넣기
+        model.addAttribute("laptop", laptop);
+        model.addAttribute("ownershipHistoryList", ownershipHistoryList);
+        model.addAttribute("username", loginUser.getUser().getUsername());
+        model.addAttribute("userRole", loginUser.getRole().name());
+
+        return "admin/ownership-history"; // 📝 이 이름의 Thymeleaf 템플릿이 필요해
+    }
+
+
 }

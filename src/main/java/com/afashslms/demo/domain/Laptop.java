@@ -14,6 +14,7 @@ import org.hibernate.annotations.OnDeleteAction;
 public class Laptop {
 
     @Id
+    @Column(name = "device_id")
     private String deviceId; // 일련번호, 예: LPT-2024-001
 
     private String modelName;
