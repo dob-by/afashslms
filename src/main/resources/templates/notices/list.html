@@ -1,35 +1,66 @@
-<!--공지사항 목록 보기-->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::body})}">
 <head>
     <meta charset="UTF-8">
     <title>공지사항</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .no-underline {
+            text-decoration: none !important;
+        }
+
+        .text-ellipsis {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        tr.clickable-row {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        tr.clickable-row:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
 </head>
-<body class="container mt-5">
-<h2>공지사항</h2>
+<body>
+<div class="container mt-4">
+    <h2 class="text-center fw-bold mb-4">📢 공지사항</h2>
 
-<div th:if="${#authorization.expression('hasAnyRole(''MID_ADMIN'',''TOP_ADMIN'')')}">
-    <a class="btn btn-primary mb-3" th:href="@{/notices/new}">새 공지 작성</a>
+    <!-- 관리자만 새 공지 작성 버튼 -->
+    <div class="d-flex justify-content-end mb-3"
+         th:if="${#authorization.expression('hasAnyRole(''MID_ADMIN'',''TOP_ADMIN'')')}">
+        <a class="btn btn-primary" th:href="@{/notices/new}">+ 새 공지 작성</a>
+    </div>
+
+    <!-- 공지사항 테이블 -->
+    <div class="table-responsive shadow rounded">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light text-center">
+            <tr>
+                <th style="width: 60%;" class="text-center">제목</th>
+                <th class="text-center">작성자</th>
+                <th class="text-center">작성일</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="notice : ${notices}"
+                th:onclick="|location.href='/notices/${notice.id}'|"
+                class="clickable-row text-center">
+                <td class="text-ellipsis fw-semibold" th:text="${notice.title}">공지 제목</td>
+                <td th:text="${notice.author.username}">작성자</td>
+                <td th:text="${#dates.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</td>
+            </tr>
+            <tr th:if="${notices.size() == 0}">
+                <td colspan="3" class="text-center text-muted">등록된 공지사항이 없습니다.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
-
-<table class="table table-bordered">
-    <thead>
-    <tr>
-        <th>제목</th>
-        <th>작성자</th>
-        <th>작성일</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="notice : ${notices}">
-        <td>
-            <a th:href="@{'/notices/' + ${notice.id}}" th:text="${notice.title}">제목</a>
-        </td>
-        <td th:text="${notice.author.username}">작성자</td>
-        <td th:text="${#dates.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}">날짜</td>
-    </tr>
-    </tbody>
-</table>
 </body>
 </html>
