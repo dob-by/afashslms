@@ -5,6 +5,13 @@
     <meta charset="UTF-8">
     <title>노트북 상세정보</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* 오버레이된 리스트가 잘 보이게 */
+        #userList {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
 </head>
 <body>
 <div class="container mt-5">
@@ -21,7 +28,18 @@
         </tr>
     </table>
 
-    <!-- ✅ 소유 이력 테이블 추가 -->
+    <!-- 사용자 검색 + 소유자 변경 폼 -->
+    <form th:action="@{'/admin/laptops/' + ${laptop.deviceId} + '/change-owner'}" method="post" class="mb-5">
+        <div class="mb-3 position-relative">
+            <label for="userSearch" class="form-label">새 소유자 검색</label>
+            <input class="form-control" id="userSearch" placeholder="이름 또는 ID 입력" oninput="filterUsers()" autocomplete="off">
+            <div id="userList" class="list-group position-absolute w-100" style="z-index: 1000;"></div>
+            <input type="hidden" id="newOwnerId" name="newOwnerId" required>
+        </div>
+        <button type="submit" class="btn btn-primary">소유자 변경</button>
+    </form>
+
+    <!-- 소유 이력 테이블 -->
     <h4 class="mt-5">소유 이력</h4>
     <table class="table table-bordered">
         <thead>
@@ -40,9 +58,44 @@
         </tbody>
     </table>
 
-
     <a th:href="@{/admin/laptops}" class="btn btn-secondary mt-3">← 목록으로</a>
-
 </div>
+
+<!-- 사용자 자동완성 JS -->
+<script th:inline="javascript">
+    const searchInput = document.getElementById('userSearch');
+    const resultBox = document.getElementById('userList');
+    const hiddenInput = document.getElementById('newOwnerId');
+
+    async function filterUsers() {
+        const keyword = searchInput.value.trim();
+        if (!keyword) {
+            resultBox.innerHTML = '';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/users/search?query=${encodeURIComponent(keyword)}`);
+            const users = await response.json();
+
+            resultBox.innerHTML = '';
+            users.slice(0, 5).forEach(user => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'list-group-item list-group-item-action';
+                btn.textContent = `${user.username} (${user.userId})`;
+                btn.onclick = () => {
+                    searchInput.value = `${user.username} (${user.userId})`;
+                    hiddenInput.value = user.userId;
+                    resultBox.innerHTML = '';
+                };
+                resultBox.appendChild(btn);
+            });
+        } catch (err) {
+            console.error('사용자 검색 실패:', err);
+            resultBox.innerHTML = '<div class="text-danger p-2">검색 실패</div>';
+        }
+    }
+</script>
 </body>
 </html>

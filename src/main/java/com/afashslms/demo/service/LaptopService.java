@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface LaptopService {
     List<LaptopViewDto> getAllLaptopsForAdmin();
     Optional<Laptop> findById(String deviceId);
+    void changeLaptopOwner(String deviceId, String newOwnerId);
 }

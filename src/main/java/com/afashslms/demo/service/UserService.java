@@ -11,4 +11,7 @@ public interface UserService {
     void changeRole(String userId, String newRole);
     User findByEmail(String email);
     User findByUserId(String userId);
+    List<User> searchByUsernameOrUserId(String keyword);
+
 }
+

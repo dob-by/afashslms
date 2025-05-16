@@ -43,4 +43,9 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
     }
+
+    @Override
+    public List<User> searchByUsernameOrUserId(String keyword) {
+        return userRepository.findByUsernameContainingIgnoreCaseOrUserIdContainingIgnoreCase(keyword, keyword);
+    }
 }

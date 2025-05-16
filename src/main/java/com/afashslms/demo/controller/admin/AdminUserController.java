@@ -4,6 +4,7 @@ import com.afashslms.demo.domain.Laptop;
 import com.afashslms.demo.domain.LaptopStatus;
 import com.afashslms.demo.domain.Role;
 import com.afashslms.demo.domain.User;
+import com.afashslms.demo.repository.UserRepository;
 import com.afashslms.demo.security.CustomUserDetails;
 import com.afashslms.demo.service.UserService;
 import com.afashslms.demo.repository.LaptopRepository;
@@ -12,14 +13,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor

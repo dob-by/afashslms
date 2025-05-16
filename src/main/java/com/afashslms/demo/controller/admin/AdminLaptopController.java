@@ -6,6 +6,8 @@ import com.afashslms.demo.repository.LaptopRepository;
 import com.afashslms.demo.repository.OwnershipHistoryRepository;
 import com.afashslms.demo.service.LaptopService;
 import com.afashslms.demo.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -44,19 +46,27 @@ public class AdminLaptopController {
     public String laptopDetail(@PathVariable String deviceId,
                                @AuthenticationPrincipal CustomUserDetails loginUser,
                                Model model) throws AccessDeniedException {
-
         if (loginUser == null || loginUser.getRole() != Role.TOP_ADMIN) {
             throw new AccessDeniedException("접근 권한이 없습니다.");
         }
 
         Laptop laptop = laptopService.findById(deviceId)
                 .orElseThrow(() -> new IllegalArgumentException("노트북을 찾을 수 없습니다."));
-
         List<User> users = userService.getAllUsers();
         List<OwnershipHistory> ownershipHistoryList = ownershipHistoryRepository.findByLaptop_DeviceId(deviceId);
 
+        // 사용자 정보 JSON으로 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        String usersJson = "";
+        try {
+            usersJson = objectMapper.writeValueAsString(users);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace(); // or log it
+        }
+
         model.addAttribute("laptop", laptop);
-        model.addAttribute("users", users); // 소유자 선택용
+        model.addAttribute("users", users); // 사용자 리스트 (form용)
+        model.addAttribute("usersJson", usersJson); // 사용자 JSON (JS 검색용)
         model.addAttribute("ownershipHistoryList", ownershipHistoryList);
         model.addAttribute("username", loginUser.getUser().getUsername());
         model.addAttribute("userRole", loginUser.getRole().name());
@@ -103,8 +113,21 @@ public class AdminLaptopController {
         model.addAttribute("username", loginUser.getUser().getUsername());
         model.addAttribute("userRole", loginUser.getRole().name());
 
-        return "admin/ownership-history"; // 📝 이 이름의 Thymeleaf 템플릿이 필요해
+        return "admin/ownership-history";
     }
 
+    @PostMapping("/admin/laptops/{deviceId}/change-owner")
+    public String changeOwner(@PathVariable String deviceId,
+                              @RequestParam String newOwnerId,
+                              @AuthenticationPrincipal CustomUserDetails loginUser) throws AccessDeniedException {
+
+        if (loginUser == null || loginUser.getRole() != Role.TOP_ADMIN) {
+            throw new AccessDeniedException("권한이 없습니다.");
+        }
+
+        laptopService.changeLaptopOwner(deviceId, newOwnerId); // 서비스 호출
+
+        return "redirect:/admin/laptops/" + deviceId;
+    }
 
 }
