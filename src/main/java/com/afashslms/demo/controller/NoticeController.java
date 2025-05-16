@@ -12,8 +12,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.web.csrf.CsrfToken;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -38,9 +44,35 @@ public class NoticeController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('MID_ADMIN', 'TOP_ADMIN')")
-    public String createNotice(@ModelAttribute Notice notice, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public String createNotice(@ModelAttribute Notice notice,
+                               @AuthenticationPrincipal CustomUserDetails userDetails,
+                               @RequestParam("file") MultipartFile file) throws IOException {
+
         notice.setAuthor(userDetails.getUser());
         notice.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+
+        if (!file.isEmpty()) {
+            String originalFileName = file.getOriginalFilename();
+            String uuid = UUID.randomUUID().toString();
+            String storedFileName = uuid + "_" + originalFileName;
+
+            // 실제 저장 경로 (루트 기준)
+            String uploadDir = System.getProperty("user.dir") + "/upload-dir/notices";
+            Path uploadPath = Paths.get(uploadDir);
+
+            // 경로 없으면 생성
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            // 파일 저장
+            file.transferTo(uploadPath.resolve(storedFileName).toFile());
+
+            // 엔티티에 파일 정보 저장
+            notice.setOriginalFileName(originalFileName);
+            notice.setStoredFileName(storedFileName);
+        }
+
         noticeService.saveNotice(notice);
         return "redirect:/notices";
     }

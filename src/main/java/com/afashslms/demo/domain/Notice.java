@@ -22,4 +22,8 @@ public class Notice {
 
     @ManyToOne
     private User author;  // 글 작성자 (MID_ADMIN or TOP_ADMIN)
+
+    // 파일 업로드 관련 필드
+    private String originalFileName;  // 사용자 업로드한 이름
+    private String storedFileName;    // 서버에 저장된 실제 파일명
 }

@@ -21,7 +21,15 @@
         <div class="mb-4" style="white-space: pre-wrap;" th:text="${notice.content}">
             공지 내용
         </div>
-
+        <!-- 첨부파일 다운로드 -->
+        <div class="mb-4" th:if="${notice.storedFileName != null}">
+            <strong>📎 첨부파일:</strong>
+            <a th:href="@{|/uploads/notices/${notice.storedFileName}|}"
+               th:download="${notice.originalFileName}"
+               class="ms-1">
+                <span th:text="${notice.originalFileName}">첨부파일명</span>
+            </a>
+        </div>
         <!-- 관리자 전용 수정/삭제 버튼 -->
         <div class="mb-4" th:if="${#authorization.expression('hasAnyRole(''MID_ADMIN'',''TOP_ADMIN'')')}">
             <a th:href="@{|/notices/${notice.id}/edit|}" class="btn btn-outline-warning me-2">✏️ 수정</a>
