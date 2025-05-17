@@ -2,6 +2,7 @@ package com.afashslms.demo.controller;
 
 import com.afashslms.demo.domain.Post;
 import com.afashslms.demo.security.CustomOAuth2User;
+import com.afashslms.demo.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import com.afashslms.demo.service.CommentService;
 import com.afashslms.demo.service.PostService;
@@ -75,24 +76,48 @@ public class PostController {
     @GetMapping("/{postId}")
     public String viewPost(@PathVariable String postId,
                            Model model,
-                           HttpServletRequest request,
-                           @AuthenticationPrincipal CustomOAuth2User principal) {
+                           HttpServletRequest request) {
 
         postService.incrementViewCount(postId);
         Post post = postService.getPost(postId);
         model.addAttribute("post", post);
         model.addAttribute("comments", commentService.getCommentsByPostId(postId));
 
-        // 로그인 사용자 정보 추가
-        if (principal != null) {
-            model.addAttribute("currentUserEmail", principal.getEmail());
-            model.addAttribute("userRole", principal.getRole().name()); // 'USER', 'ADMIN' 등
+        // 현재 로그인한 사용자 정보를 가져오기 위한 인증 객체 획득
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 인증된 사용자의 경우
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object principal = authentication.getPrincipal();
+
+            if (principal instanceof CustomOAuth2User user) {
+                model.addAttribute("currentUserEmail", user.getEmail());
+                model.addAttribute("userRole", user.getRole().name());
+
+            } else if (principal instanceof CustomUserDetails userDetails) {
+                model.addAttribute("currentUserEmail", userDetails.getEmail());
+                model.addAttribute("userRole", userDetails.getRole().name());
+
+            } else if (principal instanceof org.springframework.security.core.userdetails.User user) {
+                String email = user.getUsername();
+                String role = postService.findRoleByEmail(email);
+                model.addAttribute("currentUserEmail", email);
+                model.addAttribute("userRole", role);
+
+            } else if (principal instanceof String email) {
+                model.addAttribute("currentUserEmail", email);
+                model.addAttribute("userRole", "USER");
+
+            } else {
+                model.addAttribute("currentUserEmail", null);
+                model.addAttribute("userRole", "ANONYMOUS");
+            }
         } else {
             model.addAttribute("currentUserEmail", null);
             model.addAttribute("userRole", "ANONYMOUS");
         }
 
-        // CSRF 토큰도 그대로 유지
+        // CSRF
         CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
         model.addAttribute("_csrf", csrfToken);
 

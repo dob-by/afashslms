@@ -19,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -49,10 +50,12 @@ public class AdminUserController {
             throw new AccessDeniedException("로그인이 필요합니다.");
         }
 
-        // 이메일로 사용자 조회
-        User currentUser = userService.findByEmail(loginUser.getEmail());
+        // Optional에서 꺼낸 값을 user에 저장
+        User user = userService.findByEmail(loginUser.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
 
-        if (currentUser.getRole() != Role.TOP_ADMIN) {
+        // user.getRole()로 검사
+        if (user.getRole() != Role.TOP_ADMIN) {
             throw new AccessDeniedException("권한이 없습니다.");
         }
 

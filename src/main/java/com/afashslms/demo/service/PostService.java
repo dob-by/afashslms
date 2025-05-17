@@ -97,4 +97,10 @@ public class PostService {
     public void deletePost(String postId) {
         postRepository.deleteById(postId);
     }
+
+    public String findRoleByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(user -> user.getRole().name())
+                .orElse("USER");
+    }
 }
