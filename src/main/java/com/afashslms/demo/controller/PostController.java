@@ -83,7 +83,7 @@ public class PostController {
         model.addAttribute("post", post);
         model.addAttribute("comments", commentService.getCommentsByPostId(postId));
 
-        // ✅ 로그인 사용자 정보 추가
+        // 로그인 사용자 정보 추가
         if (principal != null) {
             model.addAttribute("currentUserEmail", principal.getEmail());
             model.addAttribute("userRole", principal.getRole().name()); // 'USER', 'ADMIN' 등
@@ -99,16 +99,13 @@ public class PostController {
         return "post/view";
     }
 
-    // 글쓰기 폼
     @GetMapping("/new")
-    public String showCreateForm() {
-        return "post/new"; // templates/post/new.html
-    }
-
-    @GetMapping("/post/new")
-    public String showPostForm(Model model) {
-        model.addAttribute("post", new Post());
-        return "post/form"; // templates/post/form.html
+    public String showPostForm(Model model, @AuthenticationPrincipal CustomOAuth2User principal) {
+        if (principal != null) {
+            model.addAttribute("userRole", principal.getRole().name());
+            model.addAttribute("username", principal.getName());
+        }
+        return "post/new";
     }
 
     // 글 등록 처리
