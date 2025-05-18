@@ -14,27 +14,41 @@
         <a href="/posts/new" class="btn btn-primary">새 글 작성</a>
     </div>
 
-    <table class="table table-hover text-center align-middle">
-        <thead class="table-light">
-        <tr>
-            <th>제목</th>
-            <th>작성자</th>
-            <th>작성일</th>
-            <th>조회수</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="post : ${posts}">
-            <td class="text-start">
-                <a th:href="@{/posts/{id}(id=${post.postId})}" th:text="${post.title}">제목</a>
-            </td>
-            <td th:text="${post.user != null ? post.user.username : '알 수 없음'}">작성자</td>
-            <td th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">작성일</td>
-            <td th:text="${post.viewCount}">조회수</td>
-        </tr>
-        </tbody>
-    </table>
+        <table class="table table-hover text-center align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성일</th>
+                <th>조회수</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="post : ${posts}"
+                th:attr="data-url=@{/posts/{id}(id=${post.postId})}"
+                onclick="handleRowClick(event)"
+                style="cursor: pointer;">
+                <td class="text-start" onclick="handleRowClick(event)">
+                    <a th:href="@{/posts/{id}(id=${post.postId})}"
+                       onclick="event.stopPropagation()"
+                       th:text="${post.title}">제목</a>
+                </td>
+                <td onclick="handleRowClick(event)" th:text="${post.user != null ? post.user.username : '알 수 없음'}">작성자</td>
+                <td onclick="handleRowClick(event)" th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">작성일</td>
+                <td onclick="handleRowClick(event)" th:text="${post.viewCount}">조회수</td>
+            </tr>
+            </tbody>
+        </table>
 </div>
-
+<script>
+    function handleRowClick(event) {
+        const isInsideLink = event.target.closest('a');
+        if (!isInsideLink) {
+            const tr = event.currentTarget.closest('tr');
+            const url = tr.getAttribute('data-url');
+            if (url) window.location.href = url;
+        }
+    }
+</script>
 </body>
 </html>

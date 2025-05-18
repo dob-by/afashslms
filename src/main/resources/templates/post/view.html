@@ -20,17 +20,30 @@
         <p th:text="${post.content}" class="lead">내용</p>
 
         <div class="d-flex gap-2 mt-3">
-            <a class="btn btn-outline-primary btn-sm" th:href="@{/posts/{id}/edit(id=${post.postId})}">✏ 수정</a>
-            <form th:action="@{/posts/{id}/delete(id=${post.postId})}" method="post" style="display:inline;">
-                <button class="btn btn-outline-danger btn-sm" type="submit" onclick="return confirm('정말 삭제하시겠습니까?')">🗑 삭제</button>
+            <a class="btn btn-outline-primary btn-sm"
+               th:if="${currentUserEmail != null and post.user.email == currentUserEmail and userRole != 'TOP_ADMIN'}"
+               th:href="@{/posts/{id}/edit(id=${post.postId})}">✏ 수정</a>
+
+            <form th:if="${post.user.email == currentUserEmail and userRole != 'TOP_ADMIN'}"
+                  th:action="@{/posts/{id}/delete(id=${post.postId})}" method="post" style="display:inline;">
+                <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
+                <button class="btn btn-outline-danger btn-sm" type="submit"
+                        onclick="return confirm('정말 삭제하시겠습니까?')">🗑 삭제</button>
             </form>
+
+            <form th:if="${userRole == 'TOP_ADMIN'}"
+                  th:action="@{/posts/{id}/delete(id=${post.postId})}" method="post" style="display:inline;">
+                <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
+                <button class="btn btn-outline-danger btn-sm" type="submit"
+                        onclick="return confirm('정말 삭제하시겠습니까?')">관리자 삭제</button>
+            </form>
+
             <a href="/posts" class="btn btn-outline-secondary btn-sm ms-auto">← 목록으로</a>
         </div>
     </div>
 
     <hr>
 
-    <!-- 💬 댓글 영역 -->
     <div class="mb-4">
         <h4>댓글</h4>
 
@@ -39,38 +52,48 @@
         </div>
 
         <ul class="list-group mb-3" th:each="comment : ${comments}">
-            <li class="list-group-item">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <strong th:text="${comment.user.username}">작성자</strong>
-                        <span class="text-muted small ms-2" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</span>
-                    </div>
+            <li class="list-group-item" th:id="'comment-item-' + ${comment.id}">
+                <div>
+                    <strong th:text="${comment.user.username}">작성자</strong>
+                    <span class="text-muted small ms-2"
+                          th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</span>
                 </div>
-                <div class="mt-2" th:text="${comment.content}">댓글 내용</div>
 
-                <div class="mt-2 d-flex gap-2">
-                    <!-- 본인 댓글일 경우 -->
-                    <div th:if="${comment.user.email == currentUserEmail}">
-                        <a class="btn btn-sm btn-outline-secondary" th:href="@{/comments/{id}/edit(id=${comment.id})}">✏ 수정</a>
-                        <form th:action="@{/comments/{id}/delete(id=${comment.id})}" method="post" class="d-inline">
-                            <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
-                            <button class="btn btn-sm btn-outline-danger" type="submit">🗑 삭제</button>
-                        </form>
-                    </div>
+                <div th:id="'comment-content-' + ${comment.id}" class="mt-2" th:text="${comment.content}">댓글 내용</div>
 
-                    <!-- 관리자 댓글 삭제 -->
-                    <div th:if="${userRole == 'MID_ADMIN' or userRole == 'TOP_ADMIN'}">
-                        <form th:action="@{/comments/{id}/delete(id=${comment.id})}" method="post">
-                            <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
-                            <button class="btn btn-sm btn-outline-danger" type="submit">관리자 삭제</button>
-                        </form>
-                    </div>
+                <div th:id="'comment-edit-form-' + ${comment.id}" class="mt-2 d-none">
+                    <textarea th:id="'comment-textarea-' + ${comment.id}" class="form-control" rows="3"
+                              th:text="${comment.content}"></textarea>
+                </div>
+
+                <div class="d-flex gap-2 mt-2" th:id="'comment-buttons-default-' + ${comment.id}">
+                    <button class="btn btn-sm btn-outline-primary"
+                            th:if="${comment.user.email == currentUserEmail}"
+                            th:onclick="'toggleCommentEdit(' + ${comment.id} + ')'">✏ 수정</button>
+
+                    <form th:if="${comment.user.email == currentUserEmail and userRole != 'TOP_ADMIN'}"
+                          th:action="@{'/comments/' + ${comment.id} + '/delete'}" method="post">
+                        <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
+                        <button class="btn btn-sm btn-outline-danger" type="submit">🗑 삭제</button>
+                    </form>
+
+                    <form th:if="${userRole == 'TOP_ADMIN'}"
+                          th:action="@{'/comments/' + ${comment.id} + '/delete'}" method="post">
+                        <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
+                        <button class="btn btn-sm btn-outline-danger" type="submit">🗑 삭제</button>
+                    </form>
+                </div>
+
+                <div class="gap-2 mt-2 d-none" th:id="'comment-buttons-edit-' + ${comment.id}">
+                    <button class="btn btn-sm btn-primary" type="button"
+                            th:onclick="'submitCommentEdit(' + ${comment.id} + ')'">💾 저장</button>
+                    <button class="btn btn-sm btn-secondary" type="button"
+                            th:onclick="'cancelCommentEdit(' + ${comment.id} + ')'">❌ 취소</button>
                 </div>
             </li>
         </ul>
     </div>
 
-    <!-- ✍ 댓글 작성 -->
     <div>
         <h5>댓글 작성</h5>
         <form th:action="@{/posts/{postId}/comments(postId=${post.postId})}" method="post">
@@ -84,6 +107,58 @@
         </form>
     </div>
 </div>
+<script>
+    let currentEditingId = null;
 
+    function toggleCommentEdit(commentId) {
+        if (currentEditingId !== null) {
+            cancelCommentEdit(currentEditingId);
+        }
+        currentEditingId = commentId;
+
+        document.getElementById(`comment-content-${commentId}`).classList.add('d-none');
+        document.getElementById(`comment-edit-form-${commentId}`).classList.remove('d-none');
+
+        document.getElementById(`comment-buttons-default-${commentId}`).classList.add('d-none');
+        document.getElementById(`comment-buttons-edit-${commentId}`).classList.remove('d-none');
+        document.getElementById(`comment-buttons-edit-${commentId}`).classList.add('d-flex');
+    }
+
+    function cancelCommentEdit(commentId) {
+        document.getElementById(`comment-content-${commentId}`).classList.remove('d-none');
+        document.getElementById(`comment-edit-form-${commentId}`).classList.add('d-none');
+
+        document.getElementById(`comment-buttons-default-${commentId}`).classList.remove('d-none');
+        document.getElementById(`comment-buttons-edit-${commentId}`).classList.add('d-none');
+        document.getElementById(`comment-buttons-edit-${commentId}`).classList.remove('d-flex');
+
+        currentEditingId = null;
+    }
+
+    function submitCommentEdit(commentId) {
+        const newContent = document.getElementById(`comment-textarea-${commentId}`).value;
+        const csrf = document.querySelector('input[name="_csrf"]')?.value;
+
+        fetch(`/comments/${commentId}/edit`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrf
+            },
+            body: JSON.stringify({ content: newContent })
+        })
+            .then(response => {
+                if (!response.ok) throw new Error("수정 실패");
+                return response.text();
+            })
+            .then(updated => {
+                document.getElementById(`comment-content-${commentId}`).innerText = updated;
+                cancelCommentEdit(commentId);
+            })
+            .catch(error => {
+                alert("⚠ " + error.message);
+            });
+    }
+</script>
 </body>
 </html>

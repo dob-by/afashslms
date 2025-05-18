@@ -146,8 +146,15 @@ public class PostController {
 
     // 글 수정 폼
     @GetMapping("/{postId}/edit")
-    public String showEditForm(@PathVariable String postId, Model model) {
+    public String showEditForm(@PathVariable String postId, Model model, Principal principal) {
         Post post = postService.getPost(postId);
+        String email = extractEmailFromPrincipal(principal);  // 현재 로그인한 사용자 이메일
+
+        // 게시글 작성자 이메일과 로그인한 사용자 이메일 비교
+        if (!post.getUser().getEmail().equals(email)) {
+            return "redirect:/access-denied";
+        }
+
         model.addAttribute("post", post);
         return "post/edit";  // templates/post/edit.html
     }
@@ -156,7 +163,16 @@ public class PostController {
     @PostMapping("/{postId}/edit")
     public String updatePost(@PathVariable String postId,
                              @RequestParam String title,
-                             @RequestParam String content) {
+                             @RequestParam String content,
+                             Principal principal) {
+
+        Post post = postService.getPost(postId);
+        String email = extractEmailFromPrincipal(principal);
+
+        if (!post.getUser().getEmail().equals(email)) {
+            return "redirect:/access-denied";
+        }
+
         postService.updatePost(postId, title, content);
         return "redirect:/posts/" + postId;
     }
@@ -178,5 +194,6 @@ public class PostController {
         commentService.addComment(postId, content, email);
         return "redirect:/posts/" + postId;
     }
+
 
 }

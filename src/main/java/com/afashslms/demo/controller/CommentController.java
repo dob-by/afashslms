@@ -54,16 +54,21 @@ public class CommentController {
     }
 
     @PostMapping("/{id}/edit")
+    @ResponseBody
     public String editComment(@PathVariable Long id,
-                              @RequestParam String content,
+                              @RequestBody Map<String, String> body,
                               Principal principal) {
 
         String email = extractEmailFromPrincipal(principal);
+        String content = body.get("content");
+
         commentService.updateComment(id, content, email);
 
-        String postId = commentService.getCommentById(id).getPost().getPostId();
-        return "redirect:/posts/" + postId;
+        return content; // 인라인 수정에서는 새 content를 반환
     }
+
+
+
 
     @PostMapping("/{id}/delete")
     public String deleteComment(@PathVariable Long id, Principal principal) {
