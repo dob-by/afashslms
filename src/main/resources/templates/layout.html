@@ -97,6 +97,7 @@
                 <li class="nav-item" th:if="${userRole == 'STUDENT'}"><a class="nav-link" th:href="@{/repairs}">수리요청</a></li>
                 <li class="nav-item" th:if="${userRole == 'MID_ADMIN' or userRole == 'TOP_ADMIN'}"><a class="nav-link" th:href="@{/admin/laptops}">노트북 관리</a></li>
                 <li class="nav-item" th:if="${userRole == 'MID_ADMIN' or userRole == 'TOP_ADMIN'}"><a class="nav-link" th:href="@{/admin/users}">사용자 관리</a></li>
+                <li class="nav-item" th:if="${userRole == 'MID_ADMIN' or userRole == 'TOP_ADMIN'}"><a class="nav-link" th:href="@{/admin/repairs}">수리요청 내역</a></li>
             </ul>
         </div>
     </div>

@@ -1,6 +1,7 @@
 package com.afashslms.demo.service;
 
 import com.afashslms.demo.domain.RepairRequest;
+import com.afashslms.demo.domain.RepairStatus;
 import com.afashslms.demo.domain.User;
 import com.afashslms.demo.repository.RepairRequestRepository;
 import com.afashslms.demo.repository.UserRepository;
@@ -60,5 +61,15 @@ public class RepairService {
 
     public List<RepairRequest> findAllByStudentEmail(String email) {
         return repairRequestRepository.findAllByUser_EmailOrderByCreatedAtDesc(email);
+    }
+
+    public List<RepairRequest> findAll() {
+        return repairRequestRepository.findAllByOrderByCreatedAtDesc();
+    }
+
+    public void updateRepairStatus(Long id, RepairStatus status) {
+        RepairRequest repair = getRepairById(id);
+        repair.setStatus(status);
+        repairRequestRepository.save(repair);
     }
 }

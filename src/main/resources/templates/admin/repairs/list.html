@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::body})}">
+<head>
+    <title>수리요청 관리</title>
+</head>
+<body>
+<div class="container my-4">
+    <h4>🛠 전체 수리요청 내역</h4>
+    <table class="table table-bordered table-hover text-center align-middle">
+        <thead class="table-light">
+        <tr>
+            <th>요청일</th>
+            <th>학생</th>
+            <th>문제 유형</th>
+            <th>상세 유형</th>
+            <th>내용</th>
+            <th>상태</th>
+            <th>상세보기</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="repair : ${repairs}">
+            <td th:text="${#temporals.format(repair.createdAt, 'yyyy-MM-dd')}">날짜</td>
+            <td th:text="${repair.user.username}">홍길동</td>
+            <td th:text="${repair.category}">HW</td>
+            <td th:text="${repair.detailType}">부팅불가</td>
+            <td th:text="${repair.description}">내용</td>
+            <td th:text="${repair.status.displayName}">처리중</td>
+            <td>
+                <a th:href="@{|/admin/repairs/${repair.id}|}" class="btn btn-sm btn-outline-primary">🔍 보기</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
