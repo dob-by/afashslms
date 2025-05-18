@@ -16,6 +16,7 @@ public class RepairService {
     private final RepairRequestRepository repairRequestRepository;
     private final UserRepository userRepository;
 
+
     public List<RepairRequest> getRepairsByUserEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
@@ -55,5 +56,9 @@ public class RepairService {
         }
 
         repairRequestRepository.deleteById(id);
+    }
+
+    public List<RepairRequest> findAllByStudentEmail(String email) {
+        return repairRequestRepository.findAllByUser_EmailOrderByCreatedAtDesc(email);
     }
 }

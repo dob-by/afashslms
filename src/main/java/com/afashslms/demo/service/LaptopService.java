@@ -9,4 +9,5 @@ public interface LaptopService {
     List<LaptopViewDto> getAllLaptopsForAdmin();
     Optional<Laptop> findById(String deviceId);
     void changeLaptopOwner(String deviceId, String newOwnerId);
+    Laptop findCurrentLaptopByEmail(String email);
 }

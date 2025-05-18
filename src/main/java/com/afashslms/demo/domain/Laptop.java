@@ -5,6 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -34,4 +36,7 @@ public class Laptop {
     private User user; // 노트북 소유자
 
     // 기타 생성일, 수정일 등 추가 가능
+
+    @Column(name = "issued_at")
+    private LocalDateTime issuedAt;
 }

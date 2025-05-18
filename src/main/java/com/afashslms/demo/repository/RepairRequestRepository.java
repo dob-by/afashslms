@@ -11,4 +11,5 @@ import java.util.List;
 
 public interface RepairRequestRepository extends JpaRepository<RepairRequest, Long> {
     List<RepairRequest> findByUserOrderByCreatedAtDesc(User user);
+    List<RepairRequest> findAllByUser_EmailOrderByCreatedAtDesc(String email);
 }

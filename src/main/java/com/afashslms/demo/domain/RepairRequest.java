@@ -30,9 +30,6 @@ public class RepairRequest {
     private String cmosPassword;
     private String windowsPassword;
 
-//    @Column(name = "student_email")
-//    private String studentEmail;
-
     private String manager; // 담당자
     private String status; // 상태: 접수중, 완료 등
 

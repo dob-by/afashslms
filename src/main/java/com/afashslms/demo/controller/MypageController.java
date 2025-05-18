@@ -1,20 +1,25 @@
 package com.afashslms.demo.controller;
 
+import com.afashslms.demo.domain.Laptop;
+import com.afashslms.demo.domain.RepairRequest;
 import com.afashslms.demo.security.CustomOAuth2User;
 import com.afashslms.demo.security.CustomUserDetails;
+import com.afashslms.demo.service.LaptopService;
+import com.afashslms.demo.service.RepairService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class MypageController {
 
-    // 나중에 구현 예정
-    // private final LaptopService laptopService;
-    // private final RepairService repairService;
+    private final LaptopService laptopService;
+    private final RepairService repairService;
 
     @GetMapping("/mypage")
     public String mypage(@AuthenticationPrincipal Object principal, Model model) {
@@ -38,16 +43,20 @@ public class MypageController {
         model.addAttribute("email", email);
         model.addAttribute("userRole", role);
 
-        /*
-        // 나중에 STUDENT일 경우 노트북 정보와 수리내역 표시
         if ("STUDENT".equals(role)) {
-            Laptop laptop = laptopService.findByEmail(email);
-            List<Repair> repairs = repairService.findAllByEmail(email);
+            Laptop laptop = laptopService.findCurrentLaptopByEmail(email);
+            List<RepairRequest> repairs = repairService.findAllByStudentEmail(email);
+
+            System.out.println("🔍 로그인 유저 이메일: " + email);
+            System.out.println("🔍 불러온 수리 요청 개수: " + repairs.size());
+            repairs.forEach(r -> System.out.println("➡️ " + r.getCreatedAt() + " / " + r.getDetailType()));
+
             model.addAttribute("laptop", laptop);
             model.addAttribute("repairs", repairs);
         }
-        */
 
         return "mypage/mypage";
     }
+
+
 }

@@ -80,4 +80,10 @@ public class LaptopServiceImpl implements LaptopService {
         laptop.setUser(newOwner);
         laptopRepository.save(laptop);
     }
+
+    @Override
+    public Laptop findCurrentLaptopByEmail(String email) {
+        return laptopRepository.findTopByUser_EmailOrderByIssuedAtDesc(email)
+                .orElse(null);
+    }
 }
