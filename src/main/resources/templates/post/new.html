@@ -9,25 +9,35 @@
 </head>
 
 <body>
-<div class="container mt-5">
-    <h2 class="mb-4">✍️ 새 게시글 작성</h2>
+<div class="max-w-3xl mx-auto px-4 py-4">
+    <div class="card shadow-sm p-4">
+        <h2 class="fw-bold mb-4 text-dark">새 게시글 작성</h2>
 
-    <form th:action="@{/posts}" method="post">
-        <div class="mb-3">
-            <label for="title" class="form-label">제목</label>
-            <input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력하세요" required>
-        </div>
+        <!-- enctype 필수! -->
+        <form th:action="@{/posts}" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="title" class="form-label fw-medium">제목</label>
+                <input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력하세요" required>
+            </div>
 
-        <div class="mb-3">
-            <label for="content" class="form-label">내용</label>
-            <textarea class="form-control" id="content" name="content" rows="10" placeholder="내용을 입력하세요" required></textarea>
-        </div>
+            <div class="mb-3">
+                <label for="content" class="form-label fw-medium">내용</label>
+                <textarea class="form-control" id="content" name="content" rows="10" placeholder="내용을 입력하세요" required></textarea>
+            </div>
 
-        <div class="d-flex justify-content-between">
-            <a href="/posts" class="btn btn-secondary">← 목록으로</a>
-            <button type="submit" class="btn btn-primary">등록</button>
-        </div>
-    </form>
+            <!-- 📎 파일 업로드 -->
+            <div class="mb-3">
+                <label for="files" class="form-label fw-medium">첨부파일</label>
+                <input class="form-control" type="file" id="files" name="files" multiple>
+                <small class="text-muted">여러 파일을 선택할 수 있어요 (사진, 문서 등)</small>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a href="/posts" class="btn btn-outline-secondary">← 목록으로</a>
+                <button type="submit" class="btn btn-green">등록</button>
+            </div>
+        </form>
+    </div>
 </div>
 </body>
 </html>

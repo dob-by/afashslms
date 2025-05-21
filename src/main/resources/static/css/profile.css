@@ -1,0 +1,85 @@
+.profile-card {
+    background: yellow !important;
+    padding: 3rem !important;
+    border: 3px solid red !important;
+}
+
+.profile-card {
+    background: linear-gradient(to right, #d9f99d, #bbf7d0) !important;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+body.dark-mode .profile-card {
+    background: linear-gradient(to right, #1e293b, #334155);
+    color: #eaeaea;
+}
+
+.profile-icon-box {
+    width: 80px;
+    height: 80px;
+    background-color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode .profile-icon-box {
+    background-color: #1f2937;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+}
+
+.profile-info h5 {
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.profile-info p {
+    margin-bottom: 0.3rem;
+    font-size: 0.95rem;
+}
+
+.section-title {
+    font-weight: bold;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.card-custom {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+body.dark-mode .card-custom {
+    background-color: #1e293b;
+    color: #e2e8f0;
+}
+
+.table-custom thead {
+    background-color: #f1f5f9;
+}
+
+body.dark-mode .table-custom thead {
+    background-color: #334155;
+}
+
+.admin-alert {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+body.dark-mode .admin-alert {
+    background-color: #2c2f33;
+    color: #eaeaea;
+}

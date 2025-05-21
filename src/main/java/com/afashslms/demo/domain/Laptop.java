@@ -2,6 +2,7 @@ package com.afashslms.demo.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -32,6 +33,7 @@ public class Laptop {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user_id"), nullable = true)
+    @JsonIgnore
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user; // 노트북 소유자
 

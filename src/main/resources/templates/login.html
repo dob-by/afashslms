@@ -1,25 +1,120 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>로그인</title>
     <meta charset="UTF-8" />
+    <title>로그인 | WingIT</title>
     <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+
+    <!-- Bootstrap + Pretendard + Poppins -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #e8f5e9;
+            font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+        }
+
+        .login-card {
+            background-color: white;
+            border-radius: 25px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #2e7d32;
+        }
+
+        .form-control {
+            border-radius: 30px;
+            height: 48px;
+        }
+
+        .btn-common {
+            display: flex;
+            align-items: center; /* 세로 중앙 정렬 */
+            justify-content: center; /* 가로 중앙 정렬 */
+            height: 48px;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 30px;
+            gap: 8px; /* 아이콘과 텍스트 간격 */
+        }
+
+        .btn-green {
+            background-color: #43a047;
+            color: white;
+            border: none;
+        }
+
+        .btn-green:hover {
+            background-color: #388e3c;
+        }
+
+        .btn-outline-secondary,
+        .btn-outline-dark,
+        .btn-warning {
+            border-radius: 30px;
+            height: 48px;
+            font-weight: 500;
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .brand-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .brand-title {
+            font-size: 2rem;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .brand-title span.w { color: #2e7d32; }
+        .brand-title span.i { color: #66bb6a; }
+        .brand-title span.t { color: #81c784; }
+
+        .brand-subtitle {
+            font-size: 0.95rem;
+            color: #607d8b;
+        }
+
+        .oauth-logo {
+            width: 20px;
+            height: 20px;
+        }
+
+        .footer-text {
+            font-size: 0.85rem;
+            color: #78909c;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+    </style>
 </head>
 <body>
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8" />
-    <title>로그인</title>
-    <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-
 <div class="container d-flex justify-content-center align-items-center vh-100">
-    <div class="card p-4 shadow-lg" style="min-width: 350px; max-width: 400px; width: 100%;">
-        <h3 class="text-center mb-4">AFASHS LMS</h3>
+    <div class="login-card">
+
+        <!-- 로고 및 브랜드 -->
+        <div class="brand">
+            <div class="brand-icon">🛫</div>
+            <div class="brand-title">
+                <span class="w">W</span><span class="i">i</span><span class="t">n</span><span class="t">g</span><span class="t">I</span><span class="t">T</span>
+            </div>
+            <div class="brand-subtitle">공군항공과학고 노트북 통합관리 시스템</div>
+        </div>
 
         <!-- 로그인 실패 메시지 -->
         <div th:if="${param.error}" class="alert alert-danger text-center" role="alert">
@@ -38,51 +133,39 @@
                 <input type="password" id="password" name="password" class="form-control" required />
             </div>
 
-            <div class="d-grid">
-                <button type="submit" class="btn btn-primary">로그인</button>
+            <div class="d-grid mb-2">
+                <button type="submit" class="btn btn-green btn-common">로그인</button>
             </div>
-            <div class="d-grid mt-2">
-                <a href="/signup" class="btn btn-outline-secondary">회원가입</a>
+            <div class="d-grid mb-3">
+                <a href="/signup" class="btn btn-outline-secondary btn-common">회원가입</a>
             </div>
         </form>
 
-        <hr class="my-4">
+        <hr class="my-3">
 
-        <!-- 카카오 로그인 -->
+        <!-- 소셜 로그인 -->
         <div class="d-grid mb-2">
-            <a href="/oauth2/authorization/kakao" class="btn btn-warning">
-                <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png" alt="Kakao" width="20" height="20">
-                카카오로 로그인
+            <a href="/oauth2/authorization/kakao" class="btn btn-warning btn-common">
+                <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"
+                     alt="Kakao" class="oauth-logo"> 카카오로 로그인
             </a>
-            <small class="text-muted text-center">처음 로그인하시면 자동으로 회원가입됩니다.</small>
+        </div>
+        <div class="d-grid">
+            <a href="/oauth2/authorization/google" class="btn btn-outline-dark btn-common">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                     alt="Google G" class="oauth-logo"> 구글로 로그인
+            </a>
         </div>
 
-        <!-- 구글 로그인 -->
-        <div class="d-grid">
-            <a href="/oauth2/authorization/google" class="btn btn-outline-dark">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                     alt="Google G" width="20" height="20">
-                구글로 로그인
-            </a>
-            <small class="text-muted text-center">처음 로그인하시면 자동으로 회원가입됩니다.</small>
+        <div class="footer-text">
+            처음 로그인하시면 자동으로 회원가입됩니다.<br>
+            &copy; 2025 WingIT. All rights reserved.
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
     Kakao.init("534c7cd4e44b95384d3bf3a5f27b0de4");
-    // 혹시 나중에 JavaScript SDK 방식 쓸 때 참고용 코드
-    // document.getElementById("kakao-login-btn").onclick = function () {
-    //   Kakao.Auth.login({
-    //     success: function (authObj) {
-    //       console.log(authObj);
-    //       window.location.href = "/login/oauth2/code/kakao";
-    //     },
-    //     fail: function (err) {
-    //       alert(JSON.stringify(err));
-    //     },
-    //   });
-    // };
 </script>
 </body>
 </html>

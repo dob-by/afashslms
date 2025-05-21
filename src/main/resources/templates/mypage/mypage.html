@@ -1,125 +1,26 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout :: layout(~{::body})}">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::body})}">
 <head>
     <meta charset="UTF-8">
     <title>마이페이지</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .profile-card {
-            background: linear-gradient(to right, #93c5fd, #a5f3fc);
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-            color: #1e293b;
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        body.dark-mode .profile-card {
-            background: linear-gradient(to right, #1e293b, #334155);
-            color: #eaeaea;
-        }
-
-        .profile-icon-box {
-            width: 80px;
-            height: 80px;
-            background-color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        body.dark-mode .profile-icon-box {
-            background-color: #1f2937;
-            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
-        }
-
-        .profile-info {
-            flex-grow: 1;
-        }
-
-        .profile-info h5 {
-            margin-bottom: 1rem;
-            font-weight: 700;
-        }
-
-        .profile-info p {
-            margin-bottom: 0.3rem;
-            font-size: 0.95rem;
-        }
-
-        .info-label {
-            font-weight: 600;
-            color: #334155;
-            margin-right: 0.5rem;
-        }
-
-        body.dark-mode .info-label {
-            color: #f1f5f9;
-        }
-
-        .section-title {
-            font-weight: bold;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .card-custom {
-            background-color: #ffffff;
-            padding: 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        body.dark-mode .card-custom {
-            background-color: #1e293b;
-            color: #e2e8f0;
-        }
-
-        .table-custom thead {
-            background-color: #f1f5f9;
-        }
-
-        body.dark-mode .table-custom thead {
-            background-color: #334155;
-        }
-
-        .admin-alert {
-            padding: 1rem;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-        }
-
-        body.dark-mode .admin-alert {
-            background-color: #2c2f33;
-            color: #eaeaea;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/profile.css">
 </head>
 <body class="d-flex flex-column min-vh-100">
 <main class="container my-5 flex-grow-1">
 
-    <!-- 내 정보 카드 -->
-    <div class="card shadow mb-4 border-0" style="border-radius: 1rem;">
-        <div class="card-body d-flex align-items-center" style="background: linear-gradient(to right, #dbeafe, #f0f9ff);">
-            <div class="me-4 d-flex justify-content-center align-items-center" style="width: 80px; height: 80px; border-radius: 50%; background-color: white; font-size: 2.5rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-                👤
-            </div>
-            <div>
-                <h5 class="mb-3 fw-bold text-primary">내 정보</h5>
-                <p class="mb-1"><strong class="text-dark">이름:</strong> <span th:text="${username}">이름</span></p>
-                <p class="mb-1"><strong class="text-dark">이메일:</strong> <span th:text="${email}">email@example.com</span></p>
-                <p class="mb-0"><strong class="text-dark">역할:</strong> <span th:text="${userRole}">STUDENT</span></p>
-            </div>
+    <!-- ✅ 내 정보 카드 -->
+    <div class="profile-card mb-4">
+        <div class="profile-icon-box">👤</div>
+        <div class="profile-info">
+            <h5 class="text-success fw-bold">내 정보</h5>
+            <p><strong class="text-dark">이름:</strong> <span th:text="${username}">이름</span></p>
+            <p><strong class="text-dark">이메일:</strong> <span th:text="${email}">email@example.com</span></p>
+            <p><strong class="text-dark">역할:</strong> <span th:text="${userRole}">STUDENT</span></p>
         </div>
     </div>
 
-    <!-- 노트북 정보 -->
+    <!-- 💻 노트북 정보 -->
     <div th:if="${userRole == 'STUDENT' and laptop != null}">
         <h5 class="section-title">💻 내 노트북 정보</h5>
         <div class="card-custom mb-4">
@@ -155,7 +56,7 @@
     </div>
 
     <!-- 🛠 수리 요청 내역 -->
-    <div th:if="${userRole == 'STUDENT' and repairs != null}">
+    <div th:if="${userRole == 'STUDENT'}">
         <h5 class="section-title">🛠 수리 요청 내역</h5>
         <div class="table-responsive">
             <table class="table table-bordered table-hover table-custom text-center align-middle">
@@ -171,6 +72,9 @@
                     <td th:text="${#temporals.format(repair.createdAt, 'yyyy-MM-dd')}">2025-04-12</td>
                     <td th:text="${repair.description}">배터리 교체</td>
                     <td th:text="${repair.status}">완료</td>
+                </tr>
+                <tr th:if="${repairs == null or repairs.isEmpty()}">
+                    <td colspan="3" class="text-center text-muted">수리 요청 내역이 없습니다.</td>
                 </tr>
                 </tbody>
             </table>

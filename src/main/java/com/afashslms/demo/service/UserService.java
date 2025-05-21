@@ -13,6 +13,7 @@ public interface UserService {
     Optional<User> findByEmail(String email);
     User findByUserId(String userId);
     List<User> searchByUsernameOrUserId(String keyword);
+    List<User> searchUsers(String query);
 
 }
 

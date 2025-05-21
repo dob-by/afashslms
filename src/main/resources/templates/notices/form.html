@@ -9,6 +9,33 @@
             max-width: 700px;
             margin: 0 auto;
         }
+
+        .btn-success {
+            background-color: #2e7d32;
+            border-color: #2e7d32;
+            color: white;
+            border-radius: 30px;
+        }
+
+        .btn-success:hover {
+            background-color: #1b5e20;
+            border-color: #1b5e20;
+        }
+
+        .btn-secondary {
+            background-color: #c8c8c8;
+            border-color: #c8c8c8;
+            border-radius: 30px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #b0b0b0;
+            border-color: #b0b0b0;
+        }
+
+        label {
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -36,7 +63,7 @@
         </div>
 
         <div class="d-flex justify-content-center gap-3">
-            <button type="submit" class="btn btn-primary px-4"
+            <button type="submit" class="btn btn-success px-4"
                     th:text="${notice.id == null} ? '등록' : '수정'">저장</button>
             <a th:href="@{/notices}" class="btn btn-secondary px-4">목록</a>
         </div>

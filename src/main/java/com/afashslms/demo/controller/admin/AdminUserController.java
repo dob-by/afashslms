@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import com.afashslms.demo.dto.UserDto;
+import org.springframework.http.ResponseEntity;
 
 @Controller
 @RequiredArgsConstructor
@@ -40,6 +42,16 @@ public class AdminUserController {
         }
 
         return "admin/user-list";
+    }
+
+
+    @GetMapping("/api/users")
+    @ResponseBody
+    public ResponseEntity<List<UserDto>> getUsersApi() {
+        List<UserDto> dtos = userService.getAllUsers().stream()
+                .map(UserDto::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
     @PostMapping("/admin/users/{userId}/role")

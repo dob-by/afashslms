@@ -5,43 +5,126 @@
 <head>
     <title>게시글 목록</title>
     <meta charset="UTF-8" />
+    <style>
+        .post-card {
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+        }
+
+        .table thead {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f1f8e9;
+        }
+
+        .btn-green {
+            display: inline-block;
+            padding: 0.6rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            text-align: center;
+            text-decoration: none;
+            white-space: nowrap;
+
+            background-color: #43a047;
+            color: white !important;
+            border: none;
+            border-radius: 999px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            box-shadow: 0 0 0 2px #2e7d32 inset;
+        }
+
+        .btn-green:hover {
+            background-color: #388e3c;
+            color: white !important;
+        }
+
+        .btn-green:visited {
+            color: white !important;
+        }
+
+        body.dark-mode .post-card {
+            background-color: #1e1e1e;
+            color: #eaeaea;
+        }
+
+        body.dark-mode .table thead {
+            background-color: #333;
+            color: #81c784;
+        }
+
+        body.dark-mode .table tbody tr:hover {
+            background-color: #2a2a2a;
+        }
+
+        body.dark-mode .btn-green {
+            background-color: #81c784;
+            color: #1e1e1e !important;
+        }
+
+        body.dark-mode .btn-green:hover {
+            background-color: #a5d6a7;
+        }
+
+        .text-start a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .text-start a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>게시글 목록</h2>
-        <div th:if="${userRole == 'STUDENT'}">
-            <a href="/posts/new" class="btn btn-primary">✍️ 새 글 작성</a>
+<div class="container my-5">
+    <div class="post-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold mb-0">📝 게시글 목록</h4>
+            <div th:if="${userRole == 'STUDENT'}">
+                <a href="/posts/new" class="btn btn-green">✍️ 새 글 작성</a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover text-center align-middle">
+                <thead>
+                <tr>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>작성일</th>
+                    <th>조회수</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="post : ${posts}"
+                    th:attr="data-url=@{/posts/{id}(id=${post.postId})}"
+                    onclick="handleRowClick(event)"
+                    style="cursor: pointer;">
+                    <td class="text-start" onclick="handleRowClick(event)">
+                        <a th:href="@{/posts/{id}(id=${post.postId})}"
+                           onclick="event.stopPropagation()"
+                           th:text="${post.title}">제목</a>
+                    </td>
+                    <td onclick="handleRowClick(event)" th:text="${post.user != null ? post.user.username : '알 수 없음'}">작성자</td>
+                    <td onclick="handleRowClick(event)" th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">작성일</td>
+                    <td onclick="handleRowClick(event)" th:text="${post.viewCount}">조회수</td>
+                </tr>
+                <tr th:if="${posts.size() == 0}">
+                    <td colspan="4" class="text-muted">게시글이 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-
-        <table class="table table-hover text-center align-middle">
-            <thead class="table-light">
-            <tr>
-                <th>제목</th>
-                <th>작성자</th>
-                <th>작성일</th>
-                <th>조회수</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="post : ${posts}"
-                th:attr="data-url=@{/posts/{id}(id=${post.postId})}"
-                onclick="handleRowClick(event)"
-                style="cursor: pointer;">
-                <td class="text-start" onclick="handleRowClick(event)">
-                    <a th:href="@{/posts/{id}(id=${post.postId})}"
-                       onclick="event.stopPropagation()"
-                       th:text="${post.title}">제목</a>
-                </td>
-                <td onclick="handleRowClick(event)" th:text="${post.user != null ? post.user.username : '알 수 없음'}">작성자</td>
-                <td onclick="handleRowClick(event)" th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">작성일</td>
-                <td onclick="handleRowClick(event)" th:text="${post.viewCount}">조회수</td>
-            </tr>
-            </tbody>
-        </table>
 </div>
+
 <script>
     function handleRowClick(event) {
         const isInsideLink = event.target.closest('a');
@@ -52,5 +135,6 @@
         }
     }
 </script>
+
 </body>
 </html>

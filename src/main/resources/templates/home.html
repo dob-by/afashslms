@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout :: layout(~{::body})}">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::body})}">
 <head>
   <meta charset="UTF-8" />
-  <title>노트북 관리 시스템</title>
+  <title>WingIT 메인</title>
   <style>
     .card-header {
       font-weight: bold;
@@ -19,7 +18,7 @@
     }
 
     .post-link:hover {
-      color: #ffc107;
+      color: #43a047;
       background-color: rgba(0, 0, 0, 0.05);
     }
 
@@ -37,27 +36,61 @@
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     }
 
+    .icon-grid {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+      padding: 2rem 0;
+    }
+
+    .icon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 0.9rem;
+      color: #4e4e4e;
+    }
+
+    .icon-item img {
+      width: 36px;
+      height: 36px;
+      margin-bottom: 0.4rem;
+    }
+
     body.dark-mode .post-link {
       color: #ddd;
     }
 
     body.dark-mode .post-link:hover {
-      color: #ffc107;
+      color: #a5d6a7;
       background-color: rgba(255, 255, 255, 0.1);
     }
   </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
+<!-- ✅ Hero Section -->
+<section class="py-5 text-center" style="background: linear-gradient(135deg, #e8f5e9, #f1f8e9);">
+  <div class="container">
+    <img src="/images/laptop_hero.png" alt="노트북 이미지" style="max-width: 240px;" class="mb-4">
+    <h1 class="fw-bold mb-3">WingIT에 오신 걸 환영합니다</h1>
+    <p class="lead text-muted">
+      노트북 대여, 수리 요청, 사용자 관리까지 한 곳에서!<br>
+      공군항공과학고 노트북 통합관리 시스템
+    </p>
+  </div>
+</section>
+
+<!-- 📢 최근 공지사항 / ❓ 최근 문의 게시글 -->
 <main class="container my-5 flex-grow-1">
   <div class="row g-4">
-
-    <!-- 📢 최근 공지사항 -->
+    <!-- 최근 공지사항 -->
     <div class="col-md-6">
       <div class="card h-100">
-        <div class="card-header d-flex justify-content-between align-items-center bg-info text-white">
+        <div class="card-header d-flex justify-content-between align-items-center bg-light text-dark">
           <span>📢 최근 공지사항</span>
-          <a th:href="@{/notices}" class="btn btn-sm btn-outline-light px-2 py-1">+ 더보기</a>
+          <a th:href="@{/notices}" class="btn btn-sm btn-outline-success px-2 py-1">+ 더보기</a>
         </div>
         <ul class="list-group list-group-flush">
           <li class="list-group-item">[공지] 노트북 정기 점검 안내 (5/10)</li>
@@ -69,12 +102,12 @@
       </div>
     </div>
 
-    <!-- ❓ 최근 문의 게시글 -->
+    <!-- 최근 문의 게시글 -->
     <div class="col-md-6">
       <div class="card h-100">
-        <div class="card-header d-flex justify-content-between align-items-center bg-warning text-dark">
+        <div class="card-header d-flex justify-content-between align-items-center bg-light text-dark">
           <span>❓ 최근 문의 게시글</span>
-          <a th:href="@{/posts}" class="btn btn-sm btn-outline-dark px-2 py-1">+ 더보기</a>
+          <a th:href="@{/posts}" class="btn btn-sm btn-outline-success px-2 py-1">+ 더보기</a>
         </div>
         <ul class="list-group list-group-flush">
           <li class="list-group-item">노트북 충전기 분실 시 어떻게 하나요?</li>
@@ -91,9 +124,17 @@
         </ul>
       </div>
     </div>
-
   </div>
 </main>
+
+<!-- 📘 보조 섹션 -->
+<section class="py-5 bg-light">
+  <div class="container text-center">
+    <h5 class="fw-semibold">도움이 필요하신가요?</h5>
+    <p class="text-muted">FAQ를 확인하거나 운영자에게 문의해보세요.</p>
+    <a href="/faq" class="btn btn-outline-success rounded-pill">자주 묻는 질문 보기</a>
+  </div>
+</section>
 
 </body>
 </html>

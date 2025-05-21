@@ -8,51 +8,51 @@
 </head>
 <body>
 
-<div class="container mt-4">
-    <div class="mb-4">
-        <h2 th:text="${post.title}">제목</h2>
-        <p class="text-muted">
-            <strong>작성자:</strong> <span th:text="${post.user.username}">작성자</span> |
-            <strong>작성일:</strong> <span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></span> |
-            <strong>조회수:</strong> <span th:text="${post.viewCount}"></span>
+<div class="max-w-3xl mx-auto px-4 py-4">
+
+    <!-- 게시글 카드 -->
+    <div class="card shadow-sm p-4 mb-4">
+        <h2 class="fw-bold mb-2 text-dark" th:text="${post.title}">제목</h2>
+        <p class="text-muted small mb-3">
+            작성자: <strong th:text="${post.user.username}">작성자</strong> |
+            작성일: <span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></span> |
+            조회수: <span th:text="${post.viewCount}"></span>
         </p>
         <hr>
-        <p th:text="${post.content}" class="lead">내용</p>
+        <div class="fs-6 lh-lg" th:text="${post.content}">내용</div>
 
-        <div class="d-flex gap-2 mt-3">
-            <a class="btn btn-outline-primary btn-sm"
+        <div class="d-flex gap-2 mt-4">
+            <a class="btn btn-outline-success btn-sm"
                th:if="${currentUserEmail != null and post.user.email == currentUserEmail and userRole != 'TOP_ADMIN'}"
-               th:href="@{/posts/{id}/edit(id=${post.postId})}">✏ 수정</a>
+               th:href="@{/posts/{id}/edit(id=${post.postId})}">수정</a>
 
             <form th:if="${post.user.email == currentUserEmail and userRole != 'TOP_ADMIN'}"
-                  th:action="@{/posts/{id}/delete(id=${post.postId})}" method="post" style="display:inline;">
+                  th:action="@{/posts/{id}/delete(id=${post.postId})}" method="post" class="d-inline">
                 <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
-                <button class="btn btn-outline-danger btn-sm" type="submit"
-                        onclick="return confirm('정말 삭제하시겠습니까?')">🗑 삭제</button>
+                <button class="btn btn-outline-secondary btn-sm" type="submit"
+                        onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
             </form>
 
             <form th:if="${userRole == 'TOP_ADMIN'}"
-                  th:action="@{/posts/{id}/delete(id=${post.postId})}" method="post" style="display:inline;">
+                  th:action="@{/posts/{id}/delete(id=${post.postId})}" method="post" class="d-inline">
                 <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
-                <button class="btn btn-outline-danger btn-sm" type="submit"
-                        onclick="return confirm('정말 삭제하시겠습니까?')">관리자 삭제</button>
+                <button class="btn btn-outline-secondary btn-sm" type="submit">관리자 삭제</button>
             </form>
 
             <a href="/posts" class="btn btn-outline-secondary btn-sm ms-auto">← 목록으로</a>
         </div>
     </div>
 
-    <hr>
-
-    <div class="mb-4">
-        <h4>댓글</h4>
+    <!-- 댓글 영역 -->
+    <div class="card shadow-sm p-4 mb-4">
+        <h4 class="mb-3 fw-bold">💬 댓글</h4>
 
         <div th:if="${#lists.isEmpty(comments)}">
             <p class="text-muted">아직 댓글이 없습니다.</p>
         </div>
 
         <ul class="list-group mb-3" th:each="comment : ${comments}">
-            <li class="list-group-item" th:id="'comment-item-' + ${comment.id}">
+            <li class="list-group-item bg-light-subtle" th:id="'comment-item-' + ${comment.id}">
                 <div>
                     <strong th:text="${comment.user.username}">작성자</strong>
                     <span class="text-muted small ms-2"
@@ -67,35 +67,33 @@
                 </div>
 
                 <div class="d-flex gap-2 mt-2" th:id="'comment-buttons-default-' + ${comment.id}">
-                    <button class="btn btn-sm btn-outline-primary"
+                    <button class="btn btn-sm btn-outline-success"
                             th:if="${comment.user.email == currentUserEmail}"
-                            th:onclick="'toggleCommentEdit(' + ${comment.id} + ')'">✏ 수정</button>
+                            th:onclick="'toggleCommentEdit(' + ${comment.id} + ')'">수정</button>
 
                     <form th:if="${comment.user.email == currentUserEmail and userRole != 'TOP_ADMIN'}"
                           th:action="@{'/comments/' + ${comment.id} + '/delete'}" method="post">
                         <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
-                        <button class="btn btn-sm btn-outline-danger" type="submit">🗑 삭제</button>
+                        <button class="btn btn-sm btn-outline-secondary" type="submit">삭제</button>
                     </form>
 
                     <form th:if="${userRole == 'TOP_ADMIN'}"
                           th:action="@{'/comments/' + ${comment.id} + '/delete'}" method="post">
                         <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
-                        <button class="btn btn-sm btn-outline-danger" type="submit">🗑 삭제</button>
+                        <button class="btn btn-sm btn-outline-secondary" type="submit">삭제</button>
                     </form>
                 </div>
 
                 <div class="gap-2 mt-2 d-none" th:id="'comment-buttons-edit-' + ${comment.id}">
-                    <button class="btn btn-sm btn-primary" type="button"
-                            th:onclick="'submitCommentEdit(' + ${comment.id} + ')'">💾 저장</button>
+                    <button class="btn btn-sm btn-success" type="button"
+                            th:onclick="'submitCommentEdit(' + ${comment.id} + ')'">저장</button>
                     <button class="btn btn-sm btn-secondary" type="button"
-                            th:onclick="'cancelCommentEdit(' + ${comment.id} + ')'">❌ 취소</button>
+                            th:onclick="'cancelCommentEdit(' + ${comment.id} + ')'">취소</button>
                 </div>
             </li>
         </ul>
-    </div>
 
-    <div>
-        <h5>댓글 작성</h5>
+        <h6 class="fw-bold mt-4">✍ 댓글 작성</h6>
         <form th:action="@{/posts/{postId}/comments(postId=${post.postId})}" method="post">
             <th:block th:if="${_csrf != null}">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
@@ -103,7 +101,7 @@
             <div class="mb-3">
                 <textarea class="form-control" name="content" rows="3" placeholder="댓글을 입력하세요" required></textarea>
             </div>
-            <button class="btn btn-primary btn-sm" type="submit">등록</button>
+            <button class="btn btn-green btn-sm" type="submit">등록</button>
         </form>
     </div>
 </div>

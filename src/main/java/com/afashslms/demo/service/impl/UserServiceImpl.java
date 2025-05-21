@@ -39,6 +39,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> searchUsers(String query) {
+        return userRepository.findByUserIdContainingIgnoreCaseOrUsernameContainingIgnoreCase(query, query);
+    }
+
+    @Override
     public User findByUserId(String userId) {
         return userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));

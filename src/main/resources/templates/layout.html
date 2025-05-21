@@ -2,39 +2,55 @@
 <html xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content)">
 <head>
     <meta charset="UTF-8" />
-    <title th:text="${title}">AFASHS LMS</title>
+    <title th:text="${title}">WingIT</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <style>
         html, body {
             height: 100%;
             margin: 0;
-        }
-
-        body {
+            background-color: #ffffff;
+            font-family: 'Pretendard', sans-serif;
+            color: #212529;
             display: flex;
             flex-direction: column;
-            background: linear-gradient(135deg, #C2E9FB, #A1C4FD);
-            color: #212529;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        main {
-            flex: 1;
+            min-height: 100vh;
         }
 
         body.dark-mode {
             background-color: #121212 !important;
-            background-image: none !important;
             color: #eaeaea;
         }
 
-        body.dark-mode .text-muted { color: #cccccc !important; }
+
+        .navbar {
+            background-color: #ffffff !important;
+            border-bottom: 1px solid #e0e0e0;
+
+            /* ✨ 그림자 추가 */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            color: #2e7d32 !important;
+        }
+
+        .navbar-nav .nav-link {
+            color: #333333 !important;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #2e7d32 !important;
+        }
 
         body.dark-mode .navbar,
-        body.dark-mode .card,
-        body.dark-mode .list-group-item,
         body.dark-mode .container,
-        body.dark-mode footer {
+        body.dark-mode footer,
+        body.dark-mode .card,
+        body.dark-mode .list-group-item {
             background-color: #121212 !important;
             color: #eaeaea !important;
             border-color: #333 !important;
@@ -46,39 +62,61 @@
         }
 
         body.dark-mode .nav-link:hover {
-            color: #ffc107 !important;
-        }
-
-        body.dark-mode .btn-outline-secondary,
-        body.dark-mode .btn-outline-danger {
-            border-color: #ccc;
-            color: #eaeaea;
-        }
-
-        body.dark-mode .btn-outline-secondary:hover,
-        body.dark-mode .btn-outline-danger:hover {
-            background-color: #444;
+            color: #81c784 !important;
         }
 
         .no-underline {
             text-decoration: none !important;
         }
+
+        .btn-green {
+            background-color: #43a047 !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 999px !important;
+            padding: 8px 20px !important;
+            font-weight: 400 !important;
+            display: inline-block !important;
+            text-align: center !important;
+            white-space: nowrap !important;
+            text-decoration: none !important;
+        }
+
+        .btn-green:hover {
+            background-color: #388e3c !important;
+            color: white !important;
+        }
+
+        footer {
+            background-color: #f8f9fa;
+            color: #6c757d;
+        }
+
+        body.dark-mode footer {
+            background-color: #121212;
+        }
+
+        #darkModeToggle {
+            white-space: nowrap;
+        }
+
+        main {
+            flex: 1;
+        }
     </style>
 </head>
 <body>
 
-<!-- 상단 영역 -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light mb-0 border-bottom">
-    <div class="container-fluid d-flex justify-content-between align-items-center">
-        <div>
-            <a class="navbar-brand fw-bold" th:href="@{/}">💻 항과고 노트북 관리 시스템</a>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-            <span class="text-muted">
+<!-- 상단 네비게이션 바 -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid d-flex justify-content-between align-items-center px-4">
+        <a class="navbar-brand" th:href="@{/}">WingIT</a>
+        <div class="d-flex align-items-center gap-3">
+            <span class="text-muted small">
                 사용자: <strong th:text="${userRole} + ' | ' + ${username}">이름</strong>
             </span>
             <a th:href="@{/mypage}" class="btn btn-outline-secondary btn-sm">마이페이지</a>
-            <button id="darkModeToggle" class="btn btn-outline-secondary btn-sm">🌙 다크모드</button>
+<!--            <button id="darkModeToggle" class="btn btn-outline-secondary btn-sm">🌙 다크모드</button>-->
             <form th:action="@{/logout}" method="post" class="d-inline">
                 <button type="submit" class="btn btn-sm btn-outline-danger">로그아웃</button>
             </form>
@@ -86,11 +124,11 @@
     </div>
 </nav>
 
-<!-- 메뉴 -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4 border-bottom">
-    <div class="container-fluid">
+<!-- 메뉴바 -->
+<nav class="navbar navbar-expand-lg py-2">
+    <div class="container-fluid px-4">
         <div class="collapse navbar-collapse">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-3">
                 <li class="nav-item"><a class="nav-link" th:href="@{/}">홈</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/notices}">공지사항</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/posts}">게시판</a></li>
@@ -104,13 +142,13 @@
 </nav>
 
 <!-- 본문 영역 -->
-<main class="container mb-4">
+<main class="container my-4">
     <div th:replace="${content}"></div>
 </main>
 
 <!-- 푸터 -->
-<footer class="bg-light text-center text-muted py-3 mt-auto">
-    © 2025 AFASHS LMS. All rights reserved.
+<footer class="text-center text-muted py-3 mt-auto">
+    © 2025 WingIT. All rights reserved.
 </footer>
 
 <!-- 다크모드 스크립트 -->
