@@ -3,6 +3,7 @@ package com.afashslms.demo.controller;
 import com.afashslms.demo.domain.Post;
 import com.afashslms.demo.security.CustomOAuth2User;
 import com.afashslms.demo.security.CustomUserDetails;
+import com.afashslms.demo.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import com.afashslms.demo.service.CommentService;
 import com.afashslms.demo.service.PostService;
@@ -125,11 +126,25 @@ public class PostController {
     }
 
     @GetMapping("/new")
-    public String showPostForm(Model model, @AuthenticationPrincipal CustomOAuth2User principal) {
-        if (principal != null) {
-            model.addAttribute("userRole", principal.getRole().name());
-            model.addAttribute("username", principal.getName());
+    public String showPostForm(Model model, @AuthenticationPrincipal Object principal) {
+        String role = "ANONYMOUS";
+        String username = "알 수 없음";
+
+        if (principal instanceof CustomUserDetails userDetails) {
+            role = userDetails.getUser().getRole().name();
+            username = userDetails.getUser().getUsername();
+        } else if (principal instanceof CustomOAuth2User oauthUser) {
+            role = oauthUser.getRole().name();
+            username = oauthUser.getName();
         }
+
+        // STUDENT만 접근 허용
+        if (!"STUDENT".equals(role)) {
+            return "post/forbidden";
+        }
+
+        model.addAttribute("userRole", role);
+        model.addAttribute("username", username);
         return "post/new";
     }
 
@@ -137,10 +152,24 @@ public class PostController {
     @PostMapping
     public String createPost(@RequestParam String title,
                              @RequestParam String content,
-                             Principal principal) {
-        System.out.println(">> Principal.getName(): " + principal.getName());
-        String userId = principal.getName();  // 로그인된 사용자 ID
-        postService.createPost(userId, title, content);
+                             @AuthenticationPrincipal Object principal) {
+
+        String email = null;
+        String role = null;
+
+        if (principal instanceof CustomUserDetails userDetails) {
+            email = userDetails.getUser().getEmail();
+            role = userDetails.getUser().getRole().name();
+        } else if (principal instanceof CustomOAuth2User oauthUser) {
+            email = oauthUser.getEmail();
+            role = oauthUser.getRole().name();
+        }
+
+        if (!"STUDENT".equals(role)) {
+            return "post/forbidden";
+        }
+
+        postService.createPost(email, title, content);
         return "redirect:/posts";
     }
 
