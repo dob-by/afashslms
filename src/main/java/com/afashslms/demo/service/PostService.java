@@ -11,10 +11,18 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import org.springframework.web.multipart.MultipartFile;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 
 @Service
 @RequiredArgsConstructor
@@ -63,6 +71,62 @@ public class PostService {
         post.setTitle(title);
         post.setContent(content);
         post.setCreatedAt(LocalDateTime.now());
+
+        postRepository.save(post);
+    }
+
+    public void createPostWithFile(String principalName, String title, String content, MultipartFile file) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user;
+
+        if (authentication instanceof OAuth2AuthenticationToken oauthToken) {
+            String email = null;
+            Object emailAttr = oauthToken.getPrincipal().getAttribute("email");
+
+            if (emailAttr == null) {
+                Object kakaoAccount = oauthToken.getPrincipal().getAttribute("kakao_account");
+                if (kakaoAccount instanceof Map<?, ?> kakaoMap) {
+                    email = (String) kakaoMap.get("email");
+                }
+            } else {
+                email = (String) emailAttr;
+            }
+
+            user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new IllegalArgumentException("OAuth 사용자 정보를 찾을 수 없습니다."));
+
+        } else {
+            user = userRepository.findByUserId(principalName)
+                    .orElseThrow(() -> new IllegalArgumentException("Local 사용자 정보를 찾을 수 없습니다."));
+        }
+
+        // 파일 저장 처리
+        String savedFileName = null;
+        if (file != null && !file.isEmpty()) {
+            try {
+                String originalFilename = file.getOriginalFilename();
+                String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                savedFileName = UUID.randomUUID().toString() + extension;
+
+                Path uploadDir = Paths.get("uploads");
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                }
+
+                Path filePath = uploadDir.resolve(savedFileName);
+                file.transferTo(filePath.toFile());
+
+            } catch (Exception e) {
+                throw new RuntimeException("파일 업로드 실패", e);
+            }
+        }
+
+        Post post = new Post();
+        post.setUser(user);
+        post.setTitle(title);
+        post.setContent(content);
+        post.setCreatedAt(LocalDateTime.now());
+        post.setFileName(savedFileName); // ✨ 엔티티에 추가된 fileName 필드
 
         postRepository.save(post);
     }

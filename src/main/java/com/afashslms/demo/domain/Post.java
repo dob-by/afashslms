@@ -40,6 +40,9 @@ public class Post {
         this.createdAt = LocalDateTime.now();
     }
 
+    @Column(name = "file_name")
+    private String fileName;
+
     public int getViewCount() {
         return viewCount;
     }

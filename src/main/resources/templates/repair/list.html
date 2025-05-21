@@ -56,9 +56,9 @@
                 <td th:text="${repair.manager}">담당자</td>
                 <td th:text="${repair.status}">상태</td>
                 <td>
-                    <a th:href="@{/repairs/{id}/edit(id=${repair.id})}" class="btn btn-sm btn-outline-primary me-1">✏ 수정</a>
+                    <a th:href="@{/repairs/{id}/edit(id=${repair.id})}" class="btn btn-sm btn-outline-primary me-1">수정</a>
                     <form th:action="@{/repairs/delete/{id}(id=${repair.id})}" method="post" style="display:inline;">
-                        <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('정말 삭제하시겠습니까?')">🗑 삭제</button>
+                        <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
                     </form>
                 </td>
             </tr>

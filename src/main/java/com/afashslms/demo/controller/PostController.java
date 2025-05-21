@@ -18,6 +18,7 @@ import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -152,6 +153,7 @@ public class PostController {
     @PostMapping
     public String createPost(@RequestParam String title,
                              @RequestParam String content,
+                             @RequestParam(value = "file", required = false) MultipartFile file,
                              @AuthenticationPrincipal Object principal) {
 
         String email = null;
@@ -169,10 +171,9 @@ public class PostController {
             return "post/forbidden";
         }
 
-        postService.createPost(email, title, content);
+        postService.createPostWithFile(email, title, content, file);  // ✨파일 포함 메서드 호출
         return "redirect:/posts";
     }
-
     // 글 수정 폼
     @GetMapping("/{postId}/edit")
     public String showEditForm(@PathVariable String postId, Model model, Principal principal) {

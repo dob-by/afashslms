@@ -13,7 +13,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 400px;
+            max-width: 420px;
             margin: 0 auto;
         }
 
@@ -28,9 +28,19 @@
 
         .notice-card {
             background-color: #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+            padding: 2.5rem;
+        }
+
+        .btn-green {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+        }
+
+        .btn-green:hover {
+            background-color: #1b5e20;
         }
 
         body.dark-mode tr.clickable-row:hover {
@@ -54,10 +64,9 @@
 </head>
 <body>
 <div class="container mt-5">
-
     <div class="notice-card">
 
-        <h2 class="text-center fw-bold mb-4">📢 공지사항</h2>
+        <h2 class="text-center fw-bold mb-4 text-dark">📢 공지사항</h2>
 
         <!-- 관리자만 새 공지 작성 버튼 -->
         <div class="d-flex justify-content-end mb-3"
@@ -65,30 +74,33 @@
             <a class="btn btn-green rounded-pill" th:href="@{/notices/new}">+ 새 공지 작성</a>
         </div>
 
-        <!-- 공지사항 테이블 -->
-        <div class="table-responsive">
+        <!-- 공지 테이블 -->
+        <div class="table-responsive rounded border">
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light text-center">
                 <tr>
-                    <th style="width: 60%;" class="text-center">제목</th>
-                    <th class="text-center">작성자</th>
-                    <th class="text-center">작성일</th>
+                    <th style="width: 8%;">순번</th>
+                    <th style="width: 52%;">제목</th>
+                    <th style="width: 20%;">작성자</th>
+                    <th style="width: 20%;">작성일</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="notice : ${notices}"
+                <tr th:each="notice, iterStat : ${notices}"
                     th:onclick="|location.href='/notices/${notice.id}'|"
-                    class="clickable-row text-center">
+                    class="clickable-row text-center py-3">
+                    <td th:text="${iterStat.count}">1</td>
                     <td class="text-ellipsis fw-semibold" th:text="${notice.title}">공지 제목</td>
                     <td th:text="${notice.author.username}">작성자</td>
-                    <td th:text="${#dates.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}">작성일</td>
+                    <td th:text="${#dates.format(notice.createdAt, 'yyyy-MM-dd')}">작성일</td>
                 </tr>
                 <tr th:if="${notices.size() == 0}">
-                    <td colspan="3" class="text-center text-muted">등록된 공지사항이 없습니다.</td>
+                    <td colspan="4" class="text-center text-muted py-4">등록된 공지사항이 없습니다.</td>
                 </tr>
                 </tbody>
             </table>
         </div>
+
     </div>
 </div>
 </body>
