@@ -8,6 +8,7 @@ import com.afashslms.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -71,5 +72,23 @@ public class RepairService {
         RepairRequest repair = getRepairById(id);
         repair.setStatus(status);
         repairRequestRepository.save(repair);
+    }
+
+    //수리 관련 통계 확인 메서드
+    public long countAll() {
+        return repairRequestRepository.count();
+    }
+
+    public long countByStatus(RepairStatus status) {
+        return repairRequestRepository.countByStatus(status);
+    }
+
+    public long countByStatusNot(RepairStatus status) {
+        return repairRequestRepository.countByStatusNot(status);
+    }
+
+    public long countThisWeek() {
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusDays(7);
+        return repairRequestRepository.countByCreatedAtAfter(oneWeekAgo);
     }
 }

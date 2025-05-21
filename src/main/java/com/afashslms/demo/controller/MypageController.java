@@ -39,6 +39,11 @@ public class MypageController {
             return "redirect:/login"; // 로그인 안 한 사용자
         }
 
+        // 관리자라면 admin 마이페이지로 리다이렉트
+        if ("MID_ADMIN".equals(role) || "TOP_ADMIN".equals(role)) {
+            return "redirect:/admin/mypage";
+        }
+
         model.addAttribute("username", username);
         model.addAttribute("email", email);
         model.addAttribute("userRole", role);
@@ -57,6 +62,4 @@ public class MypageController {
 
         return "mypage/mypage";
     }
-
-
 }
