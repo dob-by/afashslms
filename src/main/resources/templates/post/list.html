@@ -3,9 +3,10 @@
       xmlns:sec="https://www.thymeleaf.org/extras/springsecurity6"
       th:replace="~{layout :: layout(~{::body})}">
 <head>
-    <title>게시글 목록</title>
     <meta charset="UTF-8" />
+    <title>게시글 목록</title>
     <style>
+        /* 기존 스타일 유지 + 검색창 맞춤 */
         .post-card {
             background-color: #ffffff;
             border-radius: 16px;
@@ -23,29 +24,26 @@
         }
 
         .btn-green {
-            display: inline-block;
-            padding: 0.6rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 500;
-            text-align: center;
-            text-decoration: none;
-            white-space: nowrap;
-
             background-color: #43a047;
             color: white !important;
             border: none;
             border-radius: 999px;
-            transition: background-color 0.2s ease, color 0.2s ease;
-            box-shadow: 0 0 0 2px #2e7d32 inset;
+            padding: 0.5rem 1.2rem;
+            font-weight: 500;
+            text-decoration: none;
         }
 
         .btn-green:hover {
             background-color: #388e3c;
-            color: white !important;
         }
 
-        .btn-green:visited {
-            color: white !important;
+        .text-start a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .text-start a:hover {
+            text-decoration: underline;
         }
 
         body.dark-mode .post-card {
@@ -61,67 +59,88 @@
         body.dark-mode .table tbody tr:hover {
             background-color: #2a2a2a;
         }
-
-        body.dark-mode .btn-green {
-            background-color: #81c784;
-            color: #1e1e1e !important;
-        }
-
-        body.dark-mode .btn-green:hover {
-            background-color: #a5d6a7;
-        }
-
-        .text-start a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        .text-start a:hover {
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
-
 <div class="container my-5">
     <div class="post-card">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="fw-bold mb-0">📝 게시글 목록</h4>
-            <div th:if="${userRole == 'STUDENT'}">
-                <a href="/posts/new" class="btn btn-green">+ 새 글 작성</a>
-            </div>
+        <div class="mb-4">
+            <h2 class="fw-bold mb-4 text-center text-dark">게시판</h2>
+        </div>
+        <div class="d-flex justify-content-end mb-3" th:if="${userRole == 'STUDENT'}">
+            <a href="/posts/new" class="btn btn-green">+ 새 글 작성</a>
         </div>
 
+        <!-- 검색창 -->
+        <form class="mb-3 d-flex justify-content-end" th:action="@{/posts}" method="get">
+            <input type="text" name="keyword" class="form-control w-auto me-2" placeholder="제목 검색"
+                   th:value="${keyword}">
+            <button type="submit" class="btn btn-outline-success">검색</button>
+        </form>
+
+        <!-- 테이블 -->
         <div class="table-responsive">
             <table class="table table-hover text-center align-middle">
                 <thead>
                 <tr>
-                    <th>제목</th>
-                    <th>작성자</th>
-                    <th>작성일</th>
-                    <th>조회수</th>
+                    <th style="width: 8%;">순번</th>
+                    <th style="width: 44%;">제목</th>
+                    <th style="width: 20%;">작성자</th>
+                    <th style="width: 14%;">작성일</th>
+                    <th style="width: 14%;">조회수</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="post : ${posts}"
+                <tr th:each="post, iterStat : ${posts}"
                     th:attr="data-url=@{/posts/{id}(id=${post.postId})}"
                     onclick="handleRowClick(event)"
                     style="cursor: pointer;">
-                    <td class="text-start" onclick="handleRowClick(event)">
+                    <td th:text="${totalItems - (currentPage * pageSize + iterStat.index)}">1</td>
+                    <td class="text-start">
                         <a th:href="@{/posts/{id}(id=${post.postId})}"
                            onclick="event.stopPropagation()"
                            th:text="${post.title}">제목</a>
                     </td>
-                    <td onclick="handleRowClick(event)" th:text="${post.user != null ? post.user.username : '알 수 없음'}">작성자</td>
-                    <td onclick="handleRowClick(event)" th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">작성일</td>
-                    <td onclick="handleRowClick(event)" th:text="${post.viewCount}">조회수</td>
+                    <td th:text="${post.user != null ? post.user.username : '알 수 없음'}">작성자</td>
+                    <td th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">작성일</td>
+                    <td th:text="${post.viewCount}">조회수</td>
                 </tr>
                 <tr th:if="${posts.size() == 0}">
-                    <td colspan="4" class="text-muted">게시글이 없습니다.</td>
+                    <td colspan="5" class="text-muted py-4">게시글이 없습니다.</td>
                 </tr>
                 </tbody>
             </table>
         </div>
+
+        <!-- 페이지네이션 -->
+        <div class="mt-4" th:if="${totalPages > 0}">
+            <nav aria-label="게시글 페이지 네비게이션">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{|/posts?page=${currentPage - 1}${keyword != null ? '&keyword=' + keyword : ''}|}"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+                        <a class="page-link"
+                           th:href="@{|/posts?page=${i}${keyword != null ? '&keyword=' + keyword : ''}|}"
+                           th:text="${i + 1}">1</a>
+                    </li>
+                    <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{|/posts?page=${currentPage + 1}${keyword != null ? '&keyword=' + keyword : ''}|}"
+                           aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
     </div>
 </div>
 
@@ -135,6 +154,5 @@
         }
     }
 </script>
-
 </body>
 </html>

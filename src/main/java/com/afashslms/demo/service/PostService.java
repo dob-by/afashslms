@@ -10,6 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -166,5 +168,13 @@ public class PostService {
         return userRepository.findByEmail(email)
                 .map(user -> user.getRole().name())
                 .orElse("USER");
+    }
+
+    public Page<Post> getAllPosts(Pageable pageable) {
+        return postRepository.findAll(pageable);
+    }
+
+    public Page<Post> searchPostsByTitle(String keyword, Pageable pageable) {
+        return postRepository.findByTitleContainingIgnoreCase(keyword, pageable);
     }
 }

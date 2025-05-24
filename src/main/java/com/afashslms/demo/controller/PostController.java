@@ -8,6 +8,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import com.afashslms.demo.service.CommentService;
 import com.afashslms.demo.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,6 +35,8 @@ public class PostController {
 
     private final PostService postService;
     private final CommentService commentService;
+
+
 
     private String getCurrentUserRole() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -68,10 +73,27 @@ public class PostController {
 
     // 게시글 목록
     @GetMapping
-    public String listPosts(Model model) {
-        List<Post> posts = postService.getAllPosts();
-        model.addAttribute("posts", posts);
-        return "post/list";  // templates/post/list.html
+    public String listPosts(@RequestParam(defaultValue = "0") int page,
+                            @RequestParam(defaultValue = "10") int size,
+                            @RequestParam(required = false) String keyword,
+                            Model model) {
+
+        Page<Post> postPage;
+
+        if (keyword != null && !keyword.isBlank()) {
+            postPage = postService.searchPostsByTitle(keyword, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")));
+        } else {
+            postPage = postService.getAllPosts(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")));
+        }
+
+        model.addAttribute("posts", postPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", postPage.getTotalPages());
+        model.addAttribute("totalItems", postPage.getTotalElements());
+        model.addAttribute("pageSize", size);
+        model.addAttribute("keyword", keyword);
+
+        return "post/list";
     }
 
     // 게시글 상세
