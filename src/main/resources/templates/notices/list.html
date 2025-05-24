@@ -89,7 +89,7 @@
                 <tr th:each="notice, iterStat : ${notices}"
                     th:onclick="|location.href='/notices/${notice.id}'|"
                     class="clickable-row text-center py-3">
-                    <td th:text="${iterStat.count}">1</td>
+                    <td th:text="${totalItems - (currentPage * pageSize + iterStat.index)}">1</td>
                     <td class="text-ellipsis fw-semibold" th:text="${notice.title}">공지 제목</td>
                     <td th:text="${notice.author.username}">작성자</td>
                     <td th:text="${#dates.format(notice.createdAt, 'yyyy-MM-dd')}">작성일</td>
@@ -100,7 +100,33 @@
                 </tbody>
             </table>
         </div>
+        <!-- 페이징 네비게이션: 공지사항이 있을 때만 출력 -->
+        <div class="mt-4" th:if="${totalPages > 0}">
+            <nav aria-label="공지사항 페이지 네비게이션">
+                <ul class="pagination justify-content-center">
+                    <!-- 이전 페이지 -->
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{|/notices?page=${currentPage - 1}|}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
 
+                    <!-- 페이지 번호 반복 -->
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+                        <a class="page-link" th:href="@{|/notices?page=${i}|}" th:text="${i + 1}">1</a>
+                    </li>
+
+                    <!-- 다음 페이지 -->
+                    <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+                        <a class="page-link" th:href="@{|/notices?page=${currentPage + 1}|}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
 </div>
 </body>

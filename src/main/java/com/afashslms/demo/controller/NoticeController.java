@@ -5,6 +5,9 @@ import com.afashslms.demo.repository.NoticeRepository;
 import com.afashslms.demo.security.CustomUserDetails;
 import com.afashslms.demo.service.NoticeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -30,9 +33,19 @@ public class NoticeController {
     private final NoticeRepository noticeRepository;
 
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("notices", noticeService.getAllNotices());
-        return "notices/list";
+    public String list(@RequestParam(defaultValue = "0") int page,
+                       @RequestParam(defaultValue = "10") int size,
+                       Model model) {
+
+        Page<Notice> noticePage = noticeService.getNotices(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")));
+
+        model.addAttribute("notices", noticePage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", noticePage.getTotalPages());
+        model.addAttribute("totalItems", noticePage.getTotalElements());
+        model.addAttribute("pageSize", size);
+
+        return "notices/list"; // 여긴 그대로
     }
 
     @GetMapping("/new")
