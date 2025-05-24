@@ -2,37 +2,81 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout :: layout(~{::body})}">
 <head>
+    <meta charset="UTF-8">
     <title>수리요청 관리</title>
+    <style>
+        .repair-card {
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+        }
+
+        .table tbody tr:hover {
+            background-color: #f1f8e9;
+        }
+
+        .btn-outline-primary {
+            border-radius: 999px;
+            padding: 4px 12px;
+        }
+
+        body.dark-mode .repair-card {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+        }
+
+        body.dark-mode .table thead {
+            background-color: #2a2a2a;
+            color: #81c784;
+        }
+
+        body.dark-mode .table tbody td {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .table tbody tr:hover {
+            background-color: #2a2a2a;
+        }
+    </style>
 </head>
 <body>
-<div class="container my-4">
-    <h4>🛠 전체 수리요청 내역</h4>
-    <table class="table table-bordered table-hover text-center align-middle">
-        <thead class="table-light">
-        <tr>
-            <th>요청일</th>
-            <th>학생</th>
-            <th>문제 유형</th>
-            <th>상세 유형</th>
-            <th>내용</th>
-            <th>상태</th>
-            <th>상세보기</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="repair : ${repairs}">
-            <td th:text="${#temporals.format(repair.createdAt, 'yyyy-MM-dd')}">날짜</td>
-            <td th:text="${repair.user.username}">홍길동</td>
-            <td th:text="${repair.category}">HW</td>
-            <td th:text="${repair.detailType}">부팅불가</td>
-            <td th:text="${repair.description}">내용</td>
-            <td th:text="${repair.status.displayName}">처리중</td>
-            <td>
-                <a th:href="@{|/admin/repairs/${repair.id}|}" class="btn btn-sm btn-outline-primary">🔍 보기</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+<div class="container my-5">
+    <div class="repair-card">
+        <h2 class="fw-bold text-center mb-4 text-dark">전체 수리 요청 내역</h2>
+
+        <div class="table-responsive rounded border">
+            <table class="table table-hover align-middle text-center mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>요청일</th>
+                    <th>학생</th>
+                    <th>문제 유형</th>
+                    <th>상세 유형</th>
+                    <th>내용</th>
+                    <th>상태</th>
+                    <th>상세보기</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="repair : ${repairs}">
+                    <td th:text="${#temporals.format(repair.createdAt, 'yyyy-MM-dd')}">날짜</td>
+                    <td th:text="${repair.user.username}">홍길동</td>
+                    <td th:text="${repair.category}">HW</td>
+                    <td th:text="${repair.detailType}">부팅불가</td>
+                    <td th:text="${repair.description}">내용</td>
+                    <td th:text="${repair.status.displayName}">처리중</td>
+                    <td>
+                        <a th:href="@{|/admin/repairs/${repair.id}|}" class="btn btn-sm btn-outline-primary">🔍 보기</a>
+                    </td>
+                </tr>
+                <tr th:if="${repairs.size() == 0}">
+                    <td colspan="7" class="text-muted py-4">수리 요청이 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 </body>
 </html>

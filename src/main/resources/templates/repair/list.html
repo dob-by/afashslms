@@ -2,68 +2,121 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout :: layout(~{::body})}">
 <head>
+    <meta charset="UTF-8">
     <title>수리 요청 내역</title>
-    <meta charset="UTF-8" />
+    <style>
+        .repair-card {
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+            padding: 2.5rem;
+        }
+
+        .btn-green {
+            background-color: #43a047 !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 999px !important;
+            padding: 6px 14px !important;
+            font-weight: 500 !important;
+            text-align: center !important;
+            white-space: nowrap !important;
+            text-decoration: none !important;
+        }
+
+        .btn-green:hover {
+            background-color: #388e3c !important;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f1f8e9;
+        }
+
+        body.dark-mode .repair-card {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+        }
+
+        body.dark-mode .table thead {
+            background-color: #2a2a2a;
+            color: #81c784;
+        }
+
+        body.dark-mode .table tbody td {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .table tbody tr:hover {
+            background-color: #2a2a2a;
+        }
+    </style>
 </head>
 <body>
-<div class="max-w-5xl mx-auto px-4 mt-5">
-    <h2 class="mb-4 fw-bold text-body">🛠 수리 요청 결과 및 내역</h2>
+<div class="container my-5">
+    <div class="repair-card">
+        <!-- 제목 -->
+        <h2 class="fw-bold text-center mb-4 text-dark">수리 요청 결과 및 내역</h2>
 
-    <!-- 최근 수리 요청 요약 -->
-    <div th:if="${recentRepair != null}" class="card shadow-sm mb-4">
-        <div class="card-header bg-success-subtle text-success-emphasis fw-semibold">
-            최근 제출한 수리 요청
+        <!-- 최근 제출한 요청 -->
+        <div th:if="${recentRepair != null}" class="card shadow-sm mb-4">
+            <div class="card-header bg-success-subtle text-success-emphasis fw-semibold">
+                최근 제출한 수리 요청
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>요청일시:</strong> <span th:text="${#temporals.format(recentRepair.createdAt, 'yyyy-MM-dd HH:mm')}"></span></li>
+                    <li class="list-group-item"><strong>문제유형:</strong> <span th:text="${recentRepair.category}"></span></li>
+                    <li class="list-group-item"><strong>세부문제:</strong> <span th:text="${recentRepair.detailType}"></span></li>
+                    <li class="list-group-item"><strong>담당자:</strong> <span th:text="${recentRepair.manager}"></span></li>
+                    <li class="list-group-item"><strong>진행상태:</strong> <span th:text="${recentRepair.status}"></span></li>
+                </ul>
+            </div>
         </div>
-        <div class="card-body">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item"><strong>요청일시:</strong> <span th:text="${#temporals.format(recentRepair.createdAt, 'yyyy-MM-dd HH:mm')}"></span></li>
-                <li class="list-group-item"><strong>문제유형:</strong> <span th:text="${recentRepair.category}"></span></li>
-                <li class="list-group-item"><strong>세부문제:</strong> <span th:text="${recentRepair.detailType}"></span></li>
-                <li class="list-group-item"><strong>담당자:</strong> <span th:text="${recentRepair.manager}"></span></li>
-                <li class="list-group-item"><strong>진행상태:</strong> <span th:text="${recentRepair.status}"></span></li>
-            </ul>
+
+        <!-- 경고 배너 -->
+        <div th:if="${openRepairsCount > 0}" class="alert alert-warning text-center">
+            현재 처리 중인 요청이 <strong th:text="${openRepairsCount}"></strong>건 있습니다.
         </div>
-    </div>
 
-    <!-- 처리중 요청 알림 -->
-    <div th:if="${openRepairsCount > 0}" class="alert alert-warning">
-        현재 처리 중인 요청이 <strong th:text="${openRepairsCount}"></strong>건 있습니다.
-    </div>
+        <!-- 히스토리 제목 + 버튼 -->
+        <div class="d-flex justify-content-end mb-3">
+            <a href="/repairs/new" class="btn-green btn-sm">+ 새 수리 요청</a>
+        </div>
 
-    <!-- 전체 수리 요청 내역 -->
-    <div class="mb-3 d-flex justify-content-between align-items-center">
-        <h4 class="mb-0 fw-semibold text-body">📋 나의 수리 요청 히스토리</h4>
-        <a href="/repairs/new" class="btn-green btn-sm">+ 새 수리 요청</a>
-    </div>
-
-    <div class="table-responsive rounded shadow-sm overflow-hidden">
-        <table class="table table-striped table-bordered text-center align-middle mb-0">
-            <thead class="table-light">
-            <tr>
-                <th>요청일</th>
-                <th>문제유형</th>
-                <th>세부문제</th>
-                <th>담당자</th>
-                <th>상태</th>
-                <th>관리</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="repair : ${repairs}">
-                <td th:text="${#temporals.format(repair.createdAt, 'yyyy-MM-dd')}">요청일</td>
-                <td th:text="${repair.category}">문제유형</td>
-                <td th:text="${repair.detailType}">세부문제</td>
-                <td th:text="${repair.manager}">담당자</td>
-                <td th:text="${repair.status}">상태</td>
-                <td>
-                    <a th:href="@{/repairs/{id}/edit(id=${repair.id})}" class="btn btn-sm btn-outline-primary me-1">수정</a>
-                    <form th:action="@{/repairs/delete/{id}(id=${repair.id})}" method="post" style="display:inline;">
-                        <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
-                    </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <!-- 수리 요청 테이블 -->
+        <div class="table-responsive rounded border">
+            <table class="table table-hover align-middle text-center mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>요청일</th>
+                    <th>문제유형</th>
+                    <th>세부문제</th>
+                    <th>담당자</th>
+                    <th>상태</th>
+                    <th>관리</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="repair : ${repairs}">
+                    <td th:text="${#temporals.format(repair.createdAt, 'yyyy-MM-dd')}">요청일</td>
+                    <td th:text="${repair.category}">문제유형</td>
+                    <td th:text="${repair.detailType}">세부문제</td>
+                    <td th:text="${repair.manager}">담당자</td>
+                    <td th:text="${repair.status}">상태</td>
+                    <td>
+                        <a th:href="@{/repairs/{id}/edit(id=${repair.id})}" class="btn btn-sm btn-outline-primary me-1">수정</a>
+                        <form th:action="@{/repairs/delete/{id}(id=${repair.id})}" method="post" style="display:inline;">
+                            <button class="btn btn-sm btn-outline-danger" type="submit"
+                                    onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${repairs.size() == 0}">
+                    <td colspan="6" class="text-center text-muted py-4">등록된 수리 요청이 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 </body>

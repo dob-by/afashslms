@@ -4,37 +4,46 @@
       th:replace="~{layout :: layout(~{::body})}">
 <head>
     <meta charset="UTF-8" />
-    <title>게시글 목록</title>
+    <title>게시판</title>
     <style>
-        /* 기존 스타일 유지 + 검색창 맞춤 */
-        .post-card {
+        .board-card {
             background-color: #ffffff;
             border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-        }
-
-        .table thead {
-            background-color: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .table tbody tr:hover {
-            background-color: #f1f8e9;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+            padding: 2.5rem;
         }
 
         .btn-green {
-            background-color: #43a047;
-            color: white !important;
+            background-color: #2e7d32;
+            color: white;
             border: none;
-            border-radius: 999px;
-            padding: 0.5rem 1.2rem;
-            font-weight: 500;
-            text-decoration: none;
         }
 
         .btn-green:hover {
-            background-color: #388e3c;
+            background-color: #1b5e20;
+        }
+
+        body.dark-mode .board-card {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+        }
+
+        body.dark-mode .table thead {
+            background-color: #333;
+            color: #ccc;
+        }
+
+        body.dark-mode .table tbody td {
+            color: #e0e0e0;
+        }
+
+        tr.clickable-row {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        tr.clickable-row:hover {
+            background-color: #f1f8e9;
         }
 
         .text-start a {
@@ -45,33 +54,23 @@
         .text-start a:hover {
             text-decoration: underline;
         }
-
-        body.dark-mode .post-card {
-            background-color: #1e1e1e;
-            color: #eaeaea;
-        }
-
-        body.dark-mode .table thead {
-            background-color: #333;
-            color: #81c784;
-        }
-
-        body.dark-mode .table tbody tr:hover {
-            background-color: #2a2a2a;
-        }
     </style>
 </head>
 <body>
-<div class="container my-5">
-    <div class="post-card">
-        <div class="mb-4">
-            <h2 class="fw-bold mb-4 text-center text-dark">게시판</h2>
-        </div>
-        <div class="d-flex justify-content-end mb-3" th:if="${userRole == 'STUDENT'}">
-            <a href="/posts/new" class="btn btn-green">+ 새 글 작성</a>
+<div class="container mt-5">
+
+    <div class="board-card">
+
+        <!-- 제목 -->
+        <h2 class="text-center fw-bold mb-4 text-dark">게시판</h2>
+
+        <!-- 새 글 버튼 -->
+        <div class="d-flex justify-content-end mb-3"
+             th:if="${userRole == 'STUDENT'}">
+            <a href="/posts/new" class="btn btn-green rounded-pill">+ 새 글 작성</a>
         </div>
 
-        <!-- 검색창 -->
+        <!-- 검색 -->
         <form class="mb-3 d-flex justify-content-end" th:action="@{/posts}" method="get">
             <input type="text" name="keyword" class="form-control w-auto me-2" placeholder="제목 검색"
                    th:value="${keyword}">
@@ -79,9 +78,9 @@
         </form>
 
         <!-- 테이블 -->
-        <div class="table-responsive">
-            <table class="table table-hover text-center align-middle">
-                <thead>
+        <div class="table-responsive rounded border">
+            <table class="table table-hover align-middle text-center mb-0">
+                <thead class="table-light">
                 <tr>
                     <th style="width: 8%;">순번</th>
                     <th style="width: 44%;">제목</th>
@@ -94,7 +93,7 @@
                 <tr th:each="post, iterStat : ${posts}"
                     th:attr="data-url=@{/posts/{id}(id=${post.postId})}"
                     onclick="handleRowClick(event)"
-                    style="cursor: pointer;">
+                    class="clickable-row text-center">
                     <td th:text="${totalItems - (currentPage * pageSize + iterStat.index)}">1</td>
                     <td class="text-start">
                         <a th:href="@{/posts/{id}(id=${post.postId})}"
@@ -106,7 +105,7 @@
                     <td th:text="${post.viewCount}">조회수</td>
                 </tr>
                 <tr th:if="${posts.size() == 0}">
-                    <td colspan="5" class="text-muted py-4">게시글이 없습니다.</td>
+                    <td colspan="5" class="text-center text-muted py-4">게시글이 없습니다.</td>
                 </tr>
                 </tbody>
             </table>
