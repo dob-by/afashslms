@@ -74,6 +74,12 @@
             <a class="btn btn-green rounded-pill" th:href="@{/notices/new}">+ 새 공지 작성</a>
         </div>
 
+        <!-- 검색 폼 -->
+        <form class="mb-3 d-flex justify-content-end" th:action="@{/notices}" method="get">
+            <input type="text" name="keyword" class="form-control w-auto me-2" placeholder="제목 검색" th:value="${keyword}">
+            <button type="submit" class="btn btn-outline-success">검색</button>
+        </form>
+
         <!-- 공지 테이블 -->
         <div class="table-responsive rounded border">
             <table class="table table-hover align-middle mb-0">
@@ -100,33 +106,41 @@
                 </tbody>
             </table>
         </div>
-        <!-- 페이징 네비게이션: 공지사항이 있을 때만 출력 -->
+
+        <!-- 🔽 페이징 -->
         <div class="mt-4" th:if="${totalPages > 0}">
             <nav aria-label="공지사항 페이지 네비게이션">
                 <ul class="pagination justify-content-center">
-                    <!-- 이전 페이지 -->
+                    <!-- ◀ 이전 페이지 -->
                     <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                        <a class="page-link" th:href="@{|/notices?page=${currentPage - 1}|}" aria-label="Previous">
+                        <a class="page-link"
+                           th:href="@{|/notices?page=${currentPage - 1}&keyword=${keyword}|}"
+                           aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
 
-                    <!-- 페이지 번호 반복 -->
+                    <!-- 1, 2, 3 ... -->
                     <li class="page-item"
                         th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                         th:classappend="${i == currentPage} ? 'active'">
-                        <a class="page-link" th:href="@{|/notices?page=${i}|}" th:text="${i + 1}">1</a>
+                        <a class="page-link"
+                           th:href="@{|/notices?page=${i}&keyword=${keyword}|}"
+                           th:text="${i + 1}">1</a>
                     </li>
 
-                    <!-- 다음 페이지 -->
+                    <!-- ▶ 다음 페이지 -->
                     <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
-                        <a class="page-link" th:href="@{|/notices?page=${currentPage + 1}|}" aria-label="Next">
+                        <a class="page-link"
+                           th:href="@{|/notices?page=${currentPage + 1}&keyword=${keyword}|}"
+                           aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
                 </ul>
             </nav>
         </div>
+
     </div>
 </div>
 </body>

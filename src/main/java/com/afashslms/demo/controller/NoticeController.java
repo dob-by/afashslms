@@ -35,17 +35,19 @@ public class NoticeController {
     @GetMapping
     public String list(@RequestParam(defaultValue = "0") int page,
                        @RequestParam(defaultValue = "10") int size,
+                       @RequestParam(required = false) String keyword,
                        Model model) {
 
-        Page<Notice> noticePage = noticeService.getNotices(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")));
+        Page<Notice> noticePage = noticeService.searchNotices(keyword, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")));
 
         model.addAttribute("notices", noticePage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", noticePage.getTotalPages());
         model.addAttribute("totalItems", noticePage.getTotalElements());
         model.addAttribute("pageSize", size);
+        model.addAttribute("keyword", keyword); // 💡 검색어 유지용
 
-        return "notices/list"; // 여긴 그대로
+        return "notices/list";
     }
 
     @GetMapping("/new")

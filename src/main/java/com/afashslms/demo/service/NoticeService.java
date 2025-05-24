@@ -30,4 +30,11 @@ public class NoticeService {
     public Page<Notice> getNotices(Pageable pageable) {
         return noticeRepository.findAll(pageable);
     }
+
+    public Page<Notice> searchNotices(String keyword, Pageable pageable) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return noticeRepository.findAll(pageable);
+        }
+        return noticeRepository.findByTitleContainingIgnoreCase(keyword, pageable);
+    }
 }
