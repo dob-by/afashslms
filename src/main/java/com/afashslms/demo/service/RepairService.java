@@ -18,7 +18,6 @@ public class RepairService {
     private final RepairRequestRepository repairRequestRepository;
     private final UserRepository userRepository;
 
-
     public List<RepairRequest> getRepairsByUserEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
@@ -32,6 +31,13 @@ public class RepairService {
     public RepairRequest getRepairById(Long id) {
         return repairRequestRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("수리 요청을 찾을 수 없습니다."));
+    }
+
+    public void rejectRepair(Long id, String reason) {
+        RepairRequest repair = getRepairById(id);
+        repair.setStatus(RepairStatus.REJECTED);
+        repair.setRejectionReason(reason); // 이 필드가 있어야 함!
+        repairRequestRepository.save(repair);
     }
 
     public void updateRepair(Long id, RepairRequest updatedRequest, String email) {

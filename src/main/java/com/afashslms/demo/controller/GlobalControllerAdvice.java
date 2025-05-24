@@ -51,7 +51,7 @@ public class GlobalControllerAdvice {
 
             // OAuth2 로그인 사용자
             if (principal instanceof CustomOAuth2User user) {
-                model.addAttribute("userRole", user.getRole().name());
+                model.addAttribute("userRole", user.getRole().getDisplayName());
                 model.addAttribute("username", user.getName());
                 return;
             }

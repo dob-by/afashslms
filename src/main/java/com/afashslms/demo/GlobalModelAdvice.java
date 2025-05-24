@@ -20,7 +20,7 @@ public class GlobalModelAdvice {
 
     @ModelAttribute("userRole")
     public String userRole(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        return userDetails != null ? userDetails.getRole().name() : null;
+        return userDetails != null ? userDetails.getRole().getDisplayName() : null;
     }
 
     @ModelAttribute("username")

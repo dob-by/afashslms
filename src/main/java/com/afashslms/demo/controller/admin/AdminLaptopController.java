@@ -9,6 +9,7 @@ import com.afashslms.demo.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,10 +44,11 @@ public class AdminLaptopController {
     }
 
     @GetMapping("/admin/laptops/{deviceId}")
+    @PreAuthorize("hasAnyRole('MID_ADMIN', 'TOP_ADMIN')") //권한 제어
     public String laptopDetail(@PathVariable String deviceId,
                                @AuthenticationPrincipal CustomUserDetails loginUser,
                                Model model) throws AccessDeniedException {
-        if (loginUser == null || loginUser.getRole() != Role.TOP_ADMIN) {
+        if (loginUser == null) {
             throw new AccessDeniedException("접근 권한이 없습니다.");
         }
 
@@ -75,6 +77,7 @@ public class AdminLaptopController {
     }
 
     @PostMapping("/admin/laptops/updateStatus")
+    @PreAuthorize("hasRole('TOP_ADMIN')")
     public String updateStatus(@RequestParam String deviceId,
                                @RequestParam LaptopStatus status,
                                @RequestHeader("Referer") String referer) {
@@ -88,12 +91,13 @@ public class AdminLaptopController {
     }
 
     @GetMapping("/admin/laptops/{deviceId}/ownership")
+    @PreAuthorize("hasAnyRole('MID_ADMIN', 'TOP_ADMIN')")
     public String showOwnershipHistory(@PathVariable String deviceId,
                                        @AuthenticationPrincipal CustomUserDetails loginUser,
                                        Model model) throws AccessDeniedException {
 
-        if (loginUser == null || loginUser.getRole() != Role.TOP_ADMIN) {
-            throw new AccessDeniedException("접근 권한이 없습니다.");
+        if (loginUser == null) {
+            throw new AccessDeniedException("로그인이 필요합니다.");
         }
 
         // 노트북 정보 가져오기
@@ -117,6 +121,7 @@ public class AdminLaptopController {
     }
 
     @PostMapping("/admin/laptops/{deviceId}/change-owner")
+    @PreAuthorize("hasRole('TOP_ADMIN')")
     public String changeOwner(@PathVariable String deviceId,
                               @RequestParam String newOwnerId,
                               @AuthenticationPrincipal CustomUserDetails loginUser) throws AccessDeniedException {

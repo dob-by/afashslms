@@ -113,7 +113,7 @@
         <a class="navbar-brand" th:href="@{/}">WingIT</a>
         <div class="d-flex align-items-center gap-3">
             <span class="text-muted small">
-                사용자: <strong th:text="${userRole} + ' | ' + ${username}">이름</strong>
+                사용자: <strong th:text="${#authentication?.principal?.user?.role.displayName + ' | ' + #authentication?.principal?.user?.username}">이름</strong>
             </span>
             <a th:href="@{/mypage}" class="btn btn-outline-secondary btn-sm">마이페이지</a>
 <!--            <button id="darkModeToggle" class="btn btn-outline-secondary btn-sm">🌙 다크모드</button>-->
@@ -146,7 +146,6 @@
     <div th:replace="${content}"></div>
 </main>
 
-<!-- 푸터 -->
 <footer class="text-center text-muted py-3 mt-auto">
     © 2025 WingIT. All rights reserved.
 </footer>

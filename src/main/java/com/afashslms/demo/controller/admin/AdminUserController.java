@@ -10,6 +10,7 @@ import com.afashslms.demo.service.UserService;
 import com.afashslms.demo.repository.LaptopRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,6 +56,7 @@ public class AdminUserController {
     }
 
     @PostMapping("/admin/users/{userId}/role")
+    @PreAuthorize("hasRole('TOP_ADMIN')")
     public String changeUserRole(@PathVariable String userId,
                                  @RequestParam String newRole,
                                  @AuthenticationPrincipal CustomUserDetails loginUser) throws AccessDeniedException {
@@ -76,19 +78,14 @@ public class AdminUserController {
     }
 
     @GetMapping("/admin/users/{userId}")
+    @PreAuthorize("hasAnyRole('MID_ADMIN', 'TOP_ADMIN')")
     public String getUserDetail(@PathVariable String userId, Model model,
-                                @AuthenticationPrincipal CustomUserDetails loginUser) throws AccessDeniedException {
+                                @AuthenticationPrincipal CustomUserDetails loginUser) {
         List<User> users = userService.getAllUsers();
 
-        if (loginUser != null) {
-            model.addAttribute("users", users);
-            model.addAttribute("username", loginUser.getUser().getUsername());
-            model.addAttribute("userRole", loginUser.getRole().name());
-        }
-
-        if (loginUser == null || loginUser.getRole() != Role.TOP_ADMIN) {
-            throw new AccessDeniedException("접근 권한이 없습니다.");
-        }
+        model.addAttribute("users", users);
+        model.addAttribute("username", loginUser.getUser().getUsername());
+        model.addAttribute("userRole", loginUser.getRole().name());
 
         User user = userService.findByUserId(userId);
         List<Laptop> laptops = laptopRepository.findByUser_UserId(userId);

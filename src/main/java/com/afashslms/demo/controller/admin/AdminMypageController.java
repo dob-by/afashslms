@@ -21,7 +21,7 @@ public class AdminMypageController {
     public String adminMypage(Model model, @AuthenticationPrincipal CustomUserDetails principal) {
         model.addAttribute("username", principal.getUser().getUsername());
         model.addAttribute("email", principal.getUser().getEmail());
-        model.addAttribute("userRole", principal.getUser().getRole().name());
+        model.addAttribute("userRole", principal.getUser().getRole().getDisplayName());
 
         //통계 데이터
         model.addAttribute("totalRepairs", repairService.countAll());

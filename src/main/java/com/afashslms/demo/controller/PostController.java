@@ -116,7 +116,7 @@ public class PostController {
 
             if (principal instanceof CustomOAuth2User user) {
                 model.addAttribute("currentUserEmail", user.getEmail());
-                model.addAttribute("userRole", user.getRole().name());
+                model.addAttribute("userRole", user.getRole().getDisplayName());
 
             } else if (principal instanceof CustomUserDetails userDetails) {
                 model.addAttribute("currentUserEmail", userDetails.getEmail());

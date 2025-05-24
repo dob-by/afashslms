@@ -26,7 +26,11 @@ public class RepairRequest {
     private String category;            // HW or SW
     private String detailType;          // 구체적 문제 유형
     private String description;         // 상세 사유
+
+    @Column(name = "cmos_password")
     private String cmosPassword;
+
+    @Column(name = "windows_password")
     private String windowsPassword;
     private String manager;            // 담당자
 
@@ -35,6 +39,9 @@ public class RepairRequest {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RepairStatus status;       // 상태: REQUESTED, COMPLETED 등
+
+    @Column(length = 1000)
+    private String rejectionReason;
 
     @PrePersist
     public void prePersist() {

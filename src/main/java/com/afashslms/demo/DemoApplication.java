@@ -47,7 +47,7 @@ public class DemoApplication {
 				User user = new User();
 				user.setUserId("admin");
 				user.setPassword(passwordEncoder.encode("1234"));
-				user.setUsername("관리자");
+				user.setUsername("로제");
 				user.setEmail("admin@test.com");
 				user.setProvider("local");
 				user.setRole(Role.TOP_ADMIN);

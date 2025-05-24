@@ -87,7 +87,7 @@ public class RepairController {
         model.addAttribute("recentRepair", repairs.isEmpty() ? null : repairs.get(0));
         model.addAttribute("openRepairsCount", repairs.stream().filter(r -> !"완료".equals(r.getStatus())).count());
 
-        model.addAttribute("userRole", user.getRole().name());  // "STUDENT", "USER", "TOP_ADMIN"
+        model.addAttribute("userRole", user.getRole().getDisplayName());  // "STUDENT", "USER", "TOP_ADMIN"
 
         return "repair/list";
     }

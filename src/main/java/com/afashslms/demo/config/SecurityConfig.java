@@ -44,7 +44,24 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/check-email", "/users/check-userid", "/signup", "/login", "/css/**", "/js/**", "/h2-console/**").permitAll()
+                        // ✅ 공개 경로
+                        .requestMatchers(
+                                "/users/check-email",
+                                "/users/check-userid",
+                                "/signup",
+                                "/login",
+                                "/css/**",
+                                "/js/**",
+                                "/h2-console/**"
+                        ).permitAll()
+
+                        // ✅ 사용자 상세조회 등 관리자 페이지: MID_ADMIN 이상 접근 가능
+                        .requestMatchers("/admin/users/**").hasAnyRole("MID_ADMIN", "TOP_ADMIN")
+
+                        // ✅ 노트북 관리 관련
+                        .requestMatchers("/admin/laptops/**").hasAnyRole("MID_ADMIN", "TOP_ADMIN")
+
+                        // ✅ 그 외는 인증만 요구
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

@@ -7,7 +7,7 @@
 </head>
 <body>
 <main class="container my-5">
-    <h3 class="mb-4">🛠 수리 요청 상세</h3>
+    <h3 class="mb-4 text-center">🛠 수리 요청 상세</h3>
 
     <div class="card p-4 shadow">
         <dl class="row">
@@ -32,27 +32,92 @@
             <dt class="col-sm-3">담당자</dt>
             <dd class="col-sm-9" th:text="${repair.manager}">김하늘</dd>
 
-            <dt class="col-sm-3">CMOS 비밀번호</dt>
-            <dd class="col-sm-9" th:text="${repair.cmosPassword}">1234</dd>
+            <th:block th:if="${userRole != null and (userRole.contains('MID_ADMIN') or userRole.contains('TOP_ADMIN'))}">
+                <dt class="col-sm-3">CMOS 비밀번호</dt>
+                <dd class="col-sm-9"
+                    th:text="${#strings.isEmpty(repair.cmosPassword) ? '입력 안됨' : repair.cmosPassword}">1234</dd>
 
-            <dt class="col-sm-3">Windows 비밀번호</dt>
-            <dd class="col-sm-9" th:text="${repair.windowsPassword}">abcd</dd>
+                <dt class="col-sm-3">Windows 비밀번호</dt>
+                <dd class="col-sm-9"
+                    th:text="${#strings.isEmpty(repair.windowsPassword) ? '입력 안됨' : repair.windowsPassword}">abcd</dd>
+            </th:block>
+            <!-- 상태 -->
+            <dt class="col-sm-3 fw-bold">상태</dt>
+            <dd class="col-sm-9" th:text="${repair.status.displayName}">수리 요청됨</dd>
+
+            <!-- 반려 사유 (한 줄 수평 정렬) -->
+            <dt class="col-sm-3 fw-bold text-danger" th:if="${repair.status.name() == 'REJECTED'}">반려 사유</dt>
+            <dd class="col-sm-9 text-danger" th:if="${repair.status.name() == 'REJECTED'}" th:text="${repair.rejectionReason}">요청 내용이 불충분합니다.</dd>
         </dl>
 
         <form th:action="@{'/admin/repairs/' + ${repair.id} + '/status'}" method="post">
-            <div class="mb-3">
-                <label for="status" class="form-label">수리 상태 변경</label>
-                <select id="status" name="status" class="form-select">
-                    <option th:each="s : ${statuses}"
-                            th:value="${s}"
-                            th:text="${s.displayName}"
-                            th:selected="${s} == ${repair.status}">
-                    </option>
-                </select>
+            <!-- 상태 변경 영역 -->
+            <div th:if="${userRole == 'TOP_ADMIN'}">
+                <form th:action="@{'/admin/repairs/' + ${repair.id} + '/status'}" method="post" id="topAdminForm">
+                    <div class="mb-3">
+                        <label for="status" class="form-label">수리 상태 변경</label>
+                        <select id="status" name="status" class="form-select" onchange="toggleRejectionReason()">
+                            <option th:each="s : ${statuses}"
+                                    th:value="${s}"
+                                    th:text="${s.displayName}"
+                                    th:selected="${s} == ${repair.status}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- 🔽 상태가 REJECTED일 때만 반려 사유 입력란 보여줌 -->
+                    <div id="rejectionReasonBox" class="mb-3 d-none">
+                        <label for="rejectionReason" class="form-label">반려 사유</label>
+                        <textarea id="rejectionReason" name="rejectionReason" class="form-control" rows="3"
+                                  placeholder="반려 사유를 입력하세요 (REJECTED 선택 시 필수)"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">상태 업데이트</button>
+                </form>
             </div>
-            <button type="submit" class="btn btn-primary">상태 업데이트</button>
+
+            <div th:if="${userRole == 'MID_ADMIN'}">
+                <div th:if="${repair.status.name() == 'REQUESTED'}">
+                    <form th:action="@{'/admin/repairs/' + ${repair.id} + '/status'}" method="post">
+                        <input type="hidden" name="status" value="IN_PROGRESS" />
+                        <button type="submit" class="btn btn-warning">승인</button>
+                    </form>
+                    <!-- 반려 버튼 (중간 관리자용) -->
+                    <div th:if="${userRole == 'MID_ADMIN' and repair.status.name() == 'REQUESTED'}" class="mt-3">
+                        <form th:action="@{'/admin/repairs/' + ${repair.id} + '/reject'}" method="post">
+                            <div class="mb-2">
+                                <label for="rejectionReason" class="form-label">반려 사유</label>
+                                <textarea id="rejectionReasonMid" name="rejectionReason" class="form-control" rows="3" placeholder="반려 사유를 입력하세요" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-danger">반려</button>
+                        </form>
+                    </div>
+                </div>
+                <div th:if="${repair.status.name() == 'IN_PROGRESS'}">
+                    <form th:action="@{'/admin/repairs/' + ${repair.id} + '/status'}" method="post">
+                        <input type="hidden" name="status" value="COMPLETED" />
+                        <button type="submit" class="btn btn-success">수리 완료</button>
+                    </form>
+                </div>
+            </div>
         </form>
     </div>
 </main>
+<script>
+    function toggleRejectionReason() {
+        const status = document.getElementById("status").value;
+        const rejectionBox = document.getElementById("rejectionReasonBox");
+        if (status === "REJECTED") {
+            rejectionBox.classList.remove("d-none");
+        } else {
+            rejectionBox.classList.add("d-none");
+        }
+    }
+
+    // 페이지 진입 시 초기 체크 (이미 REJECTED일 경우 보여줘야 하니까!)
+    document.addEventListener("DOMContentLoaded", function () {
+        toggleRejectionReason();
+    });
+</script>
 </body>
 </html>

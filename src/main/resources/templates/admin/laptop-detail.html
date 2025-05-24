@@ -80,22 +80,24 @@
             <tr><th>모델명</th><td th:text="${laptop.modelName}">모델명</td></tr>
             <tr><th>일련번호</th><td th:text="${laptop.deviceId}">디바이스 ID</td></tr>
             <tr><th>IP 정보</th><td th:text="${laptop.ip}">IP</td></tr>
-            <tr><th>상태</th><td th:text="${laptop.status}">상태</td></tr>
+            <tr><th>상태</th><td th:text="${laptop.status.displayName}">상태</td></tr>
             <tr><th>관리번호</th><td th:text="${laptop.manageNumber}">관리번호</td></tr>
             <tr><th>사용자</th><td th:text="${laptop.user != null ? laptop.user.username : '미배정'}">사용자</td></tr>
         </table>
 
-        <!-- 소유자 변경 폼 -->
-        <form th:action="@{'/admin/laptops/' + ${laptop.deviceId} + '/change-owner'}" method="post" class="mb-5">
+        <!-- 소유자 변경 폼: TOP_ADMIN만 보이게 -->
+        <form th:if="${userRole == 'TOP_ADMIN'}"
+              th:action="@{'/admin/laptops/' + ${laptop.deviceId} + '/change-owner'}"
+              method="post"
+              class="mb-5">
             <div class="mb-3 position-relative">
                 <label for="userSearch" class="form-label fw-semibold">새 소유자 검색</label>
-                <input class="form-control" id="userSearch" placeholder="이름 또는 ID 입력" oninput="filterUsers()" autocomplete="off">
+                <input class="form-control" id="userSearch" placeholder="이름 또는 ID 입력"
+                       oninput="filterUsers()" autocomplete="off" />
                 <div id="userList" class="list-group position-absolute w-100" style="z-index: 1000;"></div>
-                <input type="hidden" id="newOwnerId" name="newOwnerId" required>
+                <input type="hidden" id="newOwnerId" name="newOwnerId" required />
             </div>
-            <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-green">소유자 변경</button>
-            </div>
+            <button type="submit" class="btn btn-success">소유자 변경</button>
         </form>
 
         <!-- 소유 이력 -->
@@ -127,8 +129,7 @@
         </div>
     </div>
 </div>
-
-<script th:inline="javascript">
+<script th:inline="javascript" th:if="${userRole == 'TOP_ADMIN'}">
     const searchInput = document.getElementById('userSearch');
     const resultBox = document.getElementById('userList');
     const hiddenInput = document.getElementById('newOwnerId');

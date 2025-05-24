@@ -19,6 +19,7 @@ public class CustomUserDetails implements UserDetails {
     }
 
     public Role getRole() {
+        System.out.println("✅ 현재 로그인한 사용자의 Role: " + user.getRole());
         return user.getRole();
     }
 
