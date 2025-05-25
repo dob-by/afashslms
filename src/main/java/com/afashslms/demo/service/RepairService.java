@@ -80,6 +80,22 @@ public class RepairService {
         repairRequestRepository.save(repair);
     }
 
+    public List<RepairRequest> searchRepairs(String keyword, RepairStatus status) {
+        if ((keyword == null || keyword.isBlank()) && status == null) {
+            return repairRequestRepository.findAllByOrderByCreatedAtDesc();
+        }
+
+        if (status != null && (keyword == null || keyword.isBlank())) {
+            return repairRequestRepository.findByStatusOrderByCreatedAtDesc(status);
+        }
+
+        if (status == null) {
+            return repairRequestRepository.findByKeyword(keyword);
+        }
+
+        return repairRequestRepository.findByKeywordAndStatus(keyword, status);
+    }
+
     //수리 관련 통계 확인 메서드
     public long countAll() {
         return repairRequestRepository.count();

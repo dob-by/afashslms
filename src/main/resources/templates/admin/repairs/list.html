@@ -44,7 +44,20 @@
 <div class="container my-5">
     <div class="repair-card">
         <h2 class="fw-bold text-center mb-4 text-dark">전체 수리 요청 내역</h2>
-
+        <form method="get" class="row g-3 mb-4">
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="keyword" placeholder="학생 이름 또는 이메일" th:value="${keyword}">
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" name="status">
+                    <option value="">-- 상태 전체 --</option>
+                    <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.displayName}" th:selected="${s} == ${status}"></option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-outline-primary">검색</button>
+            </div>
+        </form>
         <div class="table-responsive rounded border">
             <table class="table table-hover align-middle text-center mb-0">
                 <thead class="table-light">

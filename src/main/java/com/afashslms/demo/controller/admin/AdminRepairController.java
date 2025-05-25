@@ -25,9 +25,16 @@ public class AdminRepairController {
     private final RepairService repairService;
 
     @GetMapping("/admin/repairs")
-    public String viewAllRepairs(Model model) {
-        List<RepairRequest> allRepairs = repairService.findAll();
-        model.addAttribute("repairs", allRepairs);
+    public String viewAllRepairs(@RequestParam(required = false) String keyword,
+                                 @RequestParam(required = false) RepairStatus status,
+                                 Model model) {
+
+        List<RepairRequest> repairs = repairService.searchRepairs(keyword, status);
+
+        model.addAttribute("repairs", repairs);
+        model.addAttribute("statuses", RepairStatus.values());
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("status", status);
         return "admin/repairs/list";
     }
 

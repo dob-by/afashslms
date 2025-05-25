@@ -7,7 +7,7 @@
 </head>
 <body>
 <main class="container my-5">
-    <h3 class="mb-4 text-center">🛠 수리 요청 상세</h3>
+    <h3 class="mb-4 text-center fw-semibold">수리 요청 상세</h3>
 
     <div class="card p-4 shadow">
         <dl class="row">
@@ -101,6 +101,11 @@
                 </div>
             </div>
         </form>
+    </div>
+    <!-- 목록으로 버튼 -->
+    <div class="mt-4 text-center">
+        <a th:if="${userRole == 'STUDENT'}" th:href="@{/repairs}" class="btn btn-secondary">🔙 목록으로</a>
+        <a th:if="${userRole == 'MID_ADMIN' or userRole == 'TOP_ADMIN'}" th:href="@{/admin/repairs}" class="btn btn-secondary">목록으로</a>
     </div>
 </main>
 <script>
