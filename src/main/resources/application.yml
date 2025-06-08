@@ -1,13 +1,28 @@
+server:
+  port: 8085
+
 spring:
   datasource:
-    url: jdbc:h2:tcp://localhost/~/afashslms
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:mysql://127.0.0.1:3306/wingits?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    username: root
+    password: wingits123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update    # 개발 중엔 update / 운영 땐 validate
+    show-sql: true
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect  # ✅ MySQL 최적화
+
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+
   security:
     oauth2:
       client:
@@ -20,8 +35,7 @@ spring:
               - email
               - profile
           kakao:
-            client-id: ad887d0dd3d187528ca487050685cfe5   # 카카오 앱에서 발급받은 클라이언트 아이디
-            #client-secret: YOUR_CLIENT_SECRET  # (필요한 경우, 일반적으로 필요없음)
+            client-id: ad887d0dd3d187528ca487050685cfe5
             scope:
               - "profile_nickname"
               - "account_email"
@@ -39,33 +53,16 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
-  config:
-    import: "application.yml"
-  jpa:
-    url: jdbc:h2:mem:testdb  #jdbc:mysql://localhost:3306/laptopdb
-    driver-class-name: org.h2.Driver  #com.mysql.cj.jdbc.Driver
-    username: sa
-    password:
-    hibernate:
-      ddl-auto: create
-    defer-datasource-initialization: true
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.H2Dialect
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
 
   sql:
     init:
-      mode: always
+      mode: never
+
   main:
     allow-circular-references: true
-server:
-  port: 8085
+
+thymeleaf:
+  cache: false
 
 logging:
   level:
@@ -74,10 +71,3 @@ logging:
     org.springframework.web.client.RestTemplate: DEBUG
     org.hibernate.SQL: debug
     org.springframework.security.web: DEBUG
-
-thymeleaf:
-  cache: false
-
-security:
-  csrf:
-    enabled: true

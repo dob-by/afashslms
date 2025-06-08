@@ -27,6 +27,27 @@
       border-bottom: 1px solid #ccc;
     }
 
+    .carousel-indicators button {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;               /* ✅ 동그라미 모양 */
+      background-color: #aaa;           /* ✅ 기본 회색 */
+      opacity: 0.7;                     /* ✅ 조금 더 보이게 */
+      margin: 0 6px;
+      border: none;                     /* ✅ 버튼 테두리 제거 */
+      transition: all 0.3s ease;
+    }
+
+    .carousel-indicators .active {
+      background-color: #43a047;        /* ✅ 초록색 강조 */
+      opacity: 1;
+    }
+
+    .carousel-indicators button:hover {
+      background-color: #2e7d32;
+      opacity: 1;
+    }
+
     .card {
       transition: transform 0.2s ease;
     }
@@ -70,17 +91,55 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 
-<!-- Hero Section -->
-<section class="py-5 mt-5 text-center" style="background: linear-gradient(135deg, #e8f5e9, #f1f8e9);">
-  <div class="container">
-<!--    <img src="/images/laptop_hero.png" alt="노트북 이미지" style="max-width: 240px;" class="mb-4">-->
-    <h1 class="fw-bold mt-4 mb-4">WingIT에 오신 것을 환영합니다</h1>
-    <p class="lead text-muted">
-      노트북 대여, 수리 요청, 사용자 관리까지 한 곳에서!<br>
-      공군항공과학고 노트북 통합관리 시스템
-    </p>
+<!-- Hero Carousel Section -->
+<div id="heroCarousel" class="carousel slide mt-5" data-bs-ride="carousel" data-bs-interval="3000">
+
+  <!-- 인디케이터 -->
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="슬라이드 1"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="슬라이드 2"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="슬라이드 3"></button>
   </div>
-</section>
+
+  <!-- 슬라이드들 -->
+  <div class="carousel-inner text-center">
+
+    <!-- Slide 1 -->
+    <div class="carousel-item active" style="background: linear-gradient(135deg, #e8f5e9, #f1f8e9); padding: 5rem 0;">
+      <div class="container">
+        <h1 class="fw-bold mb-4">WingIT에 오신 것을 환영합니다 👋</h1>
+        <p class="lead text-muted">
+          노트북 대여, 수리 요청, 사용자 관리까지 한 곳에서!<br>
+          공군항공과학고 노트북 통합관리 시스템
+        </p>
+      </div>
+    </div>
+
+    <!-- ✅ Slide 2-->
+    <div class="carousel-item" style="background: linear-gradient(135deg, #e3f2fd, #e1f5fe); padding: 5rem 0;">
+      <div class="container">
+        <h1 class="fw-bold mb-4">스마트한 노트북 관리의 시작 💻</h1>
+        <p class="lead text-muted">
+          학생, 교직원 모두를 위한 쉽고 직관적인 관리 플랫폼<br>
+          노트북 사용을 더 효율적으로 관리해보세요
+        </p>
+      </div>
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="carousel-item" style="background: linear-gradient(135deg, #fce4ec, #f3e5f5); padding: 5rem 0;">
+      <div class="container">
+        <h1 class="fw-bold mb-4">공군 특성에 딱 맞춘 시스템 ✈️</h1>
+        <p class="lead text-muted">
+          소프트웨어는 교육대에서, 하드웨어는 학생대에서!<br>
+          부서별 역할도 한눈에 확인할 수 있어요
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+</div>
 
 <!-- 📢 최근 공지사항 / ❓ 최근 문의 게시글 -->
 <main class="container my-5 flex-grow-1">
@@ -135,6 +194,6 @@
     <a href="/faq" class="btn btn-outline-success rounded-pill">자주 묻는 질문 보기</a>
   </div>
 </section>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

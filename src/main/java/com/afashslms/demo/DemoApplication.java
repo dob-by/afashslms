@@ -36,7 +36,7 @@ public class DemoApplication {
 	@Bean
 	public CommandLineRunner testUser(UserRepository userRepository, PasswordEncoder passwordEncoder) {
 		return args -> {
-			userRepository.deleteAll(); // ✅ DB 리셋용 (임시!)
+			//userRepository.deleteAll(); // ✅ DB 리셋용 (임시!)
 			System.out.println("🔥 main에서 실행됨!!!");
 
 			boolean exists = userRepository.findByUserId("admin").isPresent();
