@@ -79,7 +79,7 @@ public class ExcelReaderService {
             String statusStr = getCellValue(row.getCell(3));        // D열: 상태
             // E열 생략 (current_status)
             int manageNumber = Integer.parseInt(getCellValue(row.getCell(5))); // F열
-            String studentEmail = getCellValue(row.getCell(6));     // G열
+            String studentUserId = getCellValue(row.getCell(6));    // G열: 사용자 ID (이메일 아님)
             String createdAtStr = getCellValue(row.getCell(7));     // H열: 발급일자
 
             LocalDateTime createdAt = parseFlexibleDate(createdAtStr);
@@ -93,7 +93,8 @@ public class ExcelReaderService {
             laptop.setManageNumber(manageNumber);
             laptop.setIssuedAt(createdAt);
 
-            userRepository.findByEmail(studentEmail).ifPresent(laptop::setUser);
+            // ✅ user_id 기준으로 유저 찾기
+            userRepository.findByUserId(studentUserId).ifPresent(laptop::setUser);
 
             laptops.add(laptop);
         }
