@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +44,9 @@ public class ExcelReaderService {
             String username = getCellValue(row.getCell(1));
             String email = getCellValue(row.getCell(2));
             String militaryId = getCellValue(row.getCell(3));
-            LocalDateTime createdAt = LocalDateTime.parse(getCellValue(row.getCell(5)));
+            String createdAtStr = getCellValue(row.getCell(5));
+
+            LocalDateTime createdAt = parseFlexibleDate(createdAtStr);
 
             User user = new User();
             user.setUserId(userId);
@@ -50,7 +54,8 @@ public class ExcelReaderService {
             user.setEmail(email);
             user.setMilitaryId(militaryId);
             user.setRole(Role.STUDENT);
-            user.setCreatedAt(Timestamp.valueOf(createdAt));
+            user.setCreatedAt(createdAt != null ? Timestamp.valueOf(createdAt) : new Timestamp(System.currentTimeMillis()));
+
             users.add(user);
         }
 
@@ -68,23 +73,25 @@ public class ExcelReaderService {
         for (Row row : sheet) {
             if (row.getRowNum() == 0) continue;
 
-            String deviceId = getCellValue(row.getCell(0));
-            String ip = getCellValue(row.getCell(1));
-            String modelName = getCellValue(row.getCell(2));
-            String statusStr = getCellValue(row.getCell(3));
-            int manageNumber = Integer.parseInt(getCellValue(row.getCell(4)));
-            String studentEmail = getCellValue(row.getCell(5));
-            LocalDateTime createdAt = LocalDateTime.parse(getCellValue(row.getCell(6)));
+            String deviceId = getCellValue(row.getCell(0));         // A열: 일련번호
+            String modelName = getCellValue(row.getCell(1));        // B열: 모델명
+            String ip = getCellValue(row.getCell(2));               // C열: IP
+            String statusStr = getCellValue(row.getCell(3));        // D열: 상태
+            // E열 생략 (current_status)
+            int manageNumber = Integer.parseInt(getCellValue(row.getCell(5))); // F열
+            String studentEmail = getCellValue(row.getCell(6));     // G열
+            String createdAtStr = getCellValue(row.getCell(7));     // H열: 발급일자
 
+            LocalDateTime createdAt = parseFlexibleDate(createdAtStr);
             LaptopStatus status = mapToLaptopStatus(statusStr);
 
             Laptop laptop = new Laptop();
             laptop.setDeviceId(deviceId);
-            laptop.setIp(ip);
             laptop.setModelName(modelName);
+            laptop.setIp(ip);
             laptop.setStatus(status);
             laptop.setManageNumber(manageNumber);
-            laptop.setManageNumber(manageNumber);
+            laptop.setIssuedAt(createdAt);
 
             userRepository.findByEmail(studentEmail).ifPresent(laptop::setUser);
 
@@ -96,7 +103,38 @@ public class ExcelReaderService {
     }
 
     private String getCellValue(Cell cell) {
-        return (cell == null) ? "" : cell.toString().trim();
+        if (cell == null) return "";
+
+        return switch (cell.getCellType()) {
+            case STRING -> cell.getStringCellValue().trim();
+            case NUMERIC -> {
+                if (DateUtil.isCellDateFormatted(cell)) {
+                    LocalDateTime ldt = cell.getLocalDateTimeCellValue();
+                    yield ldt.toString(); // ISO format
+                } else {
+                    double num = cell.getNumericCellValue();
+                    yield (num == (int) num) ? String.valueOf((int) num) : String.valueOf(num);
+                }
+            }
+            case BOOLEAN -> String.valueOf(cell.getBooleanCellValue());
+            case FORMULA -> cell.getCellFormula();
+            default -> "";
+        };
+    }
+
+    private LocalDateTime parseFlexibleDate(String dateStr) {
+        if (dateStr == null || dateStr.isBlank()) return null;
+
+        try {
+            return LocalDateTime.parse(dateStr); // ISO (e.g. 2024-03-02T00:00)
+        } catch (DateTimeParseException e1) {
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                return LocalDateTime.parse(dateStr, formatter); // e.g. 2024-03-02 00:00:00
+            } catch (DateTimeParseException e2) {
+                throw new RuntimeException("❌ 날짜 형식을 파싱할 수 없습니다: " + dateStr);
+            }
+        }
     }
 
     private LaptopStatus mapToLaptopStatus(String statusStr) {
@@ -105,7 +143,7 @@ public class ExcelReaderService {
             case "수리 중" -> LaptopStatus.IN_REPAIR;
             case "수리 요청됨" -> LaptopStatus.REPAIR_REQUESTED;
             case "대기 중" -> LaptopStatus.AVAILABLE;
-            default -> throw new IllegalArgumentException("Unknown status: " + statusStr);
+            default -> throw new IllegalArgumentException("❌ 잘못된 상태 값: " + statusStr);
         };
     }
 }

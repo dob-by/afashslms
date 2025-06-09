@@ -42,7 +42,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/import/**"))
                 .authorizeHttpRequests(auth -> auth
                         // ✅ 공개 경로
                         .requestMatchers(
@@ -52,7 +52,8 @@ public class SecurityConfig {
                                 "/login",
                                 "/css/**",
                                 "/js/**",
-                                "/h2-console/**"
+                                "/h2-console/**",
+                                "/import/**"
                         ).permitAll()
 
                         // ✅ 사용자 상세조회 등 관리자 페이지: MID_ADMIN 이상 접근 가능
