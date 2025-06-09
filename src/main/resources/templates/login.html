@@ -37,13 +37,13 @@
 
         .btn-common {
             display: flex;
-            align-items: center; /* 세로 중앙 정렬 */
-            justify-content: center; /* 가로 중앙 정렬 */
+            align-items: center;
+            justify-content: center;
             height: 48px;
             font-size: 1rem;
             font-weight: 500;
             border-radius: 30px;
-            gap: 8px; /* 아이콘과 텍스트 간격 */
+            gap: 8px;
         }
 
         .btn-green {
@@ -90,9 +90,39 @@
             color: #607d8b;
         }
 
+        .tab-selector {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .tab-selector button {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 10px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        .tab-selector button.active {
+            border-bottom: 3px solid #2e7d32;
+            color: #2e7d32;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         .oauth-logo {
             width: 20px;
             height: 20px;
+            object-fit: contain;
         }
 
         .footer-text {
@@ -101,13 +131,20 @@
             text-align: center;
             margin-top: 1.5rem;
         }
+
+        .login-info-text {
+            font-size: 0.85rem;
+            text-align: center;
+            color: #616161;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
 <div class="container d-flex justify-content-center align-items-center vh-100">
     <div class="login-card">
 
-        <!-- 로고 및 브랜드 -->
+        <!-- 브랜드 -->
         <div class="brand">
             <div class="brand-icon">🛫</div>
             <div class="brand-title">
@@ -116,56 +153,90 @@
             <div class="brand-subtitle">공군항공과학고 노트북 통합관리 시스템</div>
         </div>
 
+        <!-- 탭 선택 -->
+        <div class="tab-selector">
+            <button class="active" onclick="showTab(event, 'student')">학생 로그인</button>
+            <button onclick="showTab(event, 'staff')">교직원 로그인</button>
+        </div>
+
         <!-- 로그인 실패 메시지 -->
         <div th:if="${param.error}" class="alert alert-danger text-center" role="alert">
             아이디 또는 비밀번호가 올바르지 않습니다.
         </div>
 
-        <!-- 로그인 폼 -->
-        <form th:action="@{/login}" method="post">
-            <div class="mb-3">
-                <label for="userId" class="form-label">아이디</label>
-                <input type="text" id="userId" name="username" class="form-control" required />
-            </div>
+        <!-- 학생 로그인 탭 -->
+        <div id="student" class="tab-content active">
+            <form th:action="@{/login}" method="post">
+                <div class="mb-3">
+                    <label for="userId" class="form-label">아이디</label>
+                    <input type="text" id="userId" name="username" class="form-control" required />
+                </div>
 
-            <div class="mb-3">
-                <label for="password" class="form-label">비밀번호</label>
-                <input type="password" id="password" name="password" class="form-control" required />
-            </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">비밀번호</label>
+                    <input type="password" id="password" name="password" class="form-control" required />
+                </div>
+
+                <div class="d-grid mb-2">
+                    <button type="submit" class="btn btn-green btn-common">로그인</button>
+                </div>
+            </form>
+
+            <div class="login-info-text">※ 학생은 배부받은 아이디/비밀번호로만 로그인 가능합니다.</div>
+        </div>
+
+        <!-- 교직원 로그인 탭 -->
+        <div id="staff" class="tab-content">
+            <form th:action="@{/login}" method="post">
+                <div class="mb-3">
+                    <label for="email" class="form-label">이메일</label>
+                    <input type="text" id="email" name="username" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="staffPassword" class="form-label">비밀번호</label>
+                    <input type="password" id="staffPassword" name="password" class="form-control" required />
+                </div>
+
+                <div class="d-grid mb-2">
+                    <button type="submit" class="btn btn-green btn-common">로그인</button>
+                </div>
+                <div class="d-grid mb-3">
+                    <a href="/signup" class="btn btn-outline-secondary btn-common">회원가입</a>
+                </div>
+            </form>
 
             <div class="d-grid mb-2">
-                <button type="submit" class="btn btn-green btn-common">로그인</button>
+                <a href="/oauth2/authorization/kakao" class="btn btn-warning btn-common">
+                    <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png" class="oauth-logo" alt="kakao">
+                    카카오로 로그인
+                </a>
             </div>
-            <div class="d-grid mb-3">
-                <a href="/signup" class="btn btn-outline-secondary btn-common">회원가입</a>
+            <div class="d-grid">
+                <a href="/oauth2/authorization/google" class="btn btn-outline-dark btn-common">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="oauth-logo" alt="google">
+                    구글로 로그인
+                </a>
             </div>
-        </form>
-
-        <hr class="my-3">
-
-        <!-- 소셜 로그인 -->
-        <div class="d-grid mb-2">
-            <a href="/oauth2/authorization/kakao" class="btn btn-warning btn-common">
-                <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"
-                     alt="Kakao" class="oauth-logo"> 카카오로 로그인
-            </a>
-        </div>
-        <div class="d-grid">
-            <a href="/oauth2/authorization/google" class="btn btn-outline-dark btn-common">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                     alt="Google G" class="oauth-logo"> 구글로 로그인
-            </a>
+            <div class="login-info-text">※ 교직원은 이메일 기반 로그인 또는 소셜 로그인이 가능합니다.</div>
         </div>
 
         <div class="footer-text">
-            처음 로그인하시면 자동으로 회원가입됩니다.<br>
             &copy; 2025 WingIT. All rights reserved.
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
-    Kakao.init("534c7cd4e44b95384d3bf3a5f27b0de4");
+    Kakao.init("YOUR_KAKAO_API_KEY");
+
+    function showTab(event, tab) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.getElementById(tab).classList.add('active');
+
+        document.querySelectorAll('.tab-selector button').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+    }
 </script>
 </body>
 </html>
