@@ -231,16 +231,16 @@
             &copy; 2025 WingIT. All rights reserved.
         </div>
 
-<script type="text/javascript">
-    Kakao.init("YOUR_KAKAO_API_KEY");
+        <script type="text/javascript">
+            Kakao.init("YOUR_KAKAO_API_KEY");
 
-    function showTab(event, tab) {
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.getElementById(tab).classList.add('active');
+            function showTab(event, tab) {
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById(tab).classList.add('active');
 
-        document.querySelectorAll('.tab-selector button').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
-    }
-</script>
+                document.querySelectorAll('.tab-selector button').forEach(b => b.classList.remove('active'));
+                event.target.classList.add('active');
+            }
+        </script>
 </body>
 </html>
