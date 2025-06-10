@@ -44,25 +44,24 @@ public class ExcelReaderService {
         for (Row row : sheet) {
             if (row.getRowNum() == 0) continue; // skip header
 
-            String userId = getCellValue(row.getCell(0));
             String username = getCellValue(row.getCell(1));
             String email = getCellValue(row.getCell(2));
             String militaryId = getCellValue(row.getCell(3));
             String createdAtStr = getCellValue(row.getCell(5));
             String birth = getCellValue(row.getCell(6));  // 생년월일 (형식: 090305)
 
-            LocalDateTime createdAt = parseFlexibleDate(createdAtStr);
+            String userId = militaryId; // ✅ 핵심: 군번을 userId로
 
-            // ✅ 초기 비밀번호: 군번 + 생년월일 조합
+            LocalDateTime createdAt = parseFlexibleDate(createdAtStr);
             String rawPassword = militaryId + birth;
 
             User user = new User();
-            user.setUserId(userId);
+            user.setUserId(userId); // 이제 이건 militaryId 기반
             user.setUsername(username);
             user.setEmail(email);
             user.setMilitaryId(militaryId);
             user.setBirth(birth);
-            user.setPassword(passwordEncoder.encode(rawPassword)); // 암호화해서 저장
+            user.setPassword(passwordEncoder.encode(rawPassword));
             user.setRole(Role.STUDENT);
             user.setCreatedAt(createdAt != null ? Timestamp.valueOf(createdAt) : new Timestamp(System.currentTimeMillis()));
 
