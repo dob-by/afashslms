@@ -167,6 +167,9 @@
         <!-- 학생 로그인 탭 -->
         <div id="student" class="tab-content active">
             <form th:action="@{/login}" method="post">
+                <!-- 로그인 타입 구분 -->
+                <input type="hidden" name="loginType" value="student" />
+
                 <div class="mb-3">
                     <label for="userId" class="form-label">아이디</label>
                     <input type="text" id="userId" name="username" class="form-control" required />
@@ -182,12 +185,15 @@
                 </div>
             </form>
 
-            <div class="login-info-text">※ 학생은 배부받은 아이디/비밀번호로만 로그인 가능합니다.</div>
+            <div class="login-info-text">※ 학생은 배부받은 아이디로만 로그인 가능합니다.</div>
         </div>
 
         <!-- 교직원 로그인 탭 -->
         <div id="staff" class="tab-content">
             <form th:action="@{/login}" method="post">
+                <!-- 로그인 타입 구분 -->
+                <input type="hidden" name="loginType" value="staff" />
+
                 <div class="mb-3">
                     <label for="email" class="form-label">이메일</label>
                     <input type="text" id="email" name="username" class="form-control" required />
@@ -224,8 +230,6 @@
         <div class="footer-text">
             &copy; 2025 WingIT. All rights reserved.
         </div>
-    </div>
-</div>
 
 <script type="text/javascript">
     Kakao.init("YOUR_KAKAO_API_KEY");

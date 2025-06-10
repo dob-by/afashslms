@@ -16,6 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import com.afashslms.demo.security.CustomAuthenticationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
 
 @Configuration
 @EnableWebSecurity
@@ -39,12 +43,84 @@ public class SecurityConfig {
         };
     }
 
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
+//
+//        http
+//                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/import/**"))
+//                .authorizeHttpRequests(auth -> auth
+//                        // 공개 경로
+//                        .requestMatchers(
+//                                "/users/check-email",
+//                                "/users/check-userid",
+//                                "/signup",
+//                                "/login",
+//                                "/css/**",
+//                                "/js/**",
+//                                "/h2-console/**",
+//                                "/import/**"
+//                        ).permitAll()
+//
+//                        // 사용자 상세조회 등 관리자 페이지: MID_ADMIN 이상 접근 가능
+//                        .requestMatchers("/admin/users/**").hasAnyRole("MID_ADMIN", "TOP_ADMIN")
+//
+//                        // 노트북 관리 관련
+//                        .requestMatchers("/admin/laptops/**").hasAnyRole("MID_ADMIN", "TOP_ADMIN")
+//
+//                        // 그 외는 인증만 요구
+//                        .anyRequest().authenticated()
+//                )
+//                .formLogin(form -> form
+//                        .loginPage("/login")
+//                        .loginProcessingUrl("/login")
+//                        .usernameParameter("username")
+//                        .passwordParameter("password")
+//                        .defaultSuccessUrl("/", true)
+//                        .permitAll()
+//                )
+//                .oauth2Login(oauth2 -> oauth2
+//                        .loginPage("/login")
+//                        .defaultSuccessUrl("/", true)
+//                        .userInfoEndpoint(userInfo -> userInfo
+//                                .userService(customOAuth2UserService)
+//                        )
+//                        .successHandler(successHandler())
+//                        .failureHandler((request, response, exception) -> {
+//                            System.out.println("OAuth2 Login Failed: " + exception.getMessage());
+//                            response.sendRedirect("/login?error=true");
+//                        })
+//                )
+//                .logout(logout -> logout
+//                        .logoutUrl("/logout")
+//                        .logoutSuccessUrl("/login")
+//                        .invalidateHttpSession(true)
+//                        .deleteCookies("JSESSIONID")
+//                );
+//
+//        // 커스텀 필터 추가
+//        http.addFilterAt(new CustomAuthenticationFilter(authenticationManager(http)), UsernamePasswordAuthenticationFilter.class);
+//
+//        return http.build();
+//    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        builder.authenticationProvider(authenticationProvider());
+        AuthenticationManager authenticationManager = builder.getOrBuild(); // ✅ build() 대신 getOrBuild()
+
+        CustomAuthenticationFilter customFilter = new CustomAuthenticationFilter(authenticationManager);
+        customFilter.setFilterProcessesUrl("/login");
+        customFilter.setUsernameParameter("username");
+        customFilter.setPasswordParameter("password");
+
+        customFilter.setRequiresAuthenticationRequestMatcher(
+                new AntPathRequestMatcher("/login", "POST")
+        );
+
         http
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/import/**"))
                 .authorizeHttpRequests(auth -> auth
-                        // ✅ 공개 경로
                         .requestMatchers(
                                 "/users/check-email",
                                 "/users/check-userid",
@@ -55,30 +131,14 @@ public class SecurityConfig {
                                 "/h2-console/**",
                                 "/import/**"
                         ).permitAll()
-
-                        // ✅ 사용자 상세조회 등 관리자 페이지: MID_ADMIN 이상 접근 가능
-                        .requestMatchers("/admin/users/**").hasAnyRole("MID_ADMIN", "TOP_ADMIN")
-
-                        // ✅ 노트북 관리 관련
-                        .requestMatchers("/admin/laptops/**").hasAnyRole("MID_ADMIN", "TOP_ADMIN")
-
-                        // ✅ 그 외는 인증만 요구
+                        .requestMatchers("/admin/users/**", "/admin/laptops/**").hasAnyRole("MID_ADMIN", "TOP_ADMIN")
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login")
-                        .usernameParameter("username")
-                        .passwordParameter("password")
-                        .defaultSuccessUrl("/", true)
-                        .permitAll()
-                )
+                .addFilterAt(customFilter, UsernamePasswordAuthenticationFilter.class) // 🔥 여기서 커스텀 필터만 추가
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
                         .defaultSuccessUrl("/", true)
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .userService(customOAuth2UserService)
-                        )
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler(successHandler())
                         .failureHandler((request, response, exception) -> {
                             System.out.println("OAuth2 Login Failed: " + exception.getMessage());
@@ -90,7 +150,8 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
-                );
+                )
+                .authenticationManager(authenticationManager); // ✅ 명시적으로 등록
 
         return http.build();
     }
