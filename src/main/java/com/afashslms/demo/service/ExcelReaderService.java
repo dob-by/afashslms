@@ -8,8 +8,10 @@ import com.afashslms.demo.repository.UserRepository;
 import com.afashslms.demo.repository.LaptopRepository;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.InputStream;
 import java.sql.Timestamp;
@@ -24,10 +26,12 @@ public class ExcelReaderService {
 
     private final UserRepository userRepository;
     private final LaptopRepository laptopRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public ExcelReaderService(UserRepository userRepository, LaptopRepository laptopRepository) {
+    public ExcelReaderService(UserRepository userRepository, LaptopRepository laptopRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.laptopRepository = laptopRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void importUsersFromExcel(MultipartFile file) throws Exception {
@@ -45,14 +49,20 @@ public class ExcelReaderService {
             String email = getCellValue(row.getCell(2));
             String militaryId = getCellValue(row.getCell(3));
             String createdAtStr = getCellValue(row.getCell(5));
+            String birth = getCellValue(row.getCell(6));  // 생년월일 (형식: 090305)
 
             LocalDateTime createdAt = parseFlexibleDate(createdAtStr);
+
+            // ✅ 초기 비밀번호: 군번 + 생년월일 조합
+            String rawPassword = militaryId + birth;
 
             User user = new User();
             user.setUserId(userId);
             user.setUsername(username);
             user.setEmail(email);
             user.setMilitaryId(militaryId);
+            user.setBirth(birth);
+            user.setPassword(passwordEncoder.encode(rawPassword)); // 암호화해서 저장
             user.setRole(Role.STUDENT);
             user.setCreatedAt(createdAt != null ? Timestamp.valueOf(createdAt) : new Timestamp(System.currentTimeMillis()));
 
@@ -81,6 +91,7 @@ public class ExcelReaderService {
             int manageNumber = Integer.parseInt(getCellValue(row.getCell(5))); // F열
             String studentUserId = getCellValue(row.getCell(6));    // G열: 사용자 ID (이메일 아님)
             String createdAtStr = getCellValue(row.getCell(7));     // H열: 발급일자
+
 
             LocalDateTime createdAt = parseFlexibleDate(createdAtStr);
             LaptopStatus status = mapToLaptopStatus(statusStr);
