@@ -60,7 +60,6 @@
 <main class="container my-5 flex-grow-1">
 
     <!-- 내 정보 카드 -->
-    <!-- 내 정보 카드 -->
     <div class="card shadow border-0 p-4 mb-5"
          style="border-radius: 1rem; background: linear-gradient(to right, #e6f4ea, #c8e6c9); margin-bottom: 3rem;">
         <div class="d-flex align-items-center">
@@ -77,12 +76,44 @@
         </div>
     </div>
 
+    <!-- 비밀번호 변경 -->
+    <div class="card shadow border-0 p-4 mb-5"
+         style="border-radius: 1rem; background: #fff8e1;">
+        <h5 class="fw-bold mb-3">🔑 비밀번호 변경</h5>
+
+        <!-- 메시지 출력 -->
+        <div th:if="${passwordError}" class="alert alert-danger" th:text="${passwordError}"></div>
+        <div th:if="${passwordSuccess}" class="alert alert-success" th:text="${passwordSuccess}"></div>
+
+        <form th:action="@{/mypage/password}" method="post">
+
+            <!-- ✅ CSRF 토큰 추가 -->
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+            <div class="mb-3">
+                <label for="currentPassword" class="form-label">현재 비밀번호</label>
+                <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+            </div>
+            <div class="mb-3">
+                <label for="newPassword" class="form-label">새 비밀번호</label>
+                <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+            </div>
+            <div class="mb-3">
+                <label for="confirmPassword" class="form-label">새 비밀번호 확인</label>
+                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-success">비밀번호 변경</button>
+            </div>
+        </form>
+    </div>
+
     <!-- 💻 노트북 정보 -->
     <div th:if="${userRole == 'STUDENT' and laptop != null}">
         <h5 class="section-title">💻 내 노트북 정보</h5>
         <div class="card-custom mb-4">
-            <p><strong>모델명:</strong> <span th:text="${laptop.model}">Dell XPS 13</span></p>
-            <p><strong>일련번호:</strong> <span th:text="${laptop.serialNumber}">SN-123456</span></p>
+            <p><strong>모델명:</strong> <span th:text="${laptop.modelName}">Dell XPS 13</span></p>
+            <p><strong>일련번호:</strong> <span th:text="${laptop.manageNumber}">SN-123456</span></p>
             <p><strong>대여일자:</strong> <span th:text="${#temporals.format(laptop.issuedAt, 'yyyy-MM-dd')}">2025-03-01</span></p>
         </div>
     </div>

@@ -14,6 +14,6 @@ public interface UserService {
     User findByUserId(String userId);
     List<User> searchByUsernameOrUserId(String keyword);
     List<User> searchUsers(String query);
-
+    boolean updatePassword(String email, String currentPassword, String newPassword);
 }
 

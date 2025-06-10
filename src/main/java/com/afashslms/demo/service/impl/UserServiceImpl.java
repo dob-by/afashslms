@@ -6,6 +6,7 @@ import com.afashslms.demo.repository.UserRepository;
 import com.afashslms.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<User> getAllUsers() {
@@ -52,5 +54,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> searchByUsernameOrUserId(String keyword) {
         return userRepository.findByUsernameContainingIgnoreCaseOrUserIdContainingIgnoreCase(keyword, keyword);
+    }
+
+    @Override
+    public boolean updatePassword(String email, String currentPassword, String newPassword) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+
+        System.out.println("✅ 비번 변경 로직 진입: " + email);
+        System.out.println("✅ DB 비번: " + user.getPassword());
+        System.out.println("✅ 매칭 여부: " + passwordEncoder.matches(currentPassword, user.getPassword()));
+
+        // 현재 비밀번호 확인
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            return false; // 틀림
+        }
+
+        // 비밀번호 변경
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return true;
     }
 }

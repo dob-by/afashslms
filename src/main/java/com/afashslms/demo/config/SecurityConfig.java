@@ -43,66 +43,6 @@ public class SecurityConfig {
         };
     }
 
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-//
-//        http
-//                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/import/**"))
-//                .authorizeHttpRequests(auth -> auth
-//                        // 공개 경로
-//                        .requestMatchers(
-//                                "/users/check-email",
-//                                "/users/check-userid",
-//                                "/signup",
-//                                "/login",
-//                                "/css/**",
-//                                "/js/**",
-//                                "/h2-console/**",
-//                                "/import/**"
-//                        ).permitAll()
-//
-//                        // 사용자 상세조회 등 관리자 페이지: MID_ADMIN 이상 접근 가능
-//                        .requestMatchers("/admin/users/**").hasAnyRole("MID_ADMIN", "TOP_ADMIN")
-//
-//                        // 노트북 관리 관련
-//                        .requestMatchers("/admin/laptops/**").hasAnyRole("MID_ADMIN", "TOP_ADMIN")
-//
-//                        // 그 외는 인증만 요구
-//                        .anyRequest().authenticated()
-//                )
-//                .formLogin(form -> form
-//                        .loginPage("/login")
-//                        .loginProcessingUrl("/login")
-//                        .usernameParameter("username")
-//                        .passwordParameter("password")
-//                        .defaultSuccessUrl("/", true)
-//                        .permitAll()
-//                )
-//                .oauth2Login(oauth2 -> oauth2
-//                        .loginPage("/login")
-//                        .defaultSuccessUrl("/", true)
-//                        .userInfoEndpoint(userInfo -> userInfo
-//                                .userService(customOAuth2UserService)
-//                        )
-//                        .successHandler(successHandler())
-//                        .failureHandler((request, response, exception) -> {
-//                            System.out.println("OAuth2 Login Failed: " + exception.getMessage());
-//                            response.sendRedirect("/login?error=true");
-//                        })
-//                )
-//                .logout(logout -> logout
-//                        .logoutUrl("/logout")
-//                        .logoutSuccessUrl("/login")
-//                        .invalidateHttpSession(true)
-//                        .deleteCookies("JSESSIONID")
-//                );
-//
-//        // 커스텀 필터 추가
-//        http.addFilterAt(new CustomAuthenticationFilter(authenticationManager(http)), UsernamePasswordAuthenticationFilter.class);
-//
-//        return http.build();
-//    }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
@@ -132,6 +72,9 @@ public class SecurityConfig {
                                 "/import/**"
                         ).permitAll()
                         .requestMatchers("/admin/users/**", "/admin/laptops/**").hasAnyRole("MID_ADMIN", "TOP_ADMIN")
+
+                        .requestMatchers("/mypage/password").authenticated()
+
                         .anyRequest().authenticated()
                 )
                 .addFilterAt(customFilter, UsernamePasswordAuthenticationFilter.class) // 🔥 여기서 커스텀 필터만 추가
@@ -170,4 +113,5 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .build();
     }
+
 }
