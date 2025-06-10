@@ -44,4 +44,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Laptop> laptops = new ArrayList<>();
+
+    @Column(name = "birth")
+    private String birth;
+
+
 }
