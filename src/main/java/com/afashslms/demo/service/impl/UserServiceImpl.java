@@ -72,6 +72,9 @@ public class UserServiceImpl implements UserService {
 
         // 비밀번호 변경
         user.setPassword(passwordEncoder.encode(newPassword));
+
+        user.setRole(Role.PENDING_ADMIN); //승인 대기 중 상태로 저장
+
         userRepository.save(user);
         return true;
     }

@@ -50,7 +50,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-
+import com.afashslms.demo.domain.Role;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -83,6 +83,16 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         Authentication authentication = authenticationManager.authenticate(authRequest);
 
         System.out.println(">> 인증 완료됨");
+
+        // PENDING_ADMIN 차단
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof CustomUserDetails customUserDetails) {
+            Role role = customUserDetails.getUser().getRole();
+            if (role == Role.PENDING_ADMIN) {
+                System.out.println("⛔ 승인되지 않은 관리자 로그인 시도!");
+                throw new BadCredentialsException("관리자 승인이 필요합니다.");
+            }
+        }
 
         boolean isStudentLogin = "student".equalsIgnoreCase(loginType);
         boolean isStaffLogin = "staff".equalsIgnoreCase(loginType);

@@ -20,6 +20,9 @@ import com.afashslms.demo.security.CustomAuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 
 @Configuration
 @EnableWebSecurity
@@ -84,8 +87,15 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler(successHandler())
                         .failureHandler((request, response, exception) -> {
-                            System.out.println("OAuth2 Login Failed: " + exception.getMessage());
-                            response.sendRedirect("/login?error=true");
+                            String errorMessage = exception.getMessage();
+                            if (errorMessage == null || errorMessage.isBlank()) {
+                                errorMessage = "OAuth2 로그인 실패";
+                            }
+
+                            System.out.println("OAuth2 Login Failed: " + errorMessage);
+                            errorMessage = URLEncoder.encode(errorMessage, StandardCharsets.UTF_8);
+
+                            response.sendRedirect("/login?errorMessage=" + errorMessage);
                         })
                 )
                 .logout(logout -> logout

@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .getUserInfoEndpoint()
                 .getUserNameAttributeName();
 
-        // 기존 사용자 존재 여부 확인
+        // 기존 사용자 조회 또는 신규 생성
         User user = userRepository.findByEmail(email)
                 .orElseGet(() -> {
                     User newUser = new User();
@@ -47,9 +48,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     newUser.setEmail(email);
                     newUser.setUsername(registrationId + "_user_" + email);
                     newUser.setProvider(registrationId);
-                    newUser.setRole(Role.STUDENT);
-                    return userRepository.save(newUser);
+                    newUser.setRole(Role.PENDING_ADMIN); // 🔥 승인 대기 상태로 저장
+                    userRepository.save(newUser);
+
+                    // 신규 생성된 사용자 로그인 차단
+                    throw new OAuth2AuthenticationException("최초 로그인입니다. 관리자 승인이 필요합니다.");
                 });
+
+        // 기존 사용자인데 아직 승인되지 않은 경우
+        if (user.getRole() == Role.PENDING_ADMIN) {
+            throw new OAuth2AuthenticationException(
+                    new OAuth2Error("access_denied", "관리자 승인 대기 중입니다.", null)
+            );
+        }
 
         return new CustomOAuth2User(user, attributes);
     }

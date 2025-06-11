@@ -35,7 +35,8 @@ public class User {
     private String oauthId; //소셜 로그인 식별자
 
     @Enumerated(EnumType.STRING)
-    private Role role;  //STUDENT, MID_ADMIN, TOP_ADMIN
+    @Column(length = 20)
+    private Role role;  //STUDENT, MID_ADMIN, TOP_ADMIN, PENDING_ADMIN
 
     private Timestamp createdAt;
 
