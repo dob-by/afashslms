@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -33,35 +34,28 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
         Map<String, Object> attributes = oAuth2User.getAttributes();
         String email = getEmail(userRequest, oAuth2User);
-
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        String userNameAttributeName = userRequest.getClientRegistration()
-                .getProviderDetails()
-                .getUserInfoEndpoint()
-                .getUserNameAttributeName();
 
-        // 기존 사용자 조회 또는 신규 생성
-        User user = userRepository.findByEmail(email)
-                .orElseGet(() -> {
-                    User newUser = new User();
-                    newUser.setUserId(UUID.randomUUID().toString());
-                    newUser.setEmail(email);
-                    newUser.setUsername(registrationId + "_user_" + email);
-                    newUser.setProvider(registrationId);
-                    newUser.setRole(Role.PENDING_ADMIN); // 🔥 승인 대기 상태로 저장
-                    userRepository.save(newUser);
+        // 기존 사용자 조회
+        Optional<User> optionalUser = userRepository.findByEmail(email);
 
-                    // 신규 생성된 사용자 로그인 차단
-                    throw new OAuth2AuthenticationException("최초 로그인입니다. 관리자 승인이 필요합니다.");
-                });
+        // 없으면 로그인 차단 + insert 안함
+        if (optionalUser.isEmpty()) {
+            throw new OAuth2AuthenticationException(
+                    new OAuth2Error("unauthorized", "최초 로그인입니다. 관리자 승인이 필요합니다.", null)
+            );
+        }
 
-        // 기존 사용자인데 아직 승인되지 않은 경우
+        User user = optionalUser.get();
+
+        // 승인 대기 상태인 경우 로그인 차단
         if (user.getRole() == Role.PENDING_ADMIN) {
             throw new OAuth2AuthenticationException(
                     new OAuth2Error("access_denied", "관리자 승인 대기 중입니다.", null)
             );
         }
 
+        // 정상 로그인
         return new CustomOAuth2User(user, attributes);
     }
 

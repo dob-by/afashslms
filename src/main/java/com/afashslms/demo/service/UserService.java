@@ -1,7 +1,9 @@
 package com.afashslms.demo.service;
 
 
+import com.afashslms.demo.domain.Role;
 import com.afashslms.demo.domain.User;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -15,5 +17,8 @@ public interface UserService {
     List<User> searchByUsernameOrUserId(String keyword);
     List<User> searchUsers(String query);
     boolean updatePassword(String email, String currentPassword, String newPassword);
+    long countPendingAdmins();
+    List<User> findByRole(Role role);
+    boolean approvePendingAdmin(String userId);
 }
 

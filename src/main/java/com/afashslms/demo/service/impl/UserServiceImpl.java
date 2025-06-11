@@ -78,4 +78,31 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         return true;
     }
+
+    @Override
+    public long countPendingAdmins() {
+        return userRepository.countByRole(Role.PENDING_ADMIN);
+    }
+
+    @Override
+    public List<User> findByRole(Role role) {
+        return userRepository.findByRole(role);
+    }
+
+    @Override
+    public boolean approvePendingAdmin(String userId) {
+        Optional<User> userOpt = userRepository.findByUserId(userId);
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+
+            if (user.getRole() == Role.PENDING_ADMIN) {
+                user.setRole(Role.MID_ADMIN);
+                userRepository.save(user);
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
