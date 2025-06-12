@@ -54,11 +54,8 @@
 <body>
 <div class="container mt-5">
     <div class="user-card">
-
-        <!-- 🧑‍💻 제목 -->
-        <h2 class="text-center fw-bold mb-4 text-dark">👥 사용자 목록</h2>
-
-        <!-- 👤 사용자 테이블 -->
+        <h2 class="text-center fw-bold mb-4 text-dark">사용자 목록</h2>
+        <!-- 사용자 테이블 -->
         <div class="table-responsive rounded border">
             <table class="table table-hover align-middle text-center mb-0">
                 <thead class="table-light">
@@ -67,7 +64,6 @@
                     <th>이름</th>
                     <th>이메일</th>
                     <th>군번</th>
-                    <th>로그인 방식</th>
                     <th>역할</th>
                     <th>가입일</th>
                     <th>관리</th>
@@ -79,25 +75,7 @@
                     <td th:text="${user.username}">username</td>
                     <td th:text="${user.email}">email</td>
                     <td th:text="${user.militaryId}">militaryId</td>
-                    <td th:text="${user.provider}">provider</td>
-                    <td>
-                        <!-- ✅ 최고 관리자만 역할 변경 form 보이게 -->
-                        <div th:if="${userRole == 'TOP_ADMIN'}">
-                            <form th:action="@{'/admin/users/' + ${user.userId} + '/role'}" method="post" class="d-inline">
-                                <div class="input-group input-group-sm">
-                                    <select class="form-select form-select-sm" name="newRole">
-                                        <option value="STUDENT" th:selected="${user.role.name() == 'STUDENT'}">STUDENT</option>
-                                        <option value="MID_ADMIN" th:selected="${user.role.name() == 'MID_ADMIN'}">MID_ADMIN</option>
-                                        <option value="TOP_ADMIN" th:selected="${user.role.name() == 'TOP_ADMIN'}">TOP_ADMIN</option>
-                                    </select>
-                                    <button type="submit" class="btn btn-sm btn-outline-success">변경</button>
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- ❗ MID_ADMIN 이하에겐 역할만 텍스트로 보여줌 -->
-                        <div th:unless="${userRole == 'TOP_ADMIN'}" th:text="${user.role.name()}">역할</div>
-                    </td>
+                    <td th:text="${user.role.name()}">역할</td>
                     <td th:text="${user.createdAt != null ? #temporals.format(user.createdAt.toLocalDateTime(), 'yyyy-MM-dd') : 'N/A'}">가입일</td>
                     <td>
                         <a th:href="@{'/admin/users/' + ${user.userId}}" class="btn btn-green btn-sm">상세보기</a>

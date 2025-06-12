@@ -74,7 +74,7 @@
             <tr><th>이름</th><td th:text="${user.username}">username</td></tr>
             <tr><th>이메일</th><td th:text="${user.email}">email</td></tr>
             <tr><th>군번</th><td th:text="${user.militaryId}">militaryId</td></tr>
-            <tr><th>로그인 방식</th><td th:text="${user.provider}">provider</td></tr>
+<!--            <tr><th>로그인 방식</th><td th:text="${user.provider}">provider</td></tr>-->
             <tr><th>역할</th><td th:text="${user.role}">role</td></tr>
             <tr><th>가입일</th><td th:text="${#temporals.format(user.createdAt.toLocalDateTime(), 'yyyy-MM-dd HH:mm')}">createdAt</td></tr>
         </table>
@@ -99,6 +99,28 @@
                     <td th:text="${laptop.modelName}">모델명</td>
                     <td th:text="${laptop.deviceId}">일련번호</td>
                     <td th:text="${laptop.ip}">IP</td>
+<!--                    <td>-->
+<!--                        <div th:if="${userRole == 'TOP_ADMIN'}">-->
+<!--                            <form th:action="@{'/admin/users/' + ${user.userId} + '/laptops/' + ${laptop.deviceId} + '/status'}" method="post">-->
+<!--                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
+<!--                                <div class="d-flex align-items-center justify-content-center gap-2">-->
+<!--                                    <select class="form-select form-select-sm" name="newStatus">-->
+<!--                                        <option value="IN_USE" th:selected="${laptop.status.name() == 'IN_USE'}">사용 중</option>-->
+<!--                                        <option value="IN_REPAIR" th:selected="${laptop.status.name() == 'IN_REPAIR'}">수리 중</option>-->
+<!--                                        <option value="REPAIR_REQUESTED" th:selected="${laptop.status.name() == 'REPAIR_REQUESTED'}">수리 요청됨</option>-->
+<!--                                        <option value="AVAILABLE" th:selected="${laptop.status.name() == 'AVAILABLE'}">대기 중</option>-->
+<!--                                    </select>-->
+<!--                                    <button type="submit" class="btn btn-sm btn-success" style="white-space: nowrap;">저장</button>-->
+<!--                                </div>-->
+<!--                            </form>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; 중간관리자에게는 상태 텍스트만 보여주기 &ndash;&gt;-->
+<!--                        <div th:if="${laptop.status.name() == 'IN_USE'}">사용 중</div>-->
+<!--                        <div th:if="${laptop.status.name() == 'IN_REPAIR'}">수리 중</div>-->
+<!--                        <div th:if="${laptop.status.name() == 'REPAIR_REQUESTED'}">수리 요청됨</div>-->
+<!--                        <div th:if="${laptop.status.name() == 'AVAILABLE'}">대기 중</div>-->
+<!--                    </td>-->
                     <td>
                         <div th:if="${userRole == 'TOP_ADMIN'}">
                             <form th:action="@{'/admin/users/' + ${user.userId} + '/laptops/' + ${laptop.deviceId} + '/status'}" method="post">
@@ -115,11 +137,12 @@
                             </form>
                         </div>
 
-                        <!-- 중간관리자에게는 상태 텍스트만 보여주기 -->
-                        <div th:if="${laptop.status.name() == 'IN_USE'}">사용 중</div>
-                        <div th:if="${laptop.status.name() == 'IN_REPAIR'}">수리 중</div>
-                        <div th:if="${laptop.status.name() == 'REPAIR_REQUESTED'}">수리 요청됨</div>
-                        <div th:if="${laptop.status.name() == 'AVAILABLE'}">대기 중</div>
+                        <div th:unless="${userRole == 'TOP_ADMIN'}">
+                            <span th:if="${laptop.status.name() == 'IN_USE'}">사용 중</span>
+                            <span th:if="${laptop.status.name() == 'IN_REPAIR'}">수리 중</span>
+                            <span th:if="${laptop.status.name() == 'REPAIR_REQUESTED'}">수리 요청됨</span>
+                            <span th:if="${laptop.status.name() == 'AVAILABLE'}">대기 중</span>
+                        </div>
                     </td>
                     <td th:text="${laptop.manageNumber}">관리번호</td>
                     <td>
