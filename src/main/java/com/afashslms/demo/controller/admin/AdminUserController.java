@@ -36,7 +36,7 @@ public class AdminUserController {
     public String showUserList(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
         List<User> users = userService.getAllUsers();
         model.addAttribute("users", users);
-        
+
         if (userDetails != null) {
             model.addAttribute("username", userDetails.getUser().getUsername());
             model.addAttribute("userRole", userDetails.getRole().name());
