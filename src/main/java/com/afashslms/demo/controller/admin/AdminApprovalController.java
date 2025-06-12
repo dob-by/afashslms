@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Controller
@@ -30,6 +32,7 @@ public class AdminApprovalController {
 
     @PostMapping("/approve/{userId}")
     public String approvePendingAdmin(@PathVariable String userId, RedirectAttributes redirectAttributes) {
+        System.out.println("approvePendingAdmin 접근");
         boolean result = userService.approvePendingAdmin(userId);
 
         if (result) {

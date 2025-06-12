@@ -4,45 +4,67 @@ import com.afashslms.demo.domain.Role;
 import com.afashslms.demo.domain.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Getter
-public class CustomOAuth2User implements OAuth2User {
+public class CustomOAuth2User extends DefaultOAuth2User {
 
     private final User user;
-    private final Map<String, Object> attributes;
+    private final boolean isFirstLogin;
+    private final String email;
+    private final String provider;
 
-    public CustomOAuth2User(User user, Map<String, Object> attributes) {
+    public CustomOAuth2User(User user, Map<String, Object> attributes, String email, String provider, boolean isFirstLogin) {
+        super(
+                Collections.singleton(() -> {
+                    if (user != null && user.getRole() != null) {
+                        return "ROLE_" + user.getRole().name();  // 실제 Role 기반으로 권한 부여
+                    }
+                    return "ROLE_TEMP";  // 기본값
+                }),
+                ensureEmailInAttributes(attributes, email),
+                "email"
+        );
         this.user = user;
-        this.attributes = attributes;
+        this.email = email;
+        this.provider = provider;
+        this.isFirstLogin = isFirstLogin;
+
+        // ✅ 디버깅 로그 추가
+        System.out.println("✅ CustomOAuth2User 생성됨:");
+        System.out.println("  - provider: " + provider);
+        System.out.println("  - email: " + email);
+        System.out.println("  - user null? " + (user == null));
+        System.out.println("  - role: " + (user != null ? user.getRole() : "null"));
     }
 
-    @Override
-    public Map<String, Object> getAttributes() {
-        return attributes;
-    }
-
+    // ✅ 실제 권한 반환
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(() -> "ROLE_" + user.getRole().name());
+        if (user != null && user.getRole() != null) {
+            return List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+        }
+        return List.of(new SimpleGrantedAuthority("ROLE_TEMP"));
     }
 
-    @Override
-    public String getName() {
-        return user.getEmail(); // 기본 키 역할
+    public boolean isFirstLogin() {
+        return isFirstLogin;
     }
 
     public Role getRole() {
-        return user.getRole();
+        if (user != null && user.getRole() != null) {
+            return user.getRole();
+        }
+        return Role.TEMP;
     }
 
-    public String getEmail() {
-        return user.getEmail();
+    // 👉 email이 attributes에 없을 경우 넣어주는 유틸 함수
+    private static Map<String, Object> ensureEmailInAttributes(Map<String, Object> attributes, String email) {
+        Map<String, Object> modifiable = new HashMap<>(attributes); // ✅ 복사해서 수정 가능하게 만들기
+        modifiable.putIfAbsent("email", email); // 없으면만 추가
+        return modifiable;
     }
-
-
 }

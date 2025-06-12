@@ -8,7 +8,6 @@ import lombok.Setter;
 
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class User {
 
     private String provider; //'local', 'kakao', 'google'
 
-    private String oauthId; //소셜 로그인 식별자
+    private String oauthId;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
@@ -49,5 +48,17 @@ public class User {
     @Column(name = "birth")
     private String birth;
 
+    private String affiliation; // "학생대" or "교육대"
 
+    private String unit; // "1중대", "2중대", "3중대" or null
+
+    @Column(name = "profile_completed")
+    private Boolean profileCompleted = false;
+
+    public boolean isProfileComplete() {
+        return this.username != null && !this.username.isBlank()
+                && this.militaryId != null && !this.militaryId.isBlank()
+                && this.affiliation != null && !this.affiliation.isBlank()
+                && ("교육대".equals(this.affiliation) || (this.unit != null && !this.unit.isBlank()));
+    }
 }

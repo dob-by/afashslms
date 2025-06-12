@@ -25,38 +25,45 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
 
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-
-        System.out.println(">>> OAuth2UserRequest: " + userRequest);
-        System.out.println(">>> Access Token: " + userRequest.getAccessToken().getTokenValue());
-
         OAuth2User oAuth2User = super.loadUser(userRequest);
         Map<String, Object> attributes = oAuth2User.getAttributes();
         String email = getEmail(userRequest, oAuth2User);
+        System.out.println("📧 [OAuth2UserService] 추출된 이메일: " + email);
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
-        // 기존 사용자 조회
-        Optional<User> optionalUser = userRepository.findByEmail(email);
+        // 1. 기존 사용자 조회
+        Optional<User> existingUserOpt = userRepository.findByEmail(email);
 
-        // 없으면 로그인 차단 + insert 안함
-        if (optionalUser.isEmpty()) {
-            throw new OAuth2AuthenticationException(
-                    new OAuth2Error("unauthorized", "최초 로그인입니다. 관리자 승인이 필요합니다.", null)
-            );
-        }
+        // 2. 신규 사용자일 경우 저장
+        User user = existingUserOpt.orElseGet(() -> {
+            User newUser = new User();
+            newUser.setUserId("oauth_" + UUID.randomUUID().toString().substring(0, 8)); // ✅ userId 수동 생성
+            newUser.setEmail(email);
+            newUser.setUsername((String) attributes.get("name"));
+            newUser.setProvider(registrationId);
+            newUser.setOauthId(oAuth2User.getName());
+            newUser.setRole(Role.TEMP);  // ✅ 최초 로그인 시 기본 권한은 TEMP
+            return userRepository.save(newUser);
+        });
 
-        User user = optionalUser.get();
-
-        // 승인 대기 상태인 경우 로그인 차단
+        // 3. 로그인 차단 조건 (예: 승인 대기중)
         if (user.getRole() == Role.PENDING_ADMIN) {
             throw new OAuth2AuthenticationException(
                     new OAuth2Error("access_denied", "관리자 승인 대기 중입니다.", null)
             );
         }
 
-        // 정상 로그인
-        return new CustomOAuth2User(user, attributes);
+        // 4. CustomOAuth2User 반환
+        return new CustomOAuth2User(
+                user,
+                attributes,
+                email,
+                registrationId,
+                existingUserOpt.isEmpty() // 최초 로그인 여부 전달
+        );
     }
 
     private static String getEmail(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {

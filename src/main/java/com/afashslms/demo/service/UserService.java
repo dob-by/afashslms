@@ -20,5 +20,8 @@ public interface UserService {
     long countPendingAdmins();
     List<User> findByRole(Role role);
     boolean approvePendingAdmin(String userId);
+    void updateAdminProfile(String userId, String username, String militaryId, String affiliation, String unit);
+    void save(User user);
+    void registerPendingAdmin(String email, String provider, String username, String militaryId, String affiliation, String unit);
 }
 

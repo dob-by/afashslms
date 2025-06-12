@@ -37,7 +37,7 @@ public class SignupService {
         user.setUsername(form.getUsername());
         user.setEmail(form.getEmail());
         user.setPassword(encodedPassword);
-        user.setRole(Role.valueOf(form.getRole())); //가입자 유형
+        user.setRole(form.getRole()); //가입자 유형
         user.setProvider("local");
         user.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
         user.setMilitaryId(form.getMilitaryId());

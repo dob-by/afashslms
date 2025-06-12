@@ -50,10 +50,13 @@ public class GlobalControllerAdvice {
             System.out.println("🔍 Principal 타입: " + principal.getClass().getName());
 
             // OAuth2 로그인 사용자
-            if (principal instanceof CustomOAuth2User user) {
-                model.addAttribute("userRole", user.getRole().getDisplayName());
-                model.addAttribute("username", user.getName());
-                return;
+            if (principal instanceof CustomUserDetails customUser) {
+                User user = customUser.getUser();
+                System.out.println(">>> user class = " + user.getClass());
+                System.out.println(">>> user.getRole() = " + user.getRole());
+                System.out.println(">>> user.getRole() type = " + user.getRole().getClass());
+
+                model.addAttribute("userRole", user.getRole().getDisplayName()); // 여기서 터지는 중
             }
 
             // 로컬 로그인 사용자
