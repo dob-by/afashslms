@@ -56,9 +56,6 @@ public class User {
     private Boolean profileCompleted = false;
 
     public boolean isProfileComplete() {
-        return this.username != null && !this.username.isBlank()
-                && this.militaryId != null && !this.militaryId.isBlank()
-                && this.affiliation != null && !this.affiliation.isBlank()
-                && ("교육대".equals(this.affiliation) || (this.unit != null && !this.unit.isBlank()));
+        return Boolean.TRUE.equals(this.profileCompleted);
     }
 }

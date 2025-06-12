@@ -14,12 +14,17 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminApprovalController {
+
+    private static final Logger log = LoggerFactory.getLogger(AdminApprovalController.class); // ✅ 추가
 
     private final UserService userService;
 
@@ -33,6 +38,20 @@ public class AdminApprovalController {
     @PostMapping("/approve/{userId}")
     public String approvePendingAdmin(@PathVariable String userId, RedirectAttributes redirectAttributes) {
         System.out.println("approvePendingAdmin 접근");
+
+        User user = userService.findByUserId(userId);
+
+        log.info("✅ 승인 요청된 사용자: {}", user);
+        log.info("✅ 프로필 입력 여부: {}", user.isProfileComplete());
+        log.info("✅ 현재 role: {}", user.getRole());
+
+        log.info("username: {}", user.getUsername());
+        log.info("militaryId: {}", user.getMilitaryId());
+        log.info("affiliation: {}", user.getAffiliation());
+        log.info("unit: {}", user.getUnit());
+        log.info("profileCompleted flag: {}", user.getProfileCompleted());
+        log.info("calculated isProfileComplete: {}", user.isProfileComplete());
+
         boolean result = userService.approvePendingAdmin(userId);
 
         if (result) {

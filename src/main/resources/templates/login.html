@@ -155,8 +155,8 @@
 
         <!-- 탭 선택 -->
         <div class="tab-selector">
-            <button class="active" onclick="showTab(event, 'student')">학생 로그인</button>
-            <button onclick="showTab(event, 'staff')">교직원 로그인</button>
+            <button class="active" onclick="showTab(event, 'student')">학생</button>
+            <button onclick="showTab(event, 'staff')">교직원</button>
         </div>
 
         <!-- 로그인 실패 메시지 -->
@@ -188,7 +188,7 @@
                     <label for="password" class="form-label">비밀번호</label>
                     <input type="password" id="password" name="password" class="form-control" required />
                 </div>
-
+                <br>
                 <div class="d-grid mb-2">
                     <button type="submit" class="btn btn-green btn-common">로그인</button>
                 </div>
@@ -204,7 +204,7 @@
                 <input type="hidden" name="loginType" value="staff" />
 
                 <div class="mb-3">
-                    <label for="email" class="form-label">이메일</label>
+                    <label for="email" class="form-label">아이디</label>
                     <input type="text" id="email" name="username" class="form-control" required />
                 </div>
 
@@ -212,7 +212,7 @@
                     <label for="staffPassword" class="form-label">비밀번호</label>
                     <input type="password" id="staffPassword" name="password" class="form-control" required />
                 </div>
-
+                <br>
                 <div class="d-grid mb-2">
                     <button type="submit" class="btn btn-green btn-common">로그인</button>
                 </div>

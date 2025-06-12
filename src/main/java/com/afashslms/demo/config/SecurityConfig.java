@@ -106,6 +106,19 @@ public class SecurityConfig {
         customFilter.setUsernameParameter("username");
         customFilter.setPasswordParameter("password");
         customFilter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login", "POST"));
+        customFilter.setAuthenticationFailureHandler((request, response, exception) -> {
+            String errorMessage = "아이디 또는 비밀번호가 올바르지 않습니다.";
+
+            if (exception.getMessage().contains("관리자 승인이 필요합니다")) {
+                errorMessage = exception.getMessage();
+            } else if (exception.getMessage().contains("관리자 로그인에는")) {
+                errorMessage = exception.getMessage();
+            } else if (exception.getMessage().contains("학생 로그인에는")) {
+                errorMessage = exception.getMessage();
+            }
+
+            response.sendRedirect("/login?errorMessage=" + URLEncoder.encode(errorMessage, StandardCharsets.UTF_8));
+        });
 
         http
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/import/**"))

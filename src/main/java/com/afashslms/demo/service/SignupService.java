@@ -33,16 +33,19 @@ public class SignupService {
 
         // 3. User 엔티티 생성
         User user = new User();
-        user.setUserId(form.getUserId());
         user.setUsername(form.getUsername());
         user.setEmail(form.getEmail());
         user.setPassword(encodedPassword);
-        user.setRole(form.getRole()); //가입자 유형
+
+        // 🔥 강제로 승인 대기 상태로 설정!
+        user.setRole(Role.PENDING_ADMIN);
+
         user.setProvider("local");
         user.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
         user.setMilitaryId(form.getMilitaryId());
+        user.setUserId(form.getMilitaryId()); // 군번 = userId
+        user.setProfileCompleted(true); // 로컬은 가입 시 프로필 완성된 것으로 간주
 
-        // 4. 저장
         userRepository.save(user);
     }
 }

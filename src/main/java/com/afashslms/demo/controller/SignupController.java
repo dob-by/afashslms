@@ -27,7 +27,7 @@ public class SignupController {
     public String processSignup(@ModelAttribute("signupForm") SignupForm form, Model model) {
         try {
             signupService.registerUser(form);
-            return "login"; //회원가입 성공 시 로그인 페이지로
+            return "redirect:/login?signupSuccess"; //회원가입 성공 시 로그인 페이지로
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
             return "signup";

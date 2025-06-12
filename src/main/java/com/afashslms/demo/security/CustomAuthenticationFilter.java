@@ -141,6 +141,18 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                                               HttpServletResponse response,
                                               AuthenticationException failed) throws IOException, ServletException {
         System.out.println("❌ 로그인 실패: " + failed.getMessage());
-        response.sendRedirect("/login?error=true");
+
+        String errorMessage = "아이디 또는 비밀번호가 올바르지 않습니다.";
+        String exceptionMessage = failed.getMessage();
+
+        if (exceptionMessage.contains("관리자 승인이 필요")) {
+            errorMessage = "승인 대기 중인 관리자입니다. 관리자 승인이 필요합니다.";
+        } else if (exceptionMessage.contains("학생 로그인에는")) {
+            errorMessage = "학생 로그인에는 학생 계정만 허용됩니다.";
+        } else if (exceptionMessage.contains("관리자 로그인에는")) {
+            errorMessage = "관리자 로그인에는 관리자 계정만 허용됩니다.";
+        }
+
+        response.sendRedirect("/login?errorMessage=" + java.net.URLEncoder.encode(errorMessage, java.nio.charset.StandardCharsets.UTF_8));
     }
 }
