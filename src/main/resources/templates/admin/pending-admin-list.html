@@ -32,7 +32,7 @@
         <tr th:each="pendingUser : ${pendingAdmins}">
             <td th:text="${pendingUser.username}">이름</td>
             <td th:text="${pendingUser.email}">이메일</td>
-            <td th:text="${#temporals.format(pendingUser.createdAt, 'yyyy-MM-dd')}">가입일</td>
+            <td th:text="${#dates.format(pendingUser.createdAt, 'yyyy-MM-dd')}">가입일</td>
             <td>
                 <form th:action="@{/admin/approve/{userId}(userId=${pendingUser.userId})}" method="post" style="display:inline;">
                     <button type="submit" class="btn btn-success btn-sm">승인</button>

@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -141,6 +142,8 @@ public class UserServiceImpl implements UserService {
         user.setUnit("학생대".equals(affiliation) ? unit : null);
         user.setRole(Role.PENDING_ADMIN);
         user.setProfileCompleted(true);
+
+        user.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
 
         userRepository.saveAndFlush(user); // 변경 사항 즉시 반영
 

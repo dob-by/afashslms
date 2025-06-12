@@ -74,8 +74,8 @@ public class SecurityConfig {
                         return;
                     }
 
-                    // ✅ 관리자 마이페이지
-                    redirectStrategy.sendRedirect(request, response, "/admin/mypage");
+                    // 모든 관리자는 로그인 후 홈으로 이동
+                    redirectStrategy.sendRedirect(request, response, "/");
                     return;
                 }
 
