@@ -1,101 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html xmlns:th="http://www.thymeleaf.org"-->
-<!--      th:replace="~{layout :: layout(~{::body})}">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>노트북 목록</title>-->
-<!--    <style>-->
-<!--        .laptop-card {-->
-<!--            background-color: #ffffff;-->
-<!--            border-radius: 16px;-->
-<!--            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);-->
-<!--            padding: 2.5rem;-->
-<!--        }-->
-
-<!--        .btn-green {-->
-<!--            background-color: #43a047;-->
-<!--            color: white !important;-->
-<!--            border: none;-->
-<!--            border-radius: 999px;-->
-<!--            padding: 6px 14px;-->
-<!--            font-weight: 500;-->
-<!--            text-decoration: none;-->
-<!--        }-->
-
-<!--        .btn-green:hover {-->
-<!--            background-color: #388e3c;-->
-<!--            color: white !important;-->
-<!--        }-->
-
-<!--        .table tbody tr:hover {-->
-<!--            background-color: #f1f8e9;-->
-<!--        }-->
-
-<!--        body.dark-mode .laptop-card {-->
-<!--            background-color: #1e1e1e;-->
-<!--            border: 1px solid #333;-->
-<!--        }-->
-
-<!--        body.dark-mode .table thead {-->
-<!--            background-color: #2a2a2a;-->
-<!--            color: #81c784;-->
-<!--        }-->
-
-<!--        body.dark-mode .table tbody td {-->
-<!--            color: #e0e0e0;-->
-<!--        }-->
-
-<!--        body.dark-mode .table tbody tr:hover {-->
-<!--            background-color: #2a2a2a;-->
-<!--        }-->
-<!--    </style>-->
-<!--</head>-->
-<!--<body>-->
-<!--<div class="container mt-5">-->
-<!--    <div class="laptop-card">-->
-
-<!--        &lt;!&ndash; 🖥 제목 &ndash;&gt;-->
-<!--        <h2 class="text-center fw-bold mb-4 text-dark">💻 노트북 목록</h2>-->
-
-<!--        &lt;!&ndash; 📋 테이블 &ndash;&gt;-->
-<!--        <div class="table-responsive rounded border">-->
-<!--            <table class="table table-hover align-middle text-center mb-0">-->
-<!--                <thead class="table-light">-->
-<!--                <tr>-->
-<!--                    <th>모델명</th>-->
-<!--                    <th>일련번호</th>-->
-<!--                    <th>IP 정보</th>-->
-<!--                    <th>상태</th>-->
-<!--                    <th>사용자명</th>-->
-<!--                    <th>관리번호</th>-->
-<!--                    <th>소유이력</th>-->
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr th:each="laptop : ${laptops}">-->
-<!--                    <td th:text="${laptop.modelName}">모델명</td>-->
-<!--                    <td th:text="${laptop.deviceId}">일련번호</td>-->
-<!--                    <td th:text="${laptop.ip}">IP 정보</td>-->
-<!--                    <td th:text="${laptop.status}">상태</td>-->
-<!--                    <td th:text="${laptop.userName}">사용자명</td>-->
-<!--                    <td th:text="${laptop.manageCode}">관리번호</td>-->
-<!--                    <td>-->
-<!--                        <a th:href="@{'/admin/laptops/' + ${laptop.deviceId} + '/ownership'}"-->
-<!--                           class="btn btn-green">이력 보기</a>-->
-<!--                    </td>-->
-<!--                </tr>-->
-<!--                <tr th:if="${laptops.size() == 0}">-->
-<!--                    <td colspan="8" class="text-center text-muted py-4">노트북이 없습니다.</td>-->
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--        </div>-->
-
-<!--    </div>-->
-<!--</div>-->
-<!--</body>-->
-<!--</html>-->
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout :: layout(~{::body})}">
@@ -188,7 +90,7 @@
                     <td th:text="${laptop.manageCode}">관리번호</td>
                     <td>
                         <a th:href="@{'/admin/laptops/' + ${laptop.deviceId} + '/ownership'}"
-                           class="btn btn-green">이력 보기</a>
+                           class="btn btn-green btn-sm">이력 보기</a>
                     </td>
                 </tr>
                 <tr th:if="${laptops.content.size() == 0}">
@@ -200,49 +102,6 @@
 
         <div class="mt-4"></div>
 
-<!--&lt;!&ndash;        페이지네이션&ndash;&gt;-->
-<!--        <nav th:if="${laptops.totalPages > 1}"-->
-<!--             th:with="current=${laptops.number},-->
-<!--              totalPages=${laptops.totalPages},-->
-<!--              blockSize=10,-->
-<!--              start=${(current / blockSize) * blockSize},-->
-<!--              end=${T(java.lang.Math).min(start + blockSize - 1, totalPages - 1)}">-->
-<!--            <ul class="pagination justify-content-center">-->
-
-<!--                &lt;!&ndash; << 첫 페이지 &ndash;&gt;-->
-<!--                <li class="page-item" th:classappend="${laptops.first} ? 'disabled'">-->
-<!--                    <a class="page-link" th:href="@{/admin/laptops(page=0, keyword=${searchCond.keyword})}">&laquo;&laquo;</a>-->
-<!--                </li>-->
-
-<!--                &lt;!&ndash; < 이전 페이지 &ndash;&gt;-->
-<!--                <li class="page-item" th:classappend="${laptops.first} ? 'disabled'">-->
-<!--                    <a class="page-link"-->
-<!--                       th:href="@{/admin/laptops(page=${laptops.number - 1}, keyword=${searchCond.keyword})}">&laquo;</a>-->
-<!--                </li>-->
-
-<!--                &lt;!&ndash; 페이지 숫자들 &ndash;&gt;-->
-<!--                <li class="page-item"-->
-<!--                    th:each="pageNum : ${#numbers.sequence(start, end)}"-->
-<!--                    th:classappend="${pageNum == laptops.number} ? 'active'">-->
-<!--                    <a class="page-link"-->
-<!--                       th:href="@{/admin/laptops(page=${pageNum}, keyword=${searchCond.keyword})}"-->
-<!--                       th:text="${pageNum + 1}"></a>-->
-<!--                </li>-->
-
-<!--                &lt;!&ndash; > 다음 페이지 &ndash;&gt;-->
-<!--                <li class="page-item" th:classappend="${laptops.last} ? 'disabled'">-->
-<!--                    <a class="page-link"-->
-<!--                       th:href="@{/admin/laptops(page=${laptops.number + 1}, keyword=${searchCond.keyword})}">&raquo;</a>-->
-<!--                </li>-->
-
-<!--                &lt;!&ndash; >> 마지막 페이지 &ndash;&gt;-->
-<!--                <li class="page-item" th:classappend="${laptops.last} ? 'disabled'">-->
-<!--                    <a class="page-link"-->
-<!--                       th:href="@{/admin/laptops(page=${laptops.totalPages - 1}, keyword=${searchCond.keyword})}">&raquo;&raquo;</a>-->
-<!--                </li>-->
-<!--            </ul>-->
-<!--        </nav>-->
-
         <nav th:if="${laptops.totalPages > 1}"
              th:with="
         current=${laptops.number},
@@ -251,7 +110,7 @@
         currentBlock=${current / blockSize},
         start=${currentBlock * blockSize},
         end=${T(java.lang.Math).min(start + blockSize - 1, totalPages - 1)}
-     ">
+">
             <ul class="pagination justify-content-center">
 
                 <!-- << 첫 페이지 -->
@@ -284,7 +143,6 @@
                 </li>
             </ul>
         </nav>
-
     </div>
 </div>
 </body>

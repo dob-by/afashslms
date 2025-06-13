@@ -22,7 +22,10 @@ import org.springframework.ui.Model;
 import com.afashslms.demo.security.CustomUserDetails;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 
@@ -63,14 +66,20 @@ public class AdminLaptopController {
     @PreAuthorize("hasAnyRole('MID_ADMIN', 'TOP_ADMIN')")
     public String laptopDetail(@PathVariable String deviceId,
                                @AuthenticationPrincipal Object principal,
+                               @RequestParam(required = false) String prevPage,
                                Model model,
+                               @RequestParam(required = false) Integer page,
+                               @RequestParam(required = false) String keyword,
                                HttpServletRequest request) throws AccessDeniedException {
 
         User user = null;
         String username = null;
         String role = null;
         String referer = request.getHeader("Referer");
-        model.addAttribute("prevPage", referer != null ? referer : "/admin/laptops"); // 기본값 설정
+        model.addAttribute("prevPage", prevPage != null ? prevPage : "/admin/laptops"); // 기본값 설정model.addAttribute("currentPage", page);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("searchCond", new LaptopSearchConditionDto(keyword)); // 생성자에서 keyword 설정
+
 
         if (principal instanceof CustomUserDetails customUserDetails) {
             user = customUserDetails.getUser();
@@ -123,36 +132,6 @@ public class AdminLaptopController {
         return "redirect:" + referer;
     }
 
-//    @GetMapping("/admin/laptops/{deviceId}/ownership")
-//    @PreAuthorize("hasAnyRole('MID_ADMIN', 'TOP_ADMIN')")
-//    public String showOwnershipHistory(@PathVariable String deviceId,
-//                                       @AuthenticationPrincipal CustomUserDetails loginUser,
-//                                       Model model) throws AccessDeniedException {
-//
-//        if (loginUser == null) {
-//            throw new AccessDeniedException("로그인이 필요합니다.");
-//        }
-//
-//        // 노트북 정보 가져오기
-//        Laptop laptop = laptopService.findById(deviceId)
-//                .orElseThrow(() -> new IllegalArgumentException("해당 노트북이 존재하지 않습니다."));
-//
-//        if (laptop == null) {
-//            throw new IllegalArgumentException("해당 노트북이 존재하지 않습니다.");
-//        }
-//
-//        // 소유 이력 가져오기
-//        List<OwnershipHistory> ownershipHistoryList = ownershipHistoryRepository.findByLaptop_DeviceId(deviceId);
-//
-//        // 모델에 값 넣기
-//        model.addAttribute("laptop", laptop);
-//        model.addAttribute("ownershipHistoryList", ownershipHistoryList);
-//        model.addAttribute("username", loginUser.getUser().getUsername());
-//        model.addAttribute("userRole", loginUser.getRole().name());
-//
-//        return "admin/ownership-history";
-//    }
-
     @GetMapping("/admin/laptops/{deviceId}/ownership")
     @PreAuthorize("hasAnyRole('MID_ADMIN', 'TOP_ADMIN')")
     public String showOwnershipHistory(@PathVariable String deviceId,
@@ -185,22 +164,30 @@ public class AdminLaptopController {
         model.addAttribute("username", username);
         model.addAttribute("userRole", role);
 
-        return "admin/laptop-ownership-history"; // 너의 템플릿 파일명
+        return "admin/ownership-history"; // 너의 템플릿 파일명
     }
 
     @PostMapping("/admin/laptops/{deviceId}/change-owner")
     @PreAuthorize("hasRole('TOP_ADMIN')")
     public String changeOwner(@PathVariable String deviceId,
                               @RequestParam String newOwnerId,
-                              @AuthenticationPrincipal CustomUserDetails loginUser) throws AccessDeniedException {
+                              @AuthenticationPrincipal CustomUserDetails loginUser,
+                              HttpServletRequest request) throws AccessDeniedException {
 
         if (loginUser == null || loginUser.getRole() != Role.TOP_ADMIN) {
             throw new AccessDeniedException("권한이 없습니다.");
         }
 
-        laptopService.changeLaptopOwner(deviceId, newOwnerId); // 서비스 호출
+        // 💻 실제 소유자 변경 처리
+        laptopService.changeLaptopOwner(deviceId, newOwnerId);
 
-        return "redirect:/admin/laptops/" + deviceId;
+        // 🔙 Referer를 받아서 이전 페이지 주소로 활용
+        String referer = request.getHeader("Referer");
+        String encodedPrevPage = (referer != null)
+                ? URLEncoder.encode(referer, StandardCharsets.UTF_8)
+                : URLEncoder.encode("/admin/laptops", StandardCharsets.UTF_8);
+
+        return "redirect:/admin/laptops/" + deviceId + "?prevPage=" + encodedPrevPage;
     }
 
 }

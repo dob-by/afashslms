@@ -55,6 +55,16 @@
 <div class="container mt-5">
     <div class="user-card">
         <h2 class="text-center fw-bold mb-4 text-dark">사용자 목록</h2>
+
+        <!-- 검색창 -->
+        <form th:action="@{/admin/users}" method="get" class="mb-4 d-flex justify-content-end">
+            <input type="text" name="keyword"
+                   th:value="${searchCond.keyword}"
+                   class="form-control w-25 me-2"
+                   placeholder="ID, 이름, 이메일로 검색" />
+            <button type="submit" class="btn btn-outline-primary">검색</button>
+        </form>
+
         <!-- 사용자 테이블 -->
         <div class="table-responsive rounded border">
             <table class="table table-hover align-middle text-center mb-0">
@@ -70,23 +80,69 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="user : ${users}">
+                <tr th:each="user : ${users.content}">
                     <td th:text="${user.userId}">user_id</td>
                     <td th:text="${user.username}">username</td>
                     <td th:text="${user.email}">email</td>
                     <td th:text="${user.militaryId}">militaryId</td>
-                    <td th:text="${user.role.name()}">역할</td>
-                    <td th:text="${user.createdAt != null ? #temporals.format(user.createdAt.toLocalDateTime(), 'yyyy-MM-dd') : 'N/A'}">가입일</td>
+                    <td th:text="${user.role}">역할</td>
+                    <td th:text="${user.createdAt != null ? #temporals.format(user.createdAt, 'yyyy-MM-dd') : 'N/A'}"></td>
                     <td>
                         <a th:href="@{'/admin/users/' + ${user.userId}}" class="btn btn-green btn-sm">상세보기</a>
                     </td>
                 </tr>
-                <tr th:if="${users.size() == 0}">
+                <tr th:if="${users.content.size() == 0}">
                     <td colspan="8" class="text-center text-muted py-4">등록된 사용자가 없습니다.</td>
                 </tr>
                 </tbody>
             </table>
         </div>
+
+        <!-- 페이지 간격 -->
+        <div class="mt-4"></div>
+
+        <!-- 📄 페이지네이션 -->
+        <nav th:if="${users.totalPages > 1}"
+             th:with="current=${users.number},
+                      totalPages=${users.totalPages},
+                      start=${T(java.lang.Math).max(0, T(java.lang.Math).min(current - 4, totalPages - 10))},
+                      end=${T(java.lang.Math).min(totalPages - 1, start + 9)}">
+            <ul class="pagination justify-content-center">
+
+                <!-- << 첫 페이지 -->
+                <li class="page-item" th:classappend="${users.first} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/admin/users(page=0, keyword=${searchCond.keyword})}">&lt;&lt;</a>
+                </li>
+
+                <!-- < 이전 -->
+                <li class="page-item" th:classappend="${users.first} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/admin/users(page=${users.number - 1}, keyword=${searchCond.keyword})}">&lt;</a>
+                </li>
+
+                <!-- 페이지 번호 -->
+                <li class="page-item"
+                    th:each="pageNum : ${#numbers.sequence(start, end)}"
+                    th:classappend="${pageNum == users.number} ? 'active'">
+                    <a class="page-link"
+                       th:href="@{/admin/users(page=${pageNum}, keyword=${searchCond.keyword})}"
+                       th:text="${pageNum + 1}">1</a>
+                </li>
+
+                <!-- > 다음 -->
+                <li class="page-item" th:classappend="${users.last} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/admin/users(page=${users.number + 1}, keyword=${searchCond.keyword})}">&gt;</a>
+                </li>
+
+                <!-- >> 마지막 페이지 -->
+                <li class="page-item" th:classappend="${users.last} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/admin/users(page=${users.totalPages - 1}, keyword=${searchCond.keyword})}">&gt;&gt;</a>
+                </li>
+            </ul>
+        </nav>
 
     </div>
 </div>

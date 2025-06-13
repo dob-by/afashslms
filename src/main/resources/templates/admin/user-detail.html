@@ -99,28 +99,6 @@
                     <td th:text="${laptop.modelName}">모델명</td>
                     <td th:text="${laptop.deviceId}">일련번호</td>
                     <td th:text="${laptop.ip}">IP</td>
-<!--                    <td>-->
-<!--                        <div th:if="${userRole == 'TOP_ADMIN'}">-->
-<!--                            <form th:action="@{'/admin/users/' + ${user.userId} + '/laptops/' + ${laptop.deviceId} + '/status'}" method="post">-->
-<!--                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
-<!--                                <div class="d-flex align-items-center justify-content-center gap-2">-->
-<!--                                    <select class="form-select form-select-sm" name="newStatus">-->
-<!--                                        <option value="IN_USE" th:selected="${laptop.status.name() == 'IN_USE'}">사용 중</option>-->
-<!--                                        <option value="IN_REPAIR" th:selected="${laptop.status.name() == 'IN_REPAIR'}">수리 중</option>-->
-<!--                                        <option value="REPAIR_REQUESTED" th:selected="${laptop.status.name() == 'REPAIR_REQUESTED'}">수리 요청됨</option>-->
-<!--                                        <option value="AVAILABLE" th:selected="${laptop.status.name() == 'AVAILABLE'}">대기 중</option>-->
-<!--                                    </select>-->
-<!--                                    <button type="submit" class="btn btn-sm btn-success" style="white-space: nowrap;">저장</button>-->
-<!--                                </div>-->
-<!--                            </form>-->
-<!--                        </div>-->
-
-<!--                        &lt;!&ndash; 중간관리자에게는 상태 텍스트만 보여주기 &ndash;&gt;-->
-<!--                        <div th:if="${laptop.status.name() == 'IN_USE'}">사용 중</div>-->
-<!--                        <div th:if="${laptop.status.name() == 'IN_REPAIR'}">수리 중</div>-->
-<!--                        <div th:if="${laptop.status.name() == 'REPAIR_REQUESTED'}">수리 요청됨</div>-->
-<!--                        <div th:if="${laptop.status.name() == 'AVAILABLE'}">대기 중</div>-->
-<!--                    </td>-->
                     <td>
                         <div th:if="${userRole == 'TOP_ADMIN'}">
                             <form th:action="@{'/admin/users/' + ${user.userId} + '/laptops/' + ${laptop.deviceId} + '/status'}" method="post">
@@ -146,7 +124,7 @@
                     </td>
                     <td th:text="${laptop.manageNumber}">관리번호</td>
                     <td>
-                        <a th:href="@{'/admin/laptops/' + ${laptop.deviceId}}" class="btn btn-sm btn-secondary">상세</a>
+                        <a th:href="@{'/admin/laptops/' + ${laptop.deviceId} + '?prevPage=' + ${currentUrl}}" class="btn btn-sm btn-secondary">상세</a>
                     </td>
                 </tr>
                 <tr th:if="${laptops.size() == 0}">
@@ -157,7 +135,7 @@
         </div>
 
         <div class="mt-4 text-end">
-            <a th:href="@{/admin/users}" class="btn btn-secondary">← 목록으로</a>
+            <a th:href="@{/admin/users}" class="btn btn-secondary">목록으로</a>
         </div>
     </div>
 </div>

@@ -2,10 +2,15 @@ package com.afashslms.demo.service.impl;
 
 import com.afashslms.demo.domain.Role;
 import com.afashslms.demo.domain.User;
+import com.afashslms.demo.dto.UserDto;
+import com.afashslms.demo.dto.UserSearchConditionDto;
 import com.afashslms.demo.repository.UserRepository;
 import com.afashslms.demo.security.CustomOAuth2User;
 import com.afashslms.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,13 +18,12 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +47,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
 
-        Role roleEnum = Role.valueOf(newRole); // "MID_ADMIN" → Role.MID_ADMIN
+        Role roleEnum = Role.valueOf(newRole);
         user.setRole(roleEnum);
     }
 
@@ -73,20 +77,12 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
-        System.out.println("✅ 비번 변경 로직 진입: " + email);
-        System.out.println("✅ DB 비번: " + user.getPassword());
-        System.out.println("✅ 매칭 여부: " + passwordEncoder.matches(currentPassword, user.getPassword()));
-
-        // 현재 비밀번호 확인
         if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
-            return false; // 틀림
+            return false;
         }
 
-        // 비밀번호 변경
         user.setPassword(passwordEncoder.encode(newPassword));
-
-        user.setRole(Role.PENDING_ADMIN); //승인 대기 중 상태로 저장
-
+        user.setRole(Role.PENDING_ADMIN);
         userRepository.save(user);
         return true;
     }
@@ -111,9 +107,9 @@ public class UserServiceImpl implements UserService {
         user.setAffiliation(affiliation);
 
         if ("학생대".equals(affiliation)) {
-            user.setUnit(unit); // 1중대, 2중대, 3중대
+            user.setUnit(unit);
         } else {
-            user.setUnit(null); // 교육대는 중대 없음
+            user.setUnit(null);
         }
 
         userRepository.save(user);
@@ -128,8 +124,6 @@ public class UserServiceImpl implements UserService {
     public void registerPendingAdmin(String email, String provider, String username, String militaryId, String affiliation, String unit) {
         Optional<User> userOpt = userRepository.findByEmail(email);
 
-        System.out.println("registerPendingAdmin 접근");
-
         if (userOpt.isEmpty()) {
             log.error("❌ 존재하지 않는 이메일로 등록 시도: {}", email);
             return;
@@ -142,16 +136,13 @@ public class UserServiceImpl implements UserService {
         user.setUnit("학생대".equals(affiliation) ? unit : null);
         user.setRole(Role.PENDING_ADMIN);
         user.setProfileCompleted(true);
-
         user.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
 
-        userRepository.saveAndFlush(user); // 변경 사항 즉시 반영
+        userRepository.saveAndFlush(user);
 
-        // ✅ 최신 상태로 다시 조회해서 보장
         User refreshedUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("❌ 저장 후 사용자 조회 실패"));
 
-        // ✅ 새 권한 기반 Principal 생성
         CustomOAuth2User updatedPrincipal = new CustomOAuth2User(
                 refreshedUser,
                 Map.of("email", email),
@@ -166,9 +157,7 @@ public class UserServiceImpl implements UserService {
                 provider
         );
 
-        // ✅ 시큐리티 컨텍스트에 갱신
         SecurityContextHolder.getContext().setAuthentication(newAuth);
-
         log.info("🔁 권한 갱신됨: {}", updatedPrincipal.getAuthorities());
         log.info("✅ 관리자 등록 완료: {} / {}", email, refreshedUser.getRole());
     }
@@ -180,7 +169,6 @@ public class UserServiceImpl implements UserService {
         if (userOpt.isPresent()) {
             User user = userOpt.get();
 
-            // 🔥 프로필 미입력 시 승인 불가
             if (!user.isProfileComplete()) {
                 return false;
             }
@@ -193,5 +181,30 @@ public class UserServiceImpl implements UserService {
         }
 
         return false;
+    }
+
+    @Override
+    public Page<UserDto> searchUsers(UserSearchConditionDto condition, Pageable pageable) {
+        List<User> all = userRepository.findAll();
+
+        List<User> filtered = all.stream()
+                .filter(user -> user.getRole() == Role.STUDENT)
+                .filter(user -> {
+                    String keyword = condition.getKeyword();
+                    return keyword == null || keyword.isBlank()
+                            || user.getUserId().contains(keyword)
+                            || user.getUsername().contains(keyword)
+                            || user.getEmail().contains(keyword);
+                })
+                .toList();
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), filtered.size());
+
+        List<UserDto> content = filtered.subList(start, end).stream()
+                .map(UserDto::fromEntity)
+                .toList();
+
+        return new PageImpl<>(content, pageable, filtered.size());
     }
 }

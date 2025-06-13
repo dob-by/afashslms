@@ -53,7 +53,6 @@ public class PostService {
                                    String title,
                                    String content,
                                    MultipartFile file) {
-        //User user = userDetails.getUser(); // 가장 확실하고 공통적인 방식!
 
         // 파일 저장 처리
         String savedFileName = null;

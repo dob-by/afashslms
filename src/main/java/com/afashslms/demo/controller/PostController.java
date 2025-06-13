@@ -194,31 +194,6 @@ public class PostController {
         return "redirect:/posts";
     }
 
-//    // 글 등록 처리
-//    @PostMapping
-//    public String createPost(@RequestParam String title,
-//                             @RequestParam String content,
-//                             @RequestParam(value = "file", required = false) MultipartFile file,
-//                             @AuthenticationPrincipal Object principal) {
-//
-//        String email = null;
-//        String role = null;
-//
-//        if (principal instanceof CustomUserDetails userDetails) {
-//            email = userDetails.getUser().getEmail();
-//            role = userDetails.getUser().getRole().name();
-//        } else if (principal instanceof CustomOAuth2User oauthUser) {
-//            email = oauthUser.getEmail();
-//            role = oauthUser.getRole().name();
-//        }
-//
-//        if (!"STUDENT".equals(role)) {
-//            return "post/forbidden";
-//        }
-//
-//        postService.createPostWithFile(email, title, content, file);  // ✨파일 포함 메서드 호출
-//        return "redirect:/posts";
-//    }
     // 글 수정 폼
     @GetMapping("/{postId}/edit")
     public String showEditForm(@PathVariable String postId, Model model, Principal principal) {

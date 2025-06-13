@@ -11,4 +11,10 @@ public class LaptopSearchConditionDto {
     private String username;
     private String status;
     private String keyword;
+
+    public LaptopSearchConditionDto() {}
+
+    public LaptopSearchConditionDto(String keyword) {
+        this.keyword = keyword;
+    }
 }
