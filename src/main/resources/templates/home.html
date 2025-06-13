@@ -30,16 +30,16 @@
     .carousel-indicators button {
       width: 12px;
       height: 12px;
-      border-radius: 50%;               /* ✅ 동그라미 모양 */
-      background-color: #aaa;           /* ✅ 기본 회색 */
-      opacity: 0.7;                     /* ✅ 조금 더 보이게 */
+      border-radius: 50%;
+      background-color: #aaa;
+      opacity: 0.7;
       margin: 0 6px;
-      border: none;                     /* ✅ 버튼 테두리 제거 */
+      border: none;
       transition: all 0.3s ease;
     }
 
     .carousel-indicators .active {
-      background-color: #43a047;        /* ✅ 초록색 강조 */
+      background-color: #43a047;
       opacity: 1;
     }
 
@@ -115,7 +115,7 @@
       </div>
     </div>
 
-    <!-- ✅ Slide 2-->
+    <!-- Slide 2-->
     <div class="carousel-item" style="background: linear-gradient(135deg, #e3f2fd, #e1f5fe); padding: 5rem 0;">
       <div class="container">
         <h1 class="fw-bold mb-4">스마트한 노트북 관리의 시작 💻</h1>
@@ -157,13 +157,6 @@
             <span class="text-muted float-end" th:text="${#dates.format(notice.createdAt, 'yyyy-MM-dd')}"></span>
           </li>
         </ul>
-<!--        <ul class="list-group list-group-flush">-->
-<!--          <li class="list-group-item">[공지] 노트북 정기 점검 안내 (5/10)</li>-->
-<!--          <li class="list-group-item">[공지] 신규 노트북 대여 신청 공지</li>-->
-<!--          <li class="list-group-item">[중요] 분실 시 벌금 규정 변경 안내</li>-->
-<!--          <li class="list-group-item">[안내] 1학년 대상 교육 일정 안내</li>-->
-<!--          <li class="list-group-item">[공지] 2025년 1차 대여 현황 업데이트</li>-->
-<!--        </ul>-->
       </div>
     </div>
 
@@ -175,11 +168,6 @@
           <a th:href="@{/posts}" class="btn btn-sm btn-outline-success px-2 py-1">+ 더보기</a>
         </div>
         <ul class="list-group list-group-flush">
-<!--          <li class="list-group-item">노트북 충전기 분실 시 어떻게 하나요?</li>-->
-<!--          <li class="list-group-item">대여 기간 연장 신청은 어떻게 하나요?</li>-->
-<!--          <li class="list-group-item">로그인 비밀번호를 잊었어요</li>-->
-<!--          <li class="list-group-item">윈도우 업데이트가 안됩니다</li>-->
-<!--          <li class="list-group-item">배터리 수명이 짧아졌어요</li>-->
           <li class="list-group-item" th:each="post : ${latestPosts}">
             <a th:href="@{|/posts/${post.postId}|}"
                th:text="${post.title}"
@@ -192,7 +180,7 @@
   </div>
 </main>
 
-<!-- 📘 보조 섹션 -->
+<!-- 보조 섹션 -->
 <section class="py-5 bg-light">
   <div class="container text-center">
     <h5 class="fw-semibold">도움이 필요하신가요?</h5>

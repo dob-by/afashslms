@@ -1,6 +1,7 @@
 package com.afashslms.demo.controller.admin;
 
 import com.afashslms.demo.domain.*;
+import com.afashslms.demo.dto.LaptopSearchConditionDto;
 import com.afashslms.demo.dto.LaptopViewDto;
 import com.afashslms.demo.repository.LaptopRepository;
 import com.afashslms.demo.repository.OwnershipHistoryRepository;
@@ -11,6 +12,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -32,52 +36,28 @@ public class AdminLaptopController {
     private final OwnershipHistoryRepository ownershipHistoryRepository;
 
     @GetMapping("/admin/laptops")
-    public String showLaptopList(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<LaptopViewDto> laptops = laptopService.getAllLaptopsForAdmin();
-        List<User> users = userService.getAllUsers();
-        model.addAttribute("laptops", laptops);
+    public String showLaptopList(@ModelAttribute("searchCond") LaptopSearchConditionDto searchCond,
+                                 @AuthenticationPrincipal CustomUserDetails userDetails,
+                                 @RequestParam(defaultValue = "0") int page,            // ← 페이지 번호
+                                 @RequestParam(defaultValue = "10") int size,           // ← 페이지당 항목 수
+                                 Model model) {
+
+        Pageable pageable = PageRequest.of(page, 10);
+        Page<LaptopViewDto> laptopPage = laptopService.searchLaptops(searchCond, pageable);
+
+        model.addAttribute("laptops", laptopPage);
+        model.addAttribute("currentPage", laptopPage.getNumber());
+        model.addAttribute("totalPages", laptopPage.getTotalPages());
+        model.addAttribute("totalItems", laptopPage.getTotalElements());
+        model.addAttribute("searchCond", searchCond);
 
         if (userDetails != null) {
-            model.addAttribute("users", users);
             model.addAttribute("username", userDetails.getUser().getUsername());
             model.addAttribute("userRole", userDetails.getRole().name());
         }
 
         return "admin/laptop-list";
     }
-
-//    @GetMapping("/admin/laptops/{deviceId}")
-//    @PreAuthorize("hasAnyRole('MID_ADMIN', 'TOP_ADMIN')") //권한 제어
-//    public String laptopDetail(@PathVariable String deviceId,
-//                               @AuthenticationPrincipal CustomUserDetails loginUser,
-//                               Model model) throws AccessDeniedException {
-//        if (loginUser == null) {
-//            throw new AccessDeniedException("접근 권한이 없습니다.");
-//        }
-//
-//        Laptop laptop = laptopService.findById(deviceId)
-//                .orElseThrow(() -> new IllegalArgumentException("노트북을 찾을 수 없습니다."));
-//        List<User> users = userService.getAllUsers();
-//        List<OwnershipHistory> ownershipHistoryList = ownershipHistoryRepository.findByLaptop_DeviceId(deviceId);
-//
-//        // 사용자 정보 JSON으로 변환
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String usersJson = "";
-//        try {
-//            usersJson = objectMapper.writeValueAsString(users);
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace(); // or log it
-//        }
-//
-//        model.addAttribute("laptop", laptop);
-//        model.addAttribute("users", users); // 사용자 리스트 (form용)
-//        model.addAttribute("usersJson", usersJson); // 사용자 JSON (JS 검색용)
-//        model.addAttribute("ownershipHistoryList", ownershipHistoryList);
-//        model.addAttribute("username", loginUser.getUser().getUsername());
-//        model.addAttribute("userRole", loginUser.getRole().name());
-//
-//        return "admin/laptop-detail";
-//    }
 
     @GetMapping("/admin/laptops/{deviceId}")
     @PreAuthorize("hasAnyRole('MID_ADMIN', 'TOP_ADMIN')")
