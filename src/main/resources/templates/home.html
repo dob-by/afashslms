@@ -152,12 +152,18 @@
           <a th:href="@{/notices}" class="btn btn-sm btn-outline-success px-2 py-1">+ 더보기</a>
         </div>
         <ul class="list-group list-group-flush">
-          <li class="list-group-item">[공지] 노트북 정기 점검 안내 (5/10)</li>
-          <li class="list-group-item">[공지] 신규 노트북 대여 신청 공지</li>
-          <li class="list-group-item">[중요] 분실 시 벌금 규정 변경 안내</li>
-          <li class="list-group-item">[안내] 1학년 대상 교육 일정 안내</li>
-          <li class="list-group-item">[공지] 2025년 1차 대여 현황 업데이트</li>
+          <li class="list-group-item" th:each="notice : ${latestNotices}">
+            <a th:href="@{|/notices/${notice.id}|}" th:text="${notice.title}" class="post-link"></a>
+            <span class="text-muted float-end" th:text="${#dates.format(notice.createdAt, 'yyyy-MM-dd')}"></span>
+          </li>
         </ul>
+<!--        <ul class="list-group list-group-flush">-->
+<!--          <li class="list-group-item">[공지] 노트북 정기 점검 안내 (5/10)</li>-->
+<!--          <li class="list-group-item">[공지] 신규 노트북 대여 신청 공지</li>-->
+<!--          <li class="list-group-item">[중요] 분실 시 벌금 규정 변경 안내</li>-->
+<!--          <li class="list-group-item">[안내] 1학년 대상 교육 일정 안내</li>-->
+<!--          <li class="list-group-item">[공지] 2025년 1차 대여 현황 업데이트</li>-->
+<!--        </ul>-->
       </div>
     </div>
 

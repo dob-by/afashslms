@@ -4,9 +4,11 @@ import com.afashslms.demo.domain.Post;
 import com.afashslms.demo.repository.PostRepository;
 import com.afashslms.demo.security.CustomOAuth2User;
 import com.afashslms.demo.security.CustomUserDetails;
+import com.afashslms.demo.service.NoticeService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import com.afashslms.demo.domain.Notice;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -16,9 +18,11 @@ import java.util.List;
 public class HomeController {
 
     private final PostRepository postRepository;
+    private final NoticeService noticeService;
 
-    public HomeController(PostRepository postRepository) {
+    public HomeController(PostRepository postRepository, NoticeService noticeService) {
         this.postRepository = postRepository;
+        this.noticeService = noticeService;
     }
 
     @GetMapping("/")
@@ -37,9 +41,13 @@ public class HomeController {
         model.addAttribute("userRole", roleName);
         model.addAttribute("username", username);
 
-        // 최신 게시글 5개 가져오기
+        // 최신 게시글 5개
         List<Post> latestPosts = postRepository.findTop5ByOrderByCreatedAtDesc();
         model.addAttribute("latestPosts", latestPosts);
+
+        // 최신 공지사항 5개
+        List<Notice> latestNotices = noticeService.getLatestNotices(5);
+        model.addAttribute("latestNotices", latestNotices);
 
         return "home";
     }

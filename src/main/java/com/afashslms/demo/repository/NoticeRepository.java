@@ -9,4 +9,6 @@ import java.util.List;
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
     List<Notice> findAllByOrderByCreatedAtDesc();
     Page<Notice> findByTitleContainingIgnoreCase(String keyword, Pageable pageable);
+
+    List<Notice> findTop5ByOrderByCreatedAtDesc();
 }

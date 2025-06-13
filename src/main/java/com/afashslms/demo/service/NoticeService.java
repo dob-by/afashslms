@@ -37,4 +37,9 @@ public class NoticeService {
         }
         return noticeRepository.findByTitleContainingIgnoreCase(keyword, pageable);
     }
+
+    // ✅ 최근 공지 5개 가져오기
+    public List<Notice> getLatestNotices(int limit) {
+        return noticeRepository.findTop5ByOrderByCreatedAtDesc();
+    }
 }
