@@ -77,9 +77,19 @@
     </div>
 
     <!-- 비밀번호 변경 -->
+    <div th:if="${firstLogin}" class="alert alert-warning fw-bold text-center">
+        🚨 현재 비밀번호는 초기 비밀번호입니다. <br>
+        반드시 비밀번호를 변경해주세요!
+    </div>
     <div class="card shadow border-0 p-4 mb-5"
          style="border-radius: 1rem; background: #fff8e1;">
         <h5 class="fw-bold mb-3">🔑 비밀번호 변경</h5>
+
+        <!-- 🔐 첫 로그인 시 비밀번호 변경 안내 -->
+        <div th:if="${param.firstChange}" class="alert alert-warning text-center fw-bold">
+            <span th:text="${firstChangeNotice}">비밀번호 변경 안내</span>
+        </div>
+
 
         <!-- 메시지 출력 -->
         <div th:if="${passwordError}" class="alert alert-danger" th:text="${passwordError}"></div>

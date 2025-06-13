@@ -72,6 +72,21 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsernameContainingIgnoreCaseOrUserIdContainingIgnoreCase(keyword, keyword);
     }
 
+//    @Override
+//    public boolean updatePassword(String email, String currentPassword, String newPassword) {
+//        User user = userRepository.findByEmail(email)
+//                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+//
+//        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+//            return false;
+//        }
+//
+//        user.setPassword(passwordEncoder.encode(newPassword));
+//        user.setRole(Role.PENDING_ADMIN);
+//        userRepository.save(user);
+//        return true;
+//    }
+
     @Override
     public boolean updatePassword(String email, String currentPassword, String newPassword) {
         User user = userRepository.findByEmail(email)
@@ -82,7 +97,7 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));
-        user.setRole(Role.PENDING_ADMIN);
+        user.setPasswordChanged(true); // ✅ 비밀번호 변경 표시
         userRepository.save(user);
         return true;
     }

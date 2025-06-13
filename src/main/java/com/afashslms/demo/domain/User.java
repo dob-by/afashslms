@@ -58,4 +58,7 @@ public class User {
     public boolean isProfileComplete() {
         return Boolean.TRUE.equals(this.profileCompleted);
     }
+
+    @Column(nullable = false)
+    private boolean passwordChanged = false;
 }

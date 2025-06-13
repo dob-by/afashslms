@@ -2,10 +2,12 @@ package com.afashslms.demo.config;
 
 import com.afashslms.demo.domain.Role;
 import com.afashslms.demo.domain.User;
+import com.afashslms.demo.security.CustomAuthenticationSuccessHandler;
 import com.afashslms.demo.security.CustomOAuth2User;
 import com.afashslms.demo.security.CustomUserDetails;
 import com.afashslms.demo.service.CustomOAuth2UserService;
 import com.afashslms.demo.service.CustomUserDetailsService;
+import com.afashslms.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,12 +40,15 @@ public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final UserService userService;
 
     @Bean
     public AuthenticationSuccessHandler successHandler() {
         return (request, response, authentication) -> {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+
+            System.out.println("[DEBUG] 로그인 성공! principal = " + auth.getPrincipal());
 
             if (auth != null && auth.isAuthenticated()) {
                 Object principal = auth.getPrincipal();
@@ -86,10 +91,21 @@ public class SecurityConfig {
                         redirectStrategy.sendRedirect(request, response, "/admin/mypage");
                         return;
                     }
+                    // ✅ 학생인 경우
+                    if (user.getRole() == Role.STUDENT) {
+                        if (!user.isPasswordChanged()) {
+                            System.out.println("[DEBUG] 비밀번호 변경 안한 학생 → /mypage");
+                            redirectStrategy.sendRedirect(request, response, "/mypage");
+                        } else {
+                            System.out.println("[DEBUG] 비밀번호 변경한 학생 → /");
+                            redirectStrategy.sendRedirect(request, response, "/");
+                        }
+                        return;
+                    }
                 }
 
-                // ✅ 기본 학생
-                redirectStrategy.sendRedirect(request, response, "/home");
+//                // ✅ 기본 학생
+//                redirectStrategy.sendRedirect(request, response, "/mypage");
             }
         };
     }
@@ -101,7 +117,10 @@ public class SecurityConfig {
         builder.authenticationProvider(authenticationProvider());
         AuthenticationManager authenticationManager = builder.getOrBuild();
 
-        CustomAuthenticationFilter customFilter = new CustomAuthenticationFilter(authenticationManager);
+        // ✅ 여기에 수정!
+        CustomAuthenticationFilter customFilter =
+                new CustomAuthenticationFilter(authenticationManager, successHandler());
+
         customFilter.setFilterProcessesUrl("/login");
         customFilter.setUsernameParameter("username");
         customFilter.setPasswordParameter("password");
@@ -119,6 +138,7 @@ public class SecurityConfig {
 
             response.sendRedirect("/login?errorMessage=" + URLEncoder.encode(errorMessage, StandardCharsets.UTF_8));
         });
+        customFilter.setAuthenticationSuccessHandler(successHandler());
 
         http
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/import/**"))
@@ -142,6 +162,8 @@ public class SecurityConfig {
                         .requestMatchers("/admin/pending-admins").hasRole("TOP_ADMIN")
                         .requestMatchers("/admin/users/**", "/admin/laptops/**", "/admin/mypage")
                         .hasAnyRole("MID_ADMIN", "TOP_ADMIN")
+
+                        .requestMatchers("/mypage").hasAnyRole("STUDENT", "MID_ADMIN", "TOP_ADMIN")
 
                         // ✅ 일반 사용자용 경로
                         .requestMatchers("/mypage/password").authenticated()
@@ -188,6 +210,14 @@ public class SecurityConfig {
                 .authenticationManager(authenticationManager);
 
         return http.build();
+    }
+
+    @Bean
+    public CustomAuthenticationFilter customAuthenticationFilter(HttpSecurity http) throws Exception {
+        return new CustomAuthenticationFilter(
+                authenticationManager(http),                        // 인증 매니저 넘기기
+                new CustomAuthenticationSuccessHandler(userService) // 커스텀 성공 핸들러 넘기기
+        );
     }
 
     // ✅ 인증 공급자 설정

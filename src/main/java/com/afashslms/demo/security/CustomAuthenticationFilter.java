@@ -36,6 +36,7 @@
 //}
 package com.afashslms.demo.security;
 
+import com.afashslms.demo.config.SecurityConfig;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,15 +49,24 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import com.afashslms.demo.domain.Role;
 import java.io.IOException;
 
-@RequiredArgsConstructor
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+    private final AuthenticationSuccessHandler successHandler; // ✅ 추가
+
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager,
+                                      AuthenticationSuccessHandler successHandler) {
+        this.authenticationManager = authenticationManager;
+        this.successHandler = successHandler;
+        super.setAuthenticationManager(authenticationManager);
+    }
+
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
@@ -121,19 +131,19 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                                             HttpServletResponse response,
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
-        System.out.println("✅ 로그인 성공 → 홈으로 리다이렉트");
+        System.out.println("✅ 로그인 성공 → successHandler로 위임");
 
-        // 1. 인증 정보 SecurityContext에 설정
+        // SecurityContext 저장
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authResult);
         SecurityContextHolder.setContext(context);
 
-        // 2. 세션에 저장해주는 부분 (이게 없으면 다음 요청에서 인증 안 됨!)
+        // 세션에 저장
         HttpSessionSecurityContextRepository repo = new HttpSessionSecurityContextRepository();
         repo.saveContext(context, request, response);
 
-        // 3. 홈으로 리다이렉트
-        response.sendRedirect("/");
+        // ✅ 이제 successHandler 사용 가능
+        successHandler.onAuthenticationSuccess(request, response, authResult);
     }
 
     @Override
