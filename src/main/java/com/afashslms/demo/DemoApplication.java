@@ -39,13 +39,13 @@ public class DemoApplication {
 			//userRepository.deleteAll(); // ✅ DB 리셋용 (임시!)
 			System.out.println("🔥 main에서 실행됨!!!");
 
-			boolean exists = userRepository.findByUserId("admin").isPresent();
+			boolean exists = userRepository.findByUserId("22-123456").isPresent();
 			System.out.println("🔍 admin 유저 존재 여부: " + exists);
 
 			if (!exists) {
 				System.out.println("🛠 admin 유저 생성 시작!");
 				User user = new User();
-				user.setUserId("admin");
+				user.setUserId("22-123456"); //총괄관리자 군번
 				user.setPassword(passwordEncoder.encode("1234"));
 				user.setUsername("로제");
 				user.setEmail("admin@test.com");

@@ -97,7 +97,7 @@
                     class="clickable-row text-center py-3">
                     <td th:text="${totalItems - (currentPage * pageSize + iterStat.index)}">1</td>
                     <td class="text-ellipsis fw-semibold" th:text="${notice.title}">공지 제목</td>
-                    <td th:text="${notice.author.username}">작성자</td>
+                    <td th:text="${notice.author != null ? notice.author.username : '알 수 없음'}">작성자</td>
                     <td th:text="${#dates.format(notice.createdAt, 'yyyy-MM-dd')}">작성일</td>
                 </tr>
                 <tr th:if="${notices.size() == 0}">

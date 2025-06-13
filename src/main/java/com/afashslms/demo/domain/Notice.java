@@ -20,7 +20,8 @@ public class Notice {
 
     private Timestamp createdAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
     private User author;  // 글 작성자 (MID_ADMIN or TOP_ADMIN)
 
     // 파일 업로드 관련 필드
