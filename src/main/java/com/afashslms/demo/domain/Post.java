@@ -25,7 +25,7 @@ public class Post {
 
     private String title;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
 
     private String author; // 작성자 이름 or ID

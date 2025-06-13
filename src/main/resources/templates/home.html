@@ -169,11 +169,11 @@
           <a th:href="@{/posts}" class="btn btn-sm btn-outline-success px-2 py-1">+ 더보기</a>
         </div>
         <ul class="list-group list-group-flush">
-          <li class="list-group-item">노트북 충전기 분실 시 어떻게 하나요?</li>
-          <li class="list-group-item">대여 기간 연장 신청은 어떻게 하나요?</li>
-          <li class="list-group-item">로그인 비밀번호를 잊었어요</li>
-          <li class="list-group-item">윈도우 업데이트가 안됩니다</li>
-          <li class="list-group-item">배터리 수명이 짧아졌어요</li>
+<!--          <li class="list-group-item">노트북 충전기 분실 시 어떻게 하나요?</li>-->
+<!--          <li class="list-group-item">대여 기간 연장 신청은 어떻게 하나요?</li>-->
+<!--          <li class="list-group-item">로그인 비밀번호를 잊었어요</li>-->
+<!--          <li class="list-group-item">윈도우 업데이트가 안됩니다</li>-->
+<!--          <li class="list-group-item">배터리 수명이 짧아졌어요</li>-->
           <li class="list-group-item" th:each="post : ${latestPosts}">
             <a th:href="@{|/posts/${post.postId}|}"
                th:text="${post.title}"

@@ -4,8 +4,10 @@ import com.afashslms.demo.domain.Post;
 import com.afashslms.demo.domain.User;
 import com.afashslms.demo.repository.PostRepository;
 import com.afashslms.demo.repository.UserRepository;
+import com.afashslms.demo.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -33,40 +35,10 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
-    // 게시글 등록
-    public void createPost(String principalName, String title, String content) {
+    public void createPost(@AuthenticationPrincipal CustomUserDetails userDetails,
+                           String title, String content) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user;
-
-        System.out.println(">> Auth class: " + authentication.getClass().getName());
-        System.out.println(">> Principal name: " + principalName);
-
-        if (authentication instanceof OAuth2AuthenticationToken oauthToken) {
-            String email = null;
-
-            // 우선 일반적인 email 속성에서 시도
-            Object emailAttr = oauthToken.getPrincipal().getAttribute("email");
-
-            // Kakao일 경우 email이 nested 구조임
-            if (emailAttr == null) {
-                Object kakaoAccount = oauthToken.getPrincipal().getAttribute("kakao_account");
-                if (kakaoAccount instanceof Map<?, ?> kakaoMap) {
-                    email = (String) kakaoMap.get("email");
-                }
-            } else {
-                email = (String) emailAttr;
-            }
-
-            System.out.println(">> OAuth2 email: " + email);
-            user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new IllegalArgumentException("OAuth 사용자 정보를 찾을 수 없습니다."));
-
-        } else {
-            // Local 로그인
-            user = userRepository.findByUserId(principalName)
-                    .orElseThrow(() -> new IllegalArgumentException("Local 사용자 정보를 찾을 수 없습니다."));
-        }
+        User user = userDetails.getUser();  // CustomUserDetails 안에 실제 User 객체 있음!
 
         Post post = new Post();
         post.setUser(user);
@@ -77,30 +49,11 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public void createPostWithFile(String principalName, String title, String content, MultipartFile file) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user;
-
-        if (authentication instanceof OAuth2AuthenticationToken oauthToken) {
-            String email = null;
-            Object emailAttr = oauthToken.getPrincipal().getAttribute("email");
-
-            if (emailAttr == null) {
-                Object kakaoAccount = oauthToken.getPrincipal().getAttribute("kakao_account");
-                if (kakaoAccount instanceof Map<?, ?> kakaoMap) {
-                    email = (String) kakaoMap.get("email");
-                }
-            } else {
-                email = (String) emailAttr;
-            }
-
-            user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new IllegalArgumentException("OAuth 사용자 정보를 찾을 수 없습니다."));
-
-        } else {
-            user = userRepository.findByUserId(principalName)
-                    .orElseThrow(() -> new IllegalArgumentException("Local 사용자 정보를 찾을 수 없습니다."));
-        }
+    public void createPostWithFile(User user,
+                                   String title,
+                                   String content,
+                                   MultipartFile file) {
+        //User user = userDetails.getUser(); // 가장 확실하고 공통적인 방식!
 
         // 파일 저장 처리
         String savedFileName = null;

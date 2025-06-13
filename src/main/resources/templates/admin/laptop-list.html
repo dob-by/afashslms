@@ -67,7 +67,7 @@
                     <th>IP 정보</th>
                     <th>상태</th>
                     <th>사용자명</th>
-                    <th>현재 상태</th>
+<!--                    <th>현재 상태</th>-->
                     <th>관리번호</th>
                     <th>소유이력</th>
                 </tr>
@@ -79,7 +79,7 @@
                     <td th:text="${laptop.ip}">IP 정보</td>
                     <td th:text="${laptop.status}">상태</td>
                     <td th:text="${laptop.userName}">사용자명</td>
-                    <td th:text="${laptop.currentState}">현재 상태</td>
+<!--                    <td th:text="${laptop.currentState}">현재 상태</td>-->
                     <td th:text="${laptop.manageCode}">관리번호</td>
                     <td>
                         <a th:href="@{'/admin/laptops/' + ${laptop.deviceId} + '/ownership'}"

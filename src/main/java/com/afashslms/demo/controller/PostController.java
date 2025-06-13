@@ -1,6 +1,7 @@
 package com.afashslms.demo.controller;
 
 import com.afashslms.demo.domain.Post;
+import com.afashslms.demo.domain.User;
 import com.afashslms.demo.security.CustomOAuth2User;
 import com.afashslms.demo.security.CustomUserDetails;
 import com.afashslms.demo.service.UserService;
@@ -171,31 +172,53 @@ public class PostController {
         return "post/new";
     }
 
-    // 글 등록 처리
     @PostMapping
     public String createPost(@RequestParam String title,
                              @RequestParam String content,
                              @RequestParam(value = "file", required = false) MultipartFile file,
                              @AuthenticationPrincipal Object principal) {
 
-        String email = null;
-        String role = null;
+        User user = null;
 
         if (principal instanceof CustomUserDetails userDetails) {
-            email = userDetails.getUser().getEmail();
-            role = userDetails.getUser().getRole().name();
+            user = userDetails.getUser();
         } else if (principal instanceof CustomOAuth2User oauthUser) {
-            email = oauthUser.getEmail();
-            role = oauthUser.getRole().name();
+            user = oauthUser.getUser();
         }
 
-        if (!"STUDENT".equals(role)) {
+        if (user == null || !"STUDENT".equals(user.getRole().name())) {
             return "post/forbidden";
         }
 
-        postService.createPostWithFile(email, title, content, file);  // ✨파일 포함 메서드 호출
+        postService.createPostWithFile(user, title, content, file);  // ✅ 유저 자체 전달
         return "redirect:/posts";
     }
+
+//    // 글 등록 처리
+//    @PostMapping
+//    public String createPost(@RequestParam String title,
+//                             @RequestParam String content,
+//                             @RequestParam(value = "file", required = false) MultipartFile file,
+//                             @AuthenticationPrincipal Object principal) {
+//
+//        String email = null;
+//        String role = null;
+//
+//        if (principal instanceof CustomUserDetails userDetails) {
+//            email = userDetails.getUser().getEmail();
+//            role = userDetails.getUser().getRole().name();
+//        } else if (principal instanceof CustomOAuth2User oauthUser) {
+//            email = oauthUser.getEmail();
+//            role = oauthUser.getRole().name();
+//        }
+//
+//        if (!"STUDENT".equals(role)) {
+//            return "post/forbidden";
+//        }
+//
+//        postService.createPostWithFile(email, title, content, file);  // ✨파일 포함 메서드 호출
+//        return "redirect:/posts";
+//    }
     // 글 수정 폼
     @GetMapping("/{postId}/edit")
     public String showEditForm(@PathVariable String postId, Model model, Principal principal) {
