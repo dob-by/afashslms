@@ -65,21 +65,17 @@
 <body>
 <div class="container my-5">
     <div class="user-card">
-        <!-- ✅ 타이틀 -->
         <h2 class="fw-bold text-center mb-4 text-dark">사용자 상세 정보</h2>
-
-        <!-- ✅ 사용자 정보 테이블 -->
+        <!-- 사용자 정보 테이블 -->
         <table class="table table-bordered info-table mb-5">
             <tr><th>사용자 ID</th><td th:text="${user.userId}">userId</td></tr>
             <tr><th>이름</th><td th:text="${user.username}">username</td></tr>
             <tr><th>이메일</th><td th:text="${user.email}">email</td></tr>
             <tr><th>군번</th><td th:text="${user.militaryId}">militaryId</td></tr>
-<!--            <tr><th>로그인 방식</th><td th:text="${user.provider}">provider</td></tr>-->
             <tr><th>역할</th><td th:text="${user.role}">role</td></tr>
             <tr><th>가입일</th><td th:text="${#temporals.format(user.createdAt.toLocalDateTime(), 'yyyy-MM-dd HH:mm')}">createdAt</td></tr>
         </table>
 
-        <!-- 보유 노트북 목록 -->
         <h4 class="fw-bold text-dark mb-3">보유 노트북</h4>
 
         <div class="table-responsive rounded border">

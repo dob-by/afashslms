@@ -11,12 +11,9 @@ import java.util.Optional;
 
 public interface UserService {
     List<User> getAllUsers();
-
     void changeRole(String userId, String newRole);
     Optional<User> findByEmail(String email);
-
     List<User> searchUsers(String query);
-
     User findByUserId(String userId);
     List<User> searchByUsernameOrUserId(String keyword);
     boolean updatePassword(String email, String currentPassword, String newPassword);

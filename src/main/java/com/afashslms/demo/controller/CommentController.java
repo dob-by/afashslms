@@ -73,7 +73,6 @@ public class CommentController {
     @PostMapping("/{id}/delete")
     public String deleteComment(@PathVariable Long id, Principal principal) {
         String email = extractEmailFromPrincipal(principal);
-
         String postId = commentService.getCommentById(id).getPost().getPostId();
 
         commentService.deleteComment(id, email);

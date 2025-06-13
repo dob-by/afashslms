@@ -41,8 +41,8 @@ public class AdminLaptopController {
     @GetMapping("/admin/laptops")
     public String showLaptopList(@ModelAttribute("searchCond") LaptopSearchConditionDto searchCond,
                                  @AuthenticationPrincipal CustomUserDetails userDetails,
-                                 @RequestParam(defaultValue = "0") int page,            // ← 페이지 번호
-                                 @RequestParam(defaultValue = "10") int size,           // ← 페이지당 항목 수
+                                 @RequestParam(defaultValue = "0") int page,            // 페이지 번호
+                                 @RequestParam(defaultValue = "10") int size,           // 페이지당 항목 수
                                  Model model) {
 
         Pageable pageable = PageRequest.of(page, 10);
@@ -76,9 +76,9 @@ public class AdminLaptopController {
         String username = null;
         String role = null;
         String referer = request.getHeader("Referer");
-        model.addAttribute("prevPage", prevPage != null ? prevPage : "/admin/laptops"); // 기본값 설정model.addAttribute("currentPage", page);
+        model.addAttribute("prevPage", prevPage != null ? prevPage : "/admin/laptops");
         model.addAttribute("currentPage", page);
-        model.addAttribute("searchCond", new LaptopSearchConditionDto(keyword)); // 생성자에서 keyword 설정
+        model.addAttribute("searchCond", new LaptopSearchConditionDto(keyword));
 
 
         if (principal instanceof CustomUserDetails customUserDetails) {
@@ -164,7 +164,7 @@ public class AdminLaptopController {
         model.addAttribute("username", username);
         model.addAttribute("userRole", role);
 
-        return "admin/ownership-history"; // 너의 템플릿 파일명
+        return "admin/ownership-history";
     }
 
     @PostMapping("/admin/laptops/{deviceId}/change-owner")
@@ -178,10 +178,10 @@ public class AdminLaptopController {
             throw new AccessDeniedException("권한이 없습니다.");
         }
 
-        // 💻 실제 소유자 변경 처리
+        // 실제 소유자 변경 처리
         laptopService.changeLaptopOwner(deviceId, newOwnerId);
 
-        // 🔙 Referer를 받아서 이전 페이지 주소로 활용
+        // Referer를 받아서 이전 페이지 주소로 활용
         String referer = request.getHeader("Referer");
         String encodedPrevPage = (referer != null)
                 ? URLEncoder.encode(referer, StandardCharsets.UTF_8)

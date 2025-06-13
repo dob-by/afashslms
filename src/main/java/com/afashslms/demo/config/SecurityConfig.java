@@ -48,16 +48,14 @@ public class SecurityConfig {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
-            System.out.println("[DEBUG] 로그인 성공! principal = " + auth.getPrincipal());
-
             if (auth != null && auth.isAuthenticated()) {
                 Object principal = auth.getPrincipal();
 
-                // ✅ OAuth2 로그인 사용자
+                // OAuth2 로그인 사용자
                 if (principal instanceof CustomOAuth2User customOAuthUser) {
                     User user = customOAuthUser.getUser();
 
-                    // ✅ user가 null인 경우 → 최초 로그인
+                    // user가 null인 경우 → 최초 로그인
                     if (user == null) {
                         request.getSession().setAttribute("oauthEmail", customOAuthUser.getEmail());
                         request.getSession().setAttribute("oauthProvider", customOAuthUser.getProvider());
@@ -65,7 +63,7 @@ public class SecurityConfig {
                         return;
                     }
 
-                    // ✅ Role == TEMP → 최초 로그인 처리
+                    // Role == TEMP → 최초 로그인 처리
                     if (user.getRole() == Role.TEMP) {
                         request.getSession().setAttribute("oauthEmail", customOAuthUser.getEmail());
                         request.getSession().setAttribute("oauthProvider", customOAuthUser.getProvider());
@@ -73,7 +71,7 @@ public class SecurityConfig {
                         return;
                     }
 
-                    // ✅ 프로필 미완성
+                    // 프로필 미완성
                     if (!user.isProfileComplete()) {
                         redirectStrategy.sendRedirect(request, response, "/admin/profile");
                         return;
@@ -84,14 +82,14 @@ public class SecurityConfig {
                     return;
                 }
 
-                // ✅ 일반 관리자 (로컬 로그인)
+                // 일반 관리자 (로컬 로그인)
                 if (principal instanceof CustomUserDetails customUser) {
                     User user = customUser.getUser();
                     if (user.getRole().name().contains("ADMIN")) {
                         redirectStrategy.sendRedirect(request, response, "/admin/mypage");
                         return;
                     }
-                    // ✅ 학생인 경우
+                    // 학생
                     if (user.getRole() == Role.STUDENT) {
                         if (!user.isPasswordChanged()) {
                             System.out.println("[DEBUG] 비밀번호 변경 안한 학생 → /mypage");
@@ -100,24 +98,19 @@ public class SecurityConfig {
                             System.out.println("[DEBUG] 비밀번호 변경한 학생 → /");
                             redirectStrategy.sendRedirect(request, response, "/");
                         }
-                        return;
                     }
                 }
-
-//                // ✅ 기본 학생
-//                redirectStrategy.sendRedirect(request, response, "/mypage");
             }
         };
     }
 
-    // ✅ Security 설정
+    // Security 설정
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
         builder.authenticationProvider(authenticationProvider());
         AuthenticationManager authenticationManager = builder.getOrBuild();
 
-        // ✅ 여기에 수정!
         CustomAuthenticationFilter customFilter =
                 new CustomAuthenticationFilter(authenticationManager, successHandler());
 
@@ -148,34 +141,34 @@ public class SecurityConfig {
                                 "/css/**", "/js/**", "/h2-console/**", "/import/**"
                         ).permitAll()
 
-                        // ✅ TEMP의 GET/POST 모두 허용하도록 분리
+                        // TEMP의 GET/POST 모두 허용하도록 분리
                         .requestMatchers(HttpMethod.GET, "/admin/profile").hasAnyRole("TEMP", "MID_ADMIN", "TOP_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/admin/profile").hasRole("TEMP")
 
-                        // ✅ 관리자 권한자도 프로필 페이지 접근 허용 (예: 승인 후도 다시 볼 수 있게)
+                        // 관리자 권한자도 프로필 페이지 접근 허용
                         .requestMatchers("/admin/profile").hasAnyRole("TEMP", "MID_ADMIN", "TOP_ADMIN")
 
-                        // ✅ TEMP는 나머지 전부 접근 차단
+                        // TEMP는 나머지 전부 접근 차단
                         .requestMatchers("/**").not().hasRole("TEMP")
 
-                        // ✅ 관리자 페이지
+                        // 관리자 페이지
                         .requestMatchers("/admin/pending-admins").hasRole("TOP_ADMIN")
                         .requestMatchers("/admin/users/**", "/admin/laptops/**", "/admin/mypage")
                         .hasAnyRole("MID_ADMIN", "TOP_ADMIN")
 
                         .requestMatchers("/mypage").hasAnyRole("STUDENT", "MID_ADMIN", "TOP_ADMIN")
 
-                        // ✅ 일반 사용자용 경로
+                        // 일반 사용자용 경로
                         .requestMatchers("/mypage/password").authenticated()
 
-                        // ✅ 그 외 요청 인증 필요
+                        // 그 외 요청 인증 필요
                         .anyRequest().authenticated()
                 )
                 .addFilterAt(customFilter, UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-                        .successHandler(successHandler()) // ✅ 이거만 남김
+                        .successHandler(successHandler())
                         .failureHandler((request, response, exception) -> {
                             String errorMessage = "OAuth2 로그인 실패"; // 기본값
 
@@ -199,7 +192,7 @@ public class SecurityConfig {
                         })
                 )
                 .exceptionHandling(exception -> exception
-                        .accessDeniedHandler(customAccessDeniedHandler()) // 👈 여기에 등록
+                        .accessDeniedHandler(customAccessDeniedHandler())
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
@@ -220,7 +213,7 @@ public class SecurityConfig {
         );
     }
 
-    // ✅ 인증 공급자 설정
+    // 인증 공급자 설정
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -229,7 +222,7 @@ public class SecurityConfig {
         return provider;
     }
 
-    // ✅ AuthenticationManager Bean 등록
+    // AuthenticationManager Bean 등록
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
@@ -252,7 +245,7 @@ public class SecurityConfig {
                 }
             }
 
-            response.sendRedirect("/error/403"); // 기본 403 처리
+            response.sendRedirect("/error/403");
         };
     }
 }

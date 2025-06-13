@@ -3,7 +3,6 @@ package com.afashslms.demo.repository;
 import com.afashslms.demo.domain.Role;
 import com.afashslms.demo.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
 import java.util.Optional;
 

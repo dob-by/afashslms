@@ -7,7 +7,6 @@ import com.afashslms.demo.repository.RepairRequestRepository;
 import com.afashslms.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class RepairService {
     public void rejectRepair(Long id, String reason) {
         RepairRequest repair = getRepairById(id);
         repair.setStatus(RepairStatus.REJECTED);
-        repair.setRejectionReason(reason); // 이 필드가 있어야 함!
+        repair.setRejectionReason(reason);
         repairRequestRepository.save(repair);
     }
 
@@ -46,7 +45,6 @@ public class RepairService {
             throw new IllegalArgumentException("본인의 요청만 수정할 수 있습니다.");
         }
 
-        // 필요한 필드만 업데이트
         existing.setCategory(updatedRequest.getCategory());
         existing.setDetailType(updatedRequest.getDetailType());
         existing.setDescription(updatedRequest.getDescription());

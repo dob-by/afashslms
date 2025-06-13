@@ -85,7 +85,7 @@
          style="border-radius: 1rem; background: #fff8e1;">
         <h5 class="fw-bold mb-3">🔑 비밀번호 변경</h5>
 
-        <!-- 🔐 첫 로그인 시 비밀번호 변경 안내 -->
+        <!-- 첫 로그인 시 비밀번호 변경 안내 -->
         <div th:if="${param.firstChange}" class="alert alert-warning text-center fw-bold">
             <span th:text="${firstChangeNotice}">비밀번호 변경 안내</span>
         </div>
@@ -97,7 +97,7 @@
 
         <form th:action="@{/mypage/password}" method="post">
 
-            <!-- ✅ CSRF 토큰 추가 -->
+            <!-- CSRF 토큰 추가 -->
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
             <div class="mb-3">
@@ -118,7 +118,7 @@
         </form>
     </div>
 
-    <!-- 💻 노트북 정보 -->
+    <!-- 노트북 정보 -->
     <div th:if="${userRole == 'STUDENT' and laptop != null}">
         <h5 class="section-title">💻 내 노트북 정보</h5>
         <div class="card-custom mb-4">

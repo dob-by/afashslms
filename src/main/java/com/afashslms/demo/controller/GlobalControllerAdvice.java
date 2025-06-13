@@ -1,14 +1,12 @@
 package com.afashslms.demo.controller;
 
 import com.afashslms.demo.domain.User;
-import com.afashslms.demo.security.CustomOAuth2User;
 import com.afashslms.demo.security.CustomUserDetails;
 import com.afashslms.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -35,7 +33,7 @@ public class GlobalControllerAdvice {
         if (authentication != null && authentication.isAuthenticated()) {
             Object principal = authentication.getPrincipal();
             if (principal instanceof CustomUserDetails userDetails) {
-                return userDetails.getUsername(); // 또는 getName(), getEmail() 등 원하는 항목
+                return userDetails.getUsername();
             }
         }
         return "알 수 없음";
@@ -56,7 +54,7 @@ public class GlobalControllerAdvice {
                 System.out.println(">>> user.getRole() = " + user.getRole());
                 System.out.println(">>> user.getRole() type = " + user.getRole().getClass());
 
-                model.addAttribute("userRole", user.getRole().getDisplayName()); // 여기서 터지는 중
+                model.addAttribute("userRole", user.getRole().getDisplayName());
             }
 
             // 로컬 로그인 사용자

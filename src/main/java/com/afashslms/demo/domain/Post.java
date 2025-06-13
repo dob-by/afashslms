@@ -28,10 +28,9 @@ public class Post {
     @Column(columnDefinition = "LONGTEXT")
     private String content;
 
-//    private String author; // 작성자 이름 or ID
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id") // 실제 DB 컬럼명
-    private User author; // ✅ 객체로 저장
+    @JoinColumn(name = "author_id")
+    private User author;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

@@ -52,7 +52,6 @@ public class AdminRepairController {
                                      @RequestParam RepairStatus status,
                                      @RequestParam(required = false) String rejectionReason) {
 
-        // ✅ 인증된 사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
 
@@ -61,7 +60,7 @@ public class AdminRepairController {
         if (principal instanceof CustomUserDetails customUser) {
             role = customUser.getRole();
         } else if (principal instanceof CustomOAuth2User oauthUser) {
-            role = oauthUser.getUser().getRole(); // 너가 oauthUser 내부에 getUser() 구현한 경우
+            role = oauthUser.getUser().getRole();
         } else {
             throw new IllegalStateException("알 수 없는 사용자 유형입니다: " + principal.getClass().getName());
         }
@@ -73,9 +72,9 @@ public class AdminRepairController {
             // 총괄 관리자는 모든 상태로 변경 가능
             repair.setStatus(status);
             if (status == RepairStatus.REJECTED) {
-                repair.setRejectionReason(rejectionReason); // 🧠 반려 사유 저장
+                repair.setRejectionReason(rejectionReason); // 반려 사유 저장
             } else {
-                repair.setRejectionReason(null); // ✔ 다른 상태면 반려 사유 초기화
+                repair.setRejectionReason(null); // 다른 상태면 반려 사유 초기화
             }
             repairService.saveRepairRequest(repair);
 
@@ -103,12 +102,12 @@ public class AdminRepairController {
         model.addAttribute("repair", repair);
         model.addAttribute("statuses", RepairStatus.values());
 
-        // ✅ role을 안전하게 가져오는 코드
+        // role을 안전하게 가져오는 코드
         String role = null;
         if (principal instanceof CustomUserDetails customUser) {
             role = customUser.getUser().getRole().name();
         } else if (principal instanceof CustomOAuth2User oauthUser) {
-            role = oauthUser.getRole().name();  // 너가 만든 getRole() 있지!
+            role = oauthUser.getRole().name();
         }
 
         model.addAttribute("userRole", role);

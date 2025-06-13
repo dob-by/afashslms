@@ -112,23 +112,6 @@
                             </form>
                         </div>
 
-<!--                        <div th:if="${repair.status.name() == 'REJECTED'}">-->
-<!--                            <button class="btn btn-sm btn-outline-danger"-->
-<!--                                    type="button"-->
-<!--                                    data-bs-toggle="collapse"-->
-<!--                                    th:attr="data-bs-target='#reason-${repair.id}'">-->
-<!--                                반려 사유 보기-->
-<!--                            </button>-->
-
-<!--&lt;!&ndash;                            <div th:id="'reason-' + ${repair.id}" class="collapse mt-2">&ndash;&gt;-->
-<!--&lt;!&ndash;                                <div class="alert alert-warning mb-0" th:text="${repair.rejectionReason}">반려 사유 내용</div>&ndash;&gt;-->
-<!--&lt;!&ndash;                            </div>&ndash;&gt;-->
-<!--                            <div class="alert alert-warning mb-0"-->
-<!--                                 th:text="${repair.rejectionReason != null ? repair.rejectionReason : '사유 없음'}">-->
-<!--                                반려 사유 내용-->
-<!--                            </div>-->
-<!--                        </div>-->
-
                         <div th:if="${repair.status.name() == 'REJECTED'}">
                             <button class="btn btn-sm btn-outline-secondary"
                                     type="button"

@@ -4,8 +4,6 @@ import com.afashslms.demo.domain.Notice;
 import com.afashslms.demo.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
@@ -38,7 +36,7 @@ public class NoticeService {
         return noticeRepository.findByTitleContainingIgnoreCase(keyword, pageable);
     }
 
-    // ✅ 최근 공지 5개 가져오기
+    // 최근 공지 5개 가져오기
     public List<Notice> getLatestNotices(int limit) {
         return noticeRepository.findTop5ByOrderByCreatedAtDesc();
     }

@@ -8,8 +8,6 @@ import com.afashslms.demo.repository.PostRepository;
 import com.afashslms.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import org.springframework.security.access.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -68,6 +66,4 @@ public class CommentService {
 
         commentRepository.delete(comment);
     }
-
-
 }

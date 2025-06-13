@@ -37,8 +37,6 @@ public class PostController {
     private final PostService postService;
     private final CommentService commentService;
 
-
-
     private String getCurrentUserRole() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -190,11 +188,10 @@ public class PostController {
             return "post/forbidden";
         }
 
-        postService.createPostWithFile(user, title, content, file);  // ✅ 유저 자체 전달
+        postService.createPostWithFile(user, title, content, file);
         return "redirect:/posts";
     }
 
-    // 글 수정 폼
     @GetMapping("/{postId}/edit")
     public String showEditForm(@PathVariable String postId, Model model, Principal principal) {
         Post post = postService.getPost(postId);
@@ -209,7 +206,6 @@ public class PostController {
         return "post/edit";  // templates/post/edit.html
     }
 
-    // 글 수정 처리
     @PostMapping("/{postId}/edit")
     public String updatePost(@PathVariable String postId,
                              @RequestParam String title,
@@ -227,14 +223,12 @@ public class PostController {
         return "redirect:/posts/" + postId;
     }
 
-    // 글 삭제
     @PostMapping("/{postId}/delete")
     public String deletePost(@PathVariable String postId) {
         postService.deletePost(postId);
         return "redirect:/posts";
     }
 
-    //댓글 출력 및 작성 처리
     @PostMapping("/{postId}/comments")
     public String addComment(@PathVariable String postId,
                              @RequestParam String content,
@@ -244,6 +238,4 @@ public class PostController {
         commentService.addComment(postId, content, email);
         return "redirect:/posts/" + postId;
     }
-
-
 }

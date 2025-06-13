@@ -116,7 +116,6 @@
 
         document.getElementById(`comment-content-${commentId}`).classList.add('d-none');
         document.getElementById(`comment-edit-form-${commentId}`).classList.remove('d-none');
-
         document.getElementById(`comment-buttons-default-${commentId}`).classList.add('d-none');
         document.getElementById(`comment-buttons-edit-${commentId}`).classList.remove('d-none');
         document.getElementById(`comment-buttons-edit-${commentId}`).classList.add('d-flex');
@@ -125,7 +124,6 @@
     function cancelCommentEdit(commentId) {
         document.getElementById(`comment-content-${commentId}`).classList.remove('d-none');
         document.getElementById(`comment-edit-form-${commentId}`).classList.add('d-none');
-
         document.getElementById(`comment-buttons-default-${commentId}`).classList.remove('d-none');
         document.getElementById(`comment-buttons-edit-${commentId}`).classList.add('d-none');
         document.getElementById(`comment-buttons-edit-${commentId}`).classList.remove('d-flex');

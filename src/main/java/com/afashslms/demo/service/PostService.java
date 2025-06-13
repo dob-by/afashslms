@@ -6,10 +6,7 @@ import com.afashslms.demo.repository.PostRepository;
 import com.afashslms.demo.repository.UserRepository;
 import com.afashslms.demo.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
@@ -20,13 +17,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import org.springframework.web.multipart.MultipartFile;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +30,7 @@ public class PostService {
     public void createPost(@AuthenticationPrincipal CustomUserDetails userDetails,
                            String title, String content) {
 
-        User user = userDetails.getUser();  // CustomUserDetails 안에 실제 User 객체 있음!
+        User user = userDetails.getUser();
 
         Post post = new Post();
         post.setUser(user);
@@ -54,7 +46,6 @@ public class PostService {
                                    String content,
                                    MultipartFile file) {
 
-        // 파일 저장 처리
         String savedFileName = null;
         if (file != null && !file.isEmpty()) {
             try {
@@ -80,7 +71,7 @@ public class PostService {
         post.setTitle(title);
         post.setContent(content);
         post.setCreatedAt(LocalDateTime.now());
-        post.setFileName(savedFileName); // ✨ 엔티티에 추가된 fileName 필드
+        post.setFileName(savedFileName);
 
         postRepository.save(post);
     }

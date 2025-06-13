@@ -6,7 +6,6 @@ import com.afashslms.demo.security.CustomOAuth2User;
 import com.afashslms.demo.security.CustomUserDetails;
 import com.afashslms.demo.service.NoticeService;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import com.afashslms.demo.domain.Notice;
 import org.springframework.ui.Model;
@@ -27,11 +26,11 @@ public class HomeController {
 
     @GetMapping("/")
     public String showHome(Model model, Authentication authentication) {
-        String roleName = "GUEST"; // 기본값
+        String roleName = "GUEST";
         String username = "비회원";
 
         if (authentication != null && authentication.getPrincipal() instanceof CustomOAuth2User oAuth2User) {
-            roleName = oAuth2User.getUser().getRole().name(); // STUDENT 등
+            roleName = oAuth2User.getUser().getRole().name();
             username = oAuth2User.getUser().getUsername();
         } else if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
             roleName = userDetails.getUser().getRole().name();

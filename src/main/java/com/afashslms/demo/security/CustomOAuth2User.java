@@ -32,16 +32,9 @@ public class CustomOAuth2User extends DefaultOAuth2User {
         this.email = email;
         this.provider = provider;
         this.isFirstLogin = isFirstLogin;
-
-        // ✅ 디버깅 로그 추가
-        System.out.println("✅ CustomOAuth2User 생성됨:");
-        System.out.println("  - provider: " + provider);
-        System.out.println("  - email: " + email);
-        System.out.println("  - user null? " + (user == null));
-        System.out.println("  - role: " + (user != null ? user.getRole() : "null"));
     }
 
-    // ✅ 실제 권한 반환
+    // 실제 권한 반환
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (user != null && user.getRole() != null) {
@@ -61,10 +54,9 @@ public class CustomOAuth2User extends DefaultOAuth2User {
         return Role.TEMP;
     }
 
-    // 👉 email이 attributes에 없을 경우 넣어주는 유틸 함수
     private static Map<String, Object> ensureEmailInAttributes(Map<String, Object> attributes, String email) {
-        Map<String, Object> modifiable = new HashMap<>(attributes); // ✅ 복사해서 수정 가능하게 만들기
-        modifiable.putIfAbsent("email", email); // 없으면만 추가
+        Map<String, Object> modifiable = new HashMap<>(attributes);
+        modifiable.putIfAbsent("email", email);
         return modifiable;
     }
 }

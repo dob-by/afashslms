@@ -26,8 +26,6 @@
         .navbar {
             background-color: #ffffff !important;
             border-bottom: 1px solid #e0e0e0;
-
-            /* ✨ 그림자 추가 */
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
         }
 
@@ -73,9 +71,9 @@
         }
 
         .navbar-nav .nav-link:hover {
-            background-color: rgba(67, 160, 71, 0.1); /* 연한 초록 배경 */
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* 살짝 그림자 */
-            color: #2e7d32 !important; /* 초록 글씨 */
+            background-color: rgba(67, 160, 71, 0.1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            color: #2e7d32 !important;
         }
 
         .no-underline {
@@ -129,7 +127,6 @@
                 사용자: <strong th:text="${#authentication?.principal?.user?.role.displayName + ' | ' + #authentication?.principal?.user?.username}">이름</strong>
             </span>
             <a th:href="@{/mypage}" class="btn btn-outline-secondary btn-sm">마이페이지</a>
-<!--            <button id="darkModeToggle" class="btn btn-outline-secondary btn-sm">🌙 다크모드</button>-->
             <form th:action="@{/logout}" method="post" class="d-inline">
                 <button type="submit" class="btn btn-sm btn-outline-danger">로그아웃</button>
             </form>
@@ -146,9 +143,6 @@
                 <li class="nav-item"><a class="nav-link" th:href="@{/notices}">공지사항</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/posts}">게시판</a></li>
                 <li class="nav-item" th:if="${userRole == 'STUDENT'}"><a class="nav-link" th:href="@{/repairs}">수리요청</a></li>
-<!--                <li class="nav-item" th:if="${userRole == 'MID_ADMIN' or userRole == 'TOP_ADMIN'}"><a class="nav-link" th:href="@{/admin/laptops}">노트북 관리</a></li>-->
-<!--                <li class="nav-item" th:if="${userRole == 'MID_ADMIN' or userRole == 'TOP_ADMIN'}"><a class="nav-link" th:href="@{/admin/users}">사용자 관리</a></li>-->
-<!--                <li class="nav-item" th:if="${userRole == 'MID_ADMIN' or userRole == 'TOP_ADMIN'}"><a class="nav-link" th:href="@{/admin/repairs}">수리요청 내역</a></li>-->
                 <li class="nav-item"
                     th:if="${#authorization.expression('hasRole(''MID_ADMIN'') or hasRole(''TOP_ADMIN'')')}">
                     <a class="nav-link" th:href="@{/admin/laptops}">노트북 관리</a>

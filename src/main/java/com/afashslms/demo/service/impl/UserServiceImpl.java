@@ -72,21 +72,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsernameContainingIgnoreCaseOrUserIdContainingIgnoreCase(keyword, keyword);
     }
 
-//    @Override
-//    public boolean updatePassword(String email, String currentPassword, String newPassword) {
-//        User user = userRepository.findByEmail(email)
-//                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
-//
-//        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
-//            return false;
-//        }
-//
-//        user.setPassword(passwordEncoder.encode(newPassword));
-//        user.setRole(Role.PENDING_ADMIN);
-//        userRepository.save(user);
-//        return true;
-//    }
-
     @Override
     public boolean updatePassword(String email, String currentPassword, String newPassword) {
         User user = userRepository.findByEmail(email)
@@ -97,7 +82,7 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));
-        user.setPasswordChanged(true); // ✅ 비밀번호 변경 표시
+        user.setPasswordChanged(true);
         userRepository.save(user);
         return true;
     }
@@ -140,7 +125,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOpt = userRepository.findByEmail(email);
 
         if (userOpt.isEmpty()) {
-            log.error("❌ 존재하지 않는 이메일로 등록 시도: {}", email);
+            log.error("존재하지 않는 이메일로 등록 시도: {}", email);
             return;
         }
 
@@ -156,7 +141,7 @@ public class UserServiceImpl implements UserService {
         userRepository.saveAndFlush(user);
 
         User refreshedUser = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("❌ 저장 후 사용자 조회 실패"));
+                .orElseThrow(() -> new RuntimeException("저장 후 사용자 조회 실패"));
 
         CustomOAuth2User updatedPrincipal = new CustomOAuth2User(
                 refreshedUser,
@@ -173,8 +158,6 @@ public class UserServiceImpl implements UserService {
         );
 
         SecurityContextHolder.getContext().setAuthentication(newAuth);
-        log.info("🔁 권한 갱신됨: {}", updatedPrincipal.getAuthorities());
-        log.info("✅ 관리자 등록 완료: {} / {}", email, refreshedUser.getRole());
     }
 
     @Override

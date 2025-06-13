@@ -22,6 +22,5 @@ public class UserRestController {
                 .toList();
     }
 
-    // JSON으로 넘겨줄 간단한 DTO 클래스
     public record UserSummary(String userId, String username) {}
 }

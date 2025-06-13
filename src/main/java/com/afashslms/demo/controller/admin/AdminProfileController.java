@@ -35,13 +35,12 @@ public class AdminProfileController {
         session.setAttribute("provider", provider);
 
         if (email == null || provider == null) {
-            return "redirect:/login"; // 세션에 없으면 로그인으로
+            return "redirect:/login";
         }
 
         model.addAttribute("email", email);
         model.addAttribute("provider", provider);
 
-        // 에러 메시지 있으면 템플릿으로 전달
         if ("need_profile".equals(error)) {
             model.addAttribute("errorMessage", "추가 관리자 정보를 입력하셔야 이용할 수 있습니다.");
         }
@@ -49,7 +48,6 @@ public class AdminProfileController {
         return "admin/profile-form";
     }
 
-    // 프로필 제출
     @PostMapping
     public String submitProfile(
             HttpSession session,
@@ -58,16 +56,12 @@ public class AdminProfileController {
             @RequestParam String affiliation,
             @RequestParam(required = false) String unit
     ) {
-
-        System.out.println("✅✅✅ submitProfile POST 요청 들어옴");
         String email = (String) session.getAttribute("email");
         String provider = (String) session.getAttribute("provider");
 
         if (email == null || provider == null) {
             return "redirect:/login";
         }
-
-        System.out.println("✅ 프로필 제출 - 이메일: " + email + " / provider: " + provider);
         userService.registerPendingAdmin(email, provider, username, militaryId, affiliation, unit);
 
         // 세션 초기화 후 로그인 페이지로

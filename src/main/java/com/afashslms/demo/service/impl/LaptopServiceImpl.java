@@ -14,22 +14,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.afashslms.demo.domain.Laptop;
-import com.afashslms.demo.dto.LaptopSearchConditionDto;
-import com.afashslms.demo.dto.LaptopViewDto;
-import com.afashslms.demo.repository.LaptopRepository;
-import com.afashslms.demo.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +37,7 @@ public class LaptopServiceImpl implements LaptopService {
 
     @Override
     public List<LaptopViewDto> getAllLaptopsForAdmin() {
-        List<Laptop> laptops = laptopRepository.findAll(); // 필요시 fetch join
+        List<Laptop> laptops = laptopRepository.findAll();
         return laptops.stream()
                 .map(LaptopViewDto::fromEntity)
                 .collect(Collectors.toList());
@@ -107,7 +98,7 @@ public class LaptopServiceImpl implements LaptopService {
     public Page<LaptopViewDto> searchLaptops(LaptopSearchConditionDto condition, Pageable pageable) {
         List<Laptop> all = laptopRepository.findAll();
 
-        // ✅ 필터링: 여러 조건으로 검색 가능하게 확장
+        // 필터링
         List<Laptop> filtered = all.stream()
                 .filter(laptop -> {
                     String keyword = condition.getKeyword();
@@ -115,14 +106,13 @@ public class LaptopServiceImpl implements LaptopService {
                             || laptop.getDeviceId().contains(keyword)
                             || laptop.getModelName().contains(keyword)
                             || (laptop.getUser() != null && laptop.getUser().getUsername().contains(keyword))
-                            || laptop.getStatus().getDisplayName().contains(keyword)  // ✅ 상태 검색
-                            || (laptop.getIp() != null && laptop.getIp().contains(keyword))  // ✅ IP 검색
-                            || (laptop.getCurrentState() != null && laptop.getCurrentState().contains(keyword)) // ✅ 현재 상태 검색
-                            || String.format("%03d", laptop.getManageNumber()).contains(keyword);  // ✅ 관리번호도 검색
+                            || laptop.getStatus().getDisplayName().contains(keyword)
+                            || (laptop.getIp() != null && laptop.getIp().contains(keyword))
+                            || (laptop.getCurrentState() != null && laptop.getCurrentState().contains(keyword))
+                            || String.format("%03d", laptop.getManageNumber()).contains(keyword);
                 })
                 .collect(Collectors.toList());
 
-        // ✅ 수동 페이징 처리
         int start = (int) pageable.getOffset();
         int end = Math.min(start + pageable.getPageSize(), filtered.size());
         List<LaptopViewDto> content = filtered.subList(start, end)

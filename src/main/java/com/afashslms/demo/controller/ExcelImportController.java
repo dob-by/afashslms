@@ -21,11 +21,11 @@ public class ExcelImportController {
     public ResponseEntity<String> importUsers(@RequestParam("file") MultipartFile file) {
         try {
             excelReaderService.importUsersFromExcel(file);
-            return ResponseEntity.ok("✅ 사용자 데이터 업로드 성공!");
+            return ResponseEntity.ok("사용자 데이터 업로드에 성공했습니다.\n");
         } catch (Exception e) {
             e.printStackTrace();  // 나중에 로그로 바꾸는 게 좋음
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("❌ 사용자 데이터 업로드 실패: " + e.getMessage());
+                    .body("사용자 데이터 업로드 실패: " + e.getMessage());
         }
     }
 
@@ -33,11 +33,11 @@ public class ExcelImportController {
     public ResponseEntity<String> importLaptops(@RequestParam("file") MultipartFile file) {
         try {
             excelReaderService.importLaptopsFromExcel(file);
-            return ResponseEntity.ok("✅ 노트북 데이터 업로드 성공!");
+            return ResponseEntity.ok("노트북 데이터 업로드에 성공했습니다.\n");
         } catch (Exception e) {
-            e.printStackTrace();  // 나중엔 로깅으로!
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("❌ 노트북 데이터 업로드 실패: " + e.getMessage());
+                    .body("노트북 데이터 업로드 실패: " + e.getMessage());
         }
     }
 }

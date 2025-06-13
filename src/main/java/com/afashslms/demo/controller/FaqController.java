@@ -8,6 +8,6 @@ public class FaqController {
 
     @GetMapping("/faq")
     public String faqPage() {
-        return "faq";  // templates/faq.html
+        return "faq";
     }
 }

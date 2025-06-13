@@ -34,7 +34,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                 if (!user.isPasswordChanged()) {
                     response.sendRedirect("/mypage"); // 초기 비번인 학생은 마이페이지로
                 } else {
-                    response.sendRedirect("/"); // 비번 바꾼 학생은 홈으로!
+                    response.sendRedirect("/"); // 비번 바꾼 학생은 홈으로
                 }
                 return;
             }
@@ -45,7 +45,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             }
         }
 
-        // 기타 로그인은 홈으로
         response.sendRedirect("/");
     }
 }

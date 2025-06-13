@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.security.web.DefaultRedirectStrategy;
-import org.springframework.security.web.RedirectStrategy;
 
 import java.io.IOException;
 import java.util.List;
@@ -56,7 +54,7 @@ public class MypageController {
         email = user.getEmail();
         role = user.getRole().name();
 
-        // ✅ 최신 사용자 정보 조회 (DB에서)
+        // 최신 사용자 정보 조회 (DB에서)
         User latestUser = userService.findByEmail(email).orElse(user); // Optional 대응도 안전하게
 
         // 관리자면 관리자 마이페이지로 이동
@@ -74,7 +72,7 @@ public class MypageController {
             model.addAttribute("passwordChanged", true);
         }
 
-        // ✅ 공통 모델 등록
+        // 공통 모델 등록
         model.addAttribute("username", username);
         model.addAttribute("email", email);
         model.addAttribute("userRole", role);
@@ -123,21 +121,21 @@ public class MypageController {
         if (!newPassword.equals(confirmPassword)) {
             model.addAttribute("passwordError", "새 비밀번호가 서로 일치하지 않습니다.");
             model.addAttribute("passwordChanged", false);
-            return "mypage/mypage"; // ❗ 직접 뷰 이름을 반환
+            return "mypage/mypage";
         }
 
         if (!userService.updatePassword(email, currentPassword, newPassword)) {
             model.addAttribute("passwordError", "현재 비밀번호가 올바르지 않습니다.");
             model.addAttribute("passwordChanged", false);
-            return "mypage/mypage"; // ❗ 여기서도 마찬가지
+            return "mypage/mypage";
         }
 
 
-        // ✅ 성공했을 때는 플래시로 메시지 넘기고 홈으로
+        // 성공했을 때는 플래시로 메시지 넘기고 홈으로
         redirectAttributes.addFlashAttribute("passwordSuccess", "비밀번호가 성공적으로 변경되었습니다!");
 
 
-        // ✅ 인증 정보 갱신 (핵심!!)
+        // 인증 정보 갱신
         User updatedUser = userService.findByEmail(email).orElseThrow();
         CustomUserDetails updatedPrincipal = new CustomUserDetails(updatedUser);
         UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(
@@ -155,8 +153,8 @@ public class MypageController {
     public String showPasswordForm(@RequestParam(required = false) String firstChange,
                                    Model model) {
         if ("true".equals(firstChange)) {
-            model.addAttribute("firstChangeNotice", "🔐 보안을 위해 비밀번호를 먼저 변경해주세요.");
+            model.addAttribute("firstChangeNotice", "보안을 위해 비밀번호를 먼저 변경해주세요.");
         }
-        return "mypage/mypage"; // 기존 마이페이지 HTML 그대로 사용
+        return "mypage/mypage";
     }
 }

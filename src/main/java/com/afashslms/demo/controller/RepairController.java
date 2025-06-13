@@ -7,17 +7,11 @@ import com.afashslms.demo.security.CustomUserDetails;
 import com.afashslms.demo.service.RepairService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -64,7 +58,6 @@ public class RepairController {
         return "redirect:/repairs";
     }
 
-
     private String extractEmail(Map<String, Object> attributes) {
         if (attributes.containsKey("kakao_account")) {
             Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
@@ -73,7 +66,6 @@ public class RepairController {
             return (String) attributes.get("email");
         }
     }
-
 
     @GetMapping
     public String showRepairList(Model model) {

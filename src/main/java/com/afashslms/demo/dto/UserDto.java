@@ -2,8 +2,6 @@ package com.afashslms.demo.dto;
 
 import com.afashslms.demo.domain.User;
 import lombok.Getter;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter

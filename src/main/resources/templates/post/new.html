@@ -13,7 +13,6 @@
     <div class="card shadow-sm p-4">
         <h2 class="fw-bold mb-4 text-dark">새 게시글 작성</h2>
 
-        <!-- enctype 필수! -->
         <form th:action="@{/posts}" method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="title" class="form-label fw-medium">제목</label>
@@ -25,7 +24,7 @@
                 <textarea class="form-control" id="content" name="content" rows="10" placeholder="내용을 입력하세요" required></textarea>
             </div>
 
-            <!-- 📎 파일 업로드 -->
+            <!-- 파일 업로드 -->
             <div class="mb-3">
                 <label for="files" class="form-label fw-medium">첨부파일</label>
                 <input class="form-control" type="file" id="files" name="files" multiple

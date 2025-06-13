@@ -8,7 +8,6 @@ import com.afashslms.demo.repository.UserRepository;
 import com.afashslms.demo.repository.LaptopRepository;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,15 +47,15 @@ public class ExcelReaderService {
             String email = getCellValue(row.getCell(2));
             String militaryId = getCellValue(row.getCell(3));
             String createdAtStr = getCellValue(row.getCell(5));
-            String birth = getCellValue(row.getCell(6));  // 생년월일 (형식: 090305)
+            String birth = getCellValue(row.getCell(6));  // 생년월일
 
-            String userId = militaryId; // ✅ 핵심: 군번을 userId로
+            String userId = militaryId; // 군번을 userId로
 
             LocalDateTime createdAt = parseFlexibleDate(createdAtStr);
             String rawPassword = militaryId + birth;
 
             User user = new User();
-            user.setUserId(userId); // 이제 이건 militaryId 기반
+            user.setUserId(userId); // militaryId 기반
             user.setUsername(username);
             user.setEmail(email);
             user.setMilitaryId(militaryId);
@@ -103,7 +102,7 @@ public class ExcelReaderService {
             laptop.setManageNumber(manageNumber);
             laptop.setIssuedAt(createdAt);
 
-            // ✅ user_id 기준으로 유저 찾기
+            // user_id 기준으로 유저 찾기
             userRepository.findByUserId(studentUserId).ifPresent(laptop::setUser);
 
             laptops.add(laptop);
@@ -121,7 +120,7 @@ public class ExcelReaderService {
             case NUMERIC -> {
                 if (DateUtil.isCellDateFormatted(cell)) {
                     LocalDateTime ldt = cell.getLocalDateTimeCellValue();
-                    yield ldt.toString(); // ISO format
+                    yield ldt.toString();
                 } else {
                     double num = cell.getNumericCellValue();
                     yield (num == (int) num) ? String.valueOf((int) num) : String.valueOf(num);
@@ -143,7 +142,7 @@ public class ExcelReaderService {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 return LocalDateTime.parse(dateStr, formatter); // e.g. 2024-03-02 00:00:00
             } catch (DateTimeParseException e2) {
-                throw new RuntimeException("❌ 날짜 형식을 파싱할 수 없습니다: " + dateStr);
+                throw new RuntimeException("날짜 형식을 파싱할 수 없습니다: " + dateStr);
             }
         }
     }
@@ -154,7 +153,7 @@ public class ExcelReaderService {
             case "수리 중" -> LaptopStatus.IN_REPAIR;
             case "수리 요청됨" -> LaptopStatus.REPAIR_REQUESTED;
             case "대기 중" -> LaptopStatus.AVAILABLE;
-            default -> throw new IllegalArgumentException("❌ 잘못된 상태 값: " + statusStr);
+            default -> throw new IllegalArgumentException("잘못된 상태 값: " + statusStr);
         };
     }
 }

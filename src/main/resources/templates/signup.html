@@ -140,30 +140,6 @@
         signupButton.disabled = !isEmailValid;
     }
 
-    // userIdInput.addEventListener("blur", async () => {
-    //     const userId = userIdInput.value.trim();
-    //     if (!userId) return;
-    //
-    //     try {
-    //         const response = await fetch(`/users/check-userid?userId=${encodeURIComponent(userId)}`);
-    //         const isAvailable = await response.json();
-    //
-    //         if (!isAvailable) {
-    //             userIdWarning.innerText = "이미 존재하는 아이디입니다.";
-    //             isUserIdValid = false;
-    //         } else {
-    //             userIdWarning.innerText = "";
-    //             isUserIdValid = true;
-    //         }
-    //         toggleSignupButton();
-    //     } catch (error) {
-    //         console.error("아이디 중복 확인 중 오류 발생", error);
-    //         userIdWarning.innerText = "서버 오류가 발생했습니다.";
-    //         isUserIdValid = false;
-    //         toggleSignupButton();
-    //     }
-    // });
-
     emailInput.addEventListener("blur", async () => {
         const email = emailInput.value.trim();
         if (!email) return;

@@ -5,7 +5,6 @@ import com.afashslms.demo.domain.LaptopStatus;
 import com.afashslms.demo.domain.Role;
 import com.afashslms.demo.domain.User;
 import com.afashslms.demo.dto.UserSearchConditionDto;
-import com.afashslms.demo.repository.UserRepository;
 import com.afashslms.demo.security.CustomUserDetails;
 import com.afashslms.demo.service.UserService;
 import com.afashslms.demo.repository.LaptopRepository;
@@ -133,7 +132,7 @@ public class AdminUserController {
         model.addAttribute("user", user);
         model.addAttribute("laptops", laptops);
 
-        // 🔁 현재 요청 URL + 쿼리스트링 저장
+        // 현재 요청 URL + 쿼리스트링 저장
         String currentUrl = request.getRequestURI() + (request.getQueryString() != null ? "?" + request.getQueryString() : "");
         model.addAttribute("currentUrl", currentUrl);
 
@@ -148,6 +147,6 @@ public class AdminUserController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 노트북 없음"));
         laptop.setStatus(newStatus);
         laptopRepository.save(laptop);
-        return "redirect:/admin/users/" + userId; // 다시 사용자 상세로 이동
+        return "redirect:/admin/users/" + userId;
     }
 }

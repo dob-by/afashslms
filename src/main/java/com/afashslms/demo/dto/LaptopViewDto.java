@@ -1,6 +1,5 @@
 package com.afashslms.demo.dto;
 
-
 import com.afashslms.demo.domain.Laptop;
 import lombok.Builder;
 import lombok.Getter;

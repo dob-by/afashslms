@@ -45,7 +45,7 @@ public class NoticeController {
         model.addAttribute("totalPages", noticePage.getTotalPages());
         model.addAttribute("totalItems", noticePage.getTotalElements());
         model.addAttribute("pageSize", size);
-        model.addAttribute("keyword", keyword); // 💡 검색어 유지용
+        model.addAttribute("keyword", keyword);
 
         return "notices/list";
     }
@@ -121,7 +121,7 @@ public class NoticeController {
 
         notice.setTitle(updatedNotice.getTitle());
         notice.setContent(updatedNotice.getContent());
-        noticeService.saveNotice(notice);  // 업데이트 시간 갱신 로직도 포함되면 좋음
+        noticeService.saveNotice(notice);
 
         return "redirect:/notices/" + id;
     }

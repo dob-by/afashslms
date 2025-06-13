@@ -1,47 +1,9 @@
-//package com.afashslms.demo.security;
-//
-//import jakarta.servlet.http.HttpServletRequest;
-//import jakarta.servlet.http.HttpServletResponse;
-//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-//import org.springframework.security.authentication.AuthenticationManager;
-//import org.springframework.security.core.Authentication;
-//import org.springframework.security.core.AuthenticationException;
-//import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-//
-//public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-//
-//    public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
-//        super.setAuthenticationManager(authenticationManager);
-//    }
-//
-//    @Override
-//    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-//            throws AuthenticationException {
-//
-//        String loginType = request.getParameter("loginType"); // "student" 또는 "staff"
-//        String username = request.getParameter("username");
-//        String password = request.getParameter("password");
-//
-//        if ("student".equals(loginType)) {
-//            // TODO: 필요시 username → email로 매핑 (예: DB 조회 또는 캐시)
-//            // username = studentIdToEmail(username);
-//        }
-//
-//        UsernamePasswordAuthenticationToken authRequest =
-//                new UsernamePasswordAuthenticationToken(username, password);
-//
-//        setDetails(request, authRequest);
-//        return this.getAuthenticationManager().authenticate(authRequest);
-//    }
-//}
 package com.afashslms.demo.security;
 
-import com.afashslms.demo.config.SecurityConfig;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -58,7 +20,7 @@ import java.io.IOException;
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
-    private final AuthenticationSuccessHandler successHandler; // ✅ 추가
+    private final AuthenticationSuccessHandler successHandler;
 
     public CustomAuthenticationFilter(AuthenticationManager authenticationManager,
                                       AuthenticationSuccessHandler successHandler) {
@@ -72,18 +34,12 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
 
-        System.out.println("🔥 CustomAuthenticationFilter 작동!");
-
         String loginType = request.getParameter("loginType"); // "student" or "staff"
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        System.out.println(">> loginType: " + loginType);
-        System.out.println(">> username: " + username);
-
         if ("student".equalsIgnoreCase(loginType)) {
             // TODO: username = studentIdToEmail(username);
-            System.out.println(">> student login 시 이메일 변환 안됨 (임시)");
         }
 
         UsernamePasswordAuthenticationToken authRequest =
@@ -92,14 +48,11 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         setDetails(request, authRequest);
         Authentication authentication = authenticationManager.authenticate(authRequest);
 
-        System.out.println(">> 인증 완료됨");
-
         // PENDING_ADMIN 차단
         Object principal = authentication.getPrincipal();
         if (principal instanceof CustomUserDetails customUserDetails) {
             Role role = customUserDetails.getUser().getRole();
             if (role == Role.PENDING_ADMIN) {
-                System.out.println("⛔ 승인되지 않은 관리자 로그인 시도!");
                 throw new BadCredentialsException("관리자 승인이 필요합니다.");
             }
         }
@@ -114,12 +67,10 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .anyMatch(a -> a.getAuthority().startsWith("ROLE_MID_ADMIN") || a.getAuthority().startsWith("ROLE_TOP_ADMIN"));
 
         if (isStudentLogin && !hasStudentRole) {
-            System.out.println(">> 학생 권한 없음");
             throw new BadCredentialsException("학생 로그인에는 학생 계정만 허용됩니다.");
         }
 
         if (isStaffLogin && !hasAdminRole) {
-            System.out.println(">> 관리자 권한 없음");
             throw new BadCredentialsException("관리자 로그인에는 관리자 계정만 허용됩니다.");
         }
 
@@ -131,18 +82,14 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                                             HttpServletResponse response,
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
-        System.out.println("✅ 로그인 성공 → successHandler로 위임");
 
-        // SecurityContext 저장
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authResult);
         SecurityContextHolder.setContext(context);
 
-        // 세션에 저장
         HttpSessionSecurityContextRepository repo = new HttpSessionSecurityContextRepository();
         repo.saveContext(context, request, response);
 
-        // ✅ 이제 successHandler 사용 가능
         successHandler.onAuthenticationSuccess(request, response, authResult);
     }
 
@@ -150,7 +97,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     protected void unsuccessfulAuthentication(HttpServletRequest request,
                                               HttpServletResponse response,
                                               AuthenticationException failed) throws IOException, ServletException {
-        System.out.println("❌ 로그인 실패: " + failed.getMessage());
 
         String errorMessage = "아이디 또는 비밀번호가 올바르지 않습니다.";
         String exceptionMessage = failed.getMessage();
