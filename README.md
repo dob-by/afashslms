@@ -186,7 +186,7 @@ $ ./gradlew bootRun
 
   공지사항은 페이징, 검색, 파일 첨부 기능을 제공합니다.
 
-  ![공지사항](./images/notice-list.png)
+  ![공지사항](./images/notice-list.gif)
 </details>
 
 <details>
@@ -194,7 +194,7 @@ $ ./gradlew bootRun
 
   게시글/댓글 작성과 조회수 확인이 가능합니다.
 
-  ![게시판](./images/post-list.png)
+  ![게시판](./images/post-list.gif)
 </details>
 
 ---
