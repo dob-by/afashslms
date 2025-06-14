@@ -13,7 +13,7 @@
 - [사용 기술 스택](#-사용-기술-스택)
 - [느낀 점](#-느낀-점-개발-회고)
 - [실행 방법](%EF%B8%8F-실행-방법)
-- [스크린샷](#-스크린샷)
+- [주요 기능별 스크린샷](#-주요-기능별-스크린샷)
 
 ---
 
@@ -31,6 +31,16 @@
 
 - **기간**: 2025.03 ~ 2025.06 (3개월)
 - **기여자**:
+<table>
+  <tr>
+    <td align="center">
+      <img src="./images/author-profile.jpg" width="100" style="border-radius: 50%;" /><br/>
+      <strong>Lim Yeonhwa</strong><br/>
+      Backend Developer<br/>
+      <a href="https://github.com/yourgithub">GitHub</a> ・ <a href="mailto:your@email.com">Email</a>
+    </td>
+  </tr>
+</table>
   - **임연화**: 백엔드 전반, Spring Security 인증, DB 설계, 배포 환경 구성 (1인 개발)
 
 ---
@@ -110,19 +120,135 @@ $ ./gradlew bootRun
 
 ```
 ---
+## 📷 주요 기능별 스크린샷
 
-## 📷 스크린샷
+### 🧩 공통 기능
 
 <details>
-  <summary>📸 메인 화면</summary>
+  <summary>📥 로그인 화면</summary>
 
-  ![메인 화면](./images/main-page.png)
+  사용자는 로컬 계정 또는 OAuth(카카오/구글)로 로그인할 수 있습니다.  
+  로그인 후 역할에 따라 메뉴가 다르게 구성됩니다.
 
+  ![로그인 화면](./images/login.png)
 </details>
 
 <details>
-  <summary>🔧 수리 요청 화면</summary>
+  <summary>🏠 메인 대시보드</summary>
 
-  ![수리 요청 화면](./images/repair-request.png)
+  최근 공지사항 및 게시글 요약을 확인할 수 있으며, FAQ로 이동할 수 있습니다.
 
+  ![메인 화면](./images/main-page.png)
+</details>
+
+<details>
+  <summary>📑 공지사항 목록</summary>
+
+  공지사항은 페이징, 검색, 파일 첨부 기능을 제공합니다.
+
+  ![공지사항](./images/notice-list.png)
+</details>
+
+<details>
+  <summary>🗣 게시판 목록 및 댓글</summary>
+
+  게시글/댓글 작성과 조회수 확인이 가능합니다.
+
+  ![게시판](./images/post-list.png)
+</details>
+
+---
+
+### 🎓 학생 전용 기능
+
+<details>
+  <summary>🧑‍💻 마이페이지</summary>
+
+  내 정보, 노트북 정보, 수리 내역 등을 확인할 수 있습니다.
+
+  ![마이페이지](./images/student-mypage.png)
+</details>
+
+<details>
+  <summary>📄 내 노트북 정보</summary>
+
+  보유 중인 노트북의 상세 정보를 확인할 수 있습니다.
+
+  ![내 노트북](./images/student-laptop.png)
+</details>
+
+<details>
+  <summary>📝 수리 요청 폼</summary>
+
+  문제 유형과 상세 내용을 입력하여 수리 요청을 보낼 수 있습니다.
+
+  ![수리 요청](./images/repair-request.png)
+</details>
+
+<details>
+  <summary>🧾 수리 요청 내역 조회</summary>
+
+  본인이 제출한 요청의 상태를 확인할 수 있습니다.
+
+  ![수리 내역](./images/student-repair-history.png)
+</details>
+
+---
+
+### 🛠 관리자 전용 기능
+
+<details>
+  <summary>🛠 전체 수리 요청 관리</summary>
+
+  수리 요청 목록을 검색/조회하고 상태를 변경할 수 있습니다.
+
+  ![수리 요청 관리](./images/admin-repair-manage.png)
+</details>
+
+<details>
+  <summary>📌 수리 요청 상세</summary>
+
+  각 요청의 세부 내용을 확인하고 상태를 변경할 수 있습니다.
+
+  ![수리 상세](./images/admin-repair-detail.png)
+</details>
+
+<details>
+  <summary>📋 노트북 관리</summary>
+
+  전체 노트북 목록을 조회하고 상태를 확인할 수 있습니다.
+
+  ![노트북 관리](./images/admin-laptop-list.png)
+</details>
+
+<details>
+  <summary>📂 노트북 소유 이력</summary>
+
+  소유 이력 확인 및 (총괄 관리자에 한해) 변경이 가능합니다.
+
+  ![소유 이력](./images/admin-laptop-ownership.png)
+</details>
+
+<details>
+  <summary>👥 사용자 관리</summary>
+
+  사용자 검색 및 상세정보 확인이 가능하며, 역할 변경도 가능합니다.
+
+  ![사용자 관리](./images/admin-user-manage.png)
+</details>
+
+<details>
+  <summary>🙋 승인 대기 관리자 목록</summary>
+
+  관리자 등록 요청을 승인할 수 있습니다.
+
+  ![승인 대기 관리자](./images/admin-pending-approval.png)
+</details>
+
+<details>
+  <summary>📊 관리자 마이페이지(통계)</summary>
+
+  수리 요청 통계 정보를 시각적으로 확인할 수 있습니다.
+
+  ![관리자 마이페이지](./images/admin-mypage-stats.png)
 </details>
