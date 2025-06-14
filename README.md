@@ -234,7 +234,7 @@ $ ./gradlew bootRun
 
   수리 요청 목록을 검색/조회하고 상태를 변경할 수 있습니다.
 
-  ![수리 요청 관리](./images/admin-repair-manage.png)
+  ![수리 요청 관리](./images/admin-repair-manage.gif)
 </details>
 
 <details>
