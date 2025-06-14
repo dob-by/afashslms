@@ -68,7 +68,7 @@
                     <li class="list-group-item"><strong>문제유형:</strong> <span th:text="${recentRepair.category}"></span></li>
                     <li class="list-group-item"><strong>세부문제:</strong> <span th:text="${recentRepair.detailType}"></span></li>
                     <li class="list-group-item"><strong>담당자:</strong> <span th:text="${recentRepair.manager}"></span></li>
-                    <li class="list-group-item"><strong>진행상태:</strong> <span th:text="${recentRepair.status}"></span></li>
+                    <li class="list-group-item"><strong>진행상태:</strong> <span th:text="${recentRepair.status.displayName}"></span></li>
                 </ul>
             </div>
         </div>

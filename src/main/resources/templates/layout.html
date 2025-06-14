@@ -142,7 +142,9 @@
                 <li class="nav-item"><a class="nav-link" th:href="@{/}">홈</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/notices}">공지사항</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/posts}">게시판</a></li>
-                <li class="nav-item" th:if="${userRole == 'STUDENT'}"><a class="nav-link" th:href="@{/repairs}">수리요청</a></li>
+                <li class="nav-item" th:if="${#authorization.expression('hasRole(''STUDENT'')')}">
+                    <a class="nav-link" th:href="@{/repairs}">수리요청</a>
+                </li>
                 <li class="nav-item"
                     th:if="${#authorization.expression('hasRole(''MID_ADMIN'') or hasRole(''TOP_ADMIN'')')}">
                     <a class="nav-link" th:href="@{/admin/laptops}">노트북 관리</a>
