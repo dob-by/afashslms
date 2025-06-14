@@ -214,7 +214,7 @@ $ ./gradlew bootRun
 
   문제 유형과 상세 내용을 입력하여 수리 요청을 보낼 수 있습니다.
 
-  ![수리 요청](./images/repair-request.png)
+  ![수리 요청](./images/repair-request.gif)
 </details>
 
 <details>
