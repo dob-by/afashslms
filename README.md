@@ -178,7 +178,7 @@ $ ./gradlew bootRun
 
   최근 공지사항 및 게시글 요약을 확인할 수 있으며, FAQ로 이동할 수 있습니다.
 
-  ![메인 화면](./images/main-page.png)
+  ![메인 화면](./images/main-page.gif)
 </details>
 
 <details>
