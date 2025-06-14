@@ -36,9 +36,9 @@
   <tr>
     <td align="center">
       <img src="./images/author-profile.jpg" width="120" /><br/><br/>
-      <strong>Lim Yeonhwa (임연화)</strong><br/>
-      Fullstack Developer<br/>
-      <a href="https://github.com/dob-by">GitHub</a> ・ <a href="yeonhwalim03@gmail.com">Email</a>
+      **Lim Yeonhwa (임연화)**<br/>
+Fullstack Developer<br/>
+[GitHub](https://github.com/dob-by) ・ 📫 [Email](mailto:yeonhwalim03@gmail.com)
     </td>
   </tr>
 </table>
