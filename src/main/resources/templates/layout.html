@@ -124,8 +124,17 @@
         <a class="navbar-brand" th:href="@{/}">WingITs</a>
         <div class="d-flex align-items-center gap-3">
             <span class="text-muted small">
-                사용자: <strong th:text="${#authentication?.principal?.user?.role.displayName + ' | ' + #authentication?.principal?.user?.username}">이름</strong>
-            </span>
+    사용자:
+    <strong th:if="${#authentication != null
+                   and #authentication.principal != null
+                   and #authentication.principal?.user != null}"
+            th:text="${#authentication.principal.user.role.displayName + ' | ' + #authentication.principal.user.username}">
+        사용자
+    </strong>
+    <strong th:unless="${#authentication?.principal?.user != null}">
+        알 수 없음
+    </strong>
+</span>
             <a th:href="@{/mypage}" class="btn btn-outline-secondary btn-sm">마이페이지</a>
             <form th:action="@{/logout}" method="post" class="d-inline">
                 <button type="submit" class="btn btn-sm btn-outline-danger">로그아웃</button>
