@@ -274,7 +274,7 @@ $ ./gradlew bootRun
 
   관리자 등록 요청을 승인할 수 있습니다.
 
-  ![승인 대기 관리자](./images/admin-pending-approval.png)
+  ![승인 대기 관리자](./images/admin-pending-approval.gif)
 </details>
 
 <details>
