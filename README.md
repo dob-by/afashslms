@@ -242,7 +242,7 @@ $ ./gradlew bootRun
 
   전체 노트북 목록을 조회하고 소유자 변경 이력를 확인할 수 있습니다.
 
-  ![노트북 관리](./images/admin-laptop-list.git)
+  ![노트북 관리](./images/admin-laptop-list.gif)
 </details>
 
 <details>
