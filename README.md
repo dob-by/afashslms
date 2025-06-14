@@ -30,19 +30,27 @@
 ## ⏰ 기간 및 기여자
 
 - **기간**: 2025.03 ~ 2025.06 (3개월)
-- **기여자**:
+### 🙋‍♀️ 기여자
+
 <table>
   <tr>
     <td align="center">
-      <img src="./images/author-profile.jpg" width="100" style="border-radius: 50%;" /><br/>
-      <strong>Lim Yeonhwa</strong><br/>
-      Backend Developer<br/>
-      <a href="https://github.com/yourgithub">GitHub</a> ・ <a href="mailto:your@email.com">Email</a>
+      <img src="./images/author-profile.jpg" width="120" /><br/><br/>
+      <strong>Lim Yeonhwa (임연화)</strong><br/>
+      Fullstack Developer<br/>
+      <a href="https://github.com/dob-by">GitHub</a> ・ <a href="yeonhwalim03@gmail.com">Email</a>
     </td>
   </tr>
 </table>
-  - **임연화**: 백엔드 전반, Spring Security 인증, DB 설계, 배포 환경 구성 (1인 개발)
 
+
+### 🛠 역할 및 기여
+
+- 전체 서비스 기획 및 **단독 개발**
+- **프론트엔드**: UI/UX 구성, Thymeleaf 템플릿 작성, 화면 흐름 설계
+- **백엔드**: Spring Boot 기반 도메인 설계, REST API, 인증/인가(Spring Security)
+- **DB 설계**: MySQL 기반 테이블 구조 설계 및 데이터 흐름 설계
+- **배포 환경**: Docker + MySQL 환경 구성, 실서버용 설정 적용
 ---
 
 ## 🚀 기능 구현
