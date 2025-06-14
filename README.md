@@ -256,7 +256,7 @@ $ ./gradlew bootRun
 <details>
   <summary>👥 사용자 관리</summary>
 
-  사용자 검색 및 상세정보 확인이 가능하며, 역할 변경도 가능합니다.
+  사용자 검색 및 상세정보 확인이 가능합니다.
 
   ![사용자 관리](./images/admin-user-manage.gif)
 </details>
