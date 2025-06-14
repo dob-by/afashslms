@@ -120,8 +120,8 @@ Fullstack Developer<br/>
 
 ```bash
 # 1. 프로젝트 클론
-$ git clone https://github.com/your-id/laptop-repair-system.git
-$ cd laptop-repair-system
+$ git clone https://github.com/dob-by/afashslms.git
+$ cd afashslms
 
 # 2. 실행
 $ ./gradlew bootRun
