@@ -204,17 +204,9 @@ $ ./gradlew bootRun
 <details>
   <summary>🧑‍💻 마이페이지</summary>
 
-  내 정보, 노트북 정보, 수리 내역 등을 확인할 수 있습니다.
+  내 정보, 노트북 정보, 수리 내역 등을 확인하고 비밀번호를 변경할 수 있습니다.
 
-  ![마이페이지](./images/student-mypage.png)
-</details>
-
-<details>
-  <summary>📄 내 노트북 정보</summary>
-
-  보유 중인 노트북의 상세 정보를 확인할 수 있습니다.
-
-  ![내 노트북](./images/student-laptop.png)
+  ![마이페이지](./images/student-mypage.gif)
 </details>
 
 <details>
