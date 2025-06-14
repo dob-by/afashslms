@@ -71,7 +71,8 @@
                 <h4 class="fw-bold mb-3">내 정보</h4>
                 <p><strong>이름:</strong> <span th:text="${username}">홍길동</span></p>
                 <p><strong>이메일:</strong> <span th:text="${email}">email@test.com</span></p>
-                <p><strong>역할:</strong> <span th:text="${userRole}">STUDENT</span></p>
+<!--                <p><strong>역할:</strong> <span th:text="${userRole}">STUDENT</span></p>-->
+                <p><strong>역할:</strong> <span th:text="${user.role.displayName}">학생</span></p>
             </div>
         </div>
     </div>
@@ -169,7 +170,7 @@
                 <tr th:each="repair : ${repairs}">
                     <td th:text="${#temporals.format(repair.createdAt, 'yyyy-MM-dd')}">2025-04-12</td>
                     <td th:text="${repair.description}">배터리 교체</td>
-                    <td th:text="${repair.status}">완료</td>
+                    <td th:text="${repair.status.displayName}">완료</td>
                 </tr>
                 <tr th:if="${repairs == null or repairs.isEmpty()}">
                     <td colspan="3" class="text-muted">수리 요청 내역이 없습니다.</td>

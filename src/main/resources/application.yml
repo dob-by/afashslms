@@ -11,7 +11,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update    # 개발 중엔 update / 운영 땐 validate
-    show-sql: true
+    show-sql: false
     defer-datasource-initialization: true
     properties:
       hibernate:
@@ -62,12 +62,10 @@ spring:
     allow-circular-references: true
 
 thymeleaf:
-  cache: false
+  cache: true
 
 logging:
   level:
-    org.springframework.security: DEBUG
-    org.springframework.security.oauth2: DEBUG
-    org.springframework.web.client.RestTemplate: DEBUG
-    org.hibernate.SQL: debug
-    org.springframework.security.web: DEBUG
+    org.springframework: INFO
+    org.hibernate.SQL: OFF
+    org.springframework.web: INFO

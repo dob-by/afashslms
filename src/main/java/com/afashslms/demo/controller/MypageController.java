@@ -73,6 +73,7 @@ public class MypageController {
         }
 
         // 공통 모델 등록
+        model.addAttribute("user", user);
         model.addAttribute("username", username);
         model.addAttribute("email", email);
         model.addAttribute("userRole", role);

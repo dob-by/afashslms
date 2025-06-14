@@ -16,6 +16,8 @@ public class Notice {
     private Long id;
 
     private String title;
+
+    @Column(columnDefinition = "MEDIUMTEXT ")
     private String content;
 
     private Timestamp createdAt;

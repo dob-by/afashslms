@@ -1,22 +1,41 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>게시글 수정</title>
-    <meta charset="UTF-8" />
-</head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/extras/springsecurity6"
+      th:replace="~{layout :: layout(~{::body})}">
+
 <body>
-<h2>게시글 수정</h2>
+<div class="max-w-3xl mx-auto px-4 py-4">
+    <div class="card shadow-sm p-4">
+        <h2 class="fw-bold mb-4 text-dark">게시글 수정</h2>
 
-<form th:action="@{/posts/{id}/edit(id=${post.postId})}" method="post">
-    <label>제목:</label><br>
-    <input type="text" name="title" th:value="${post.title}" required><br><br>
+        <form th:action="@{/posts/{id}/edit(id=${post.postId})}" method="post" enctype="multipart/form-data">
+            <!-- 제목 -->
+            <div class="mb-3">
+                <label for="title" class="form-label fw-medium">제목</label>
+                <input type="text" class="form-control" id="title" name="title" th:value="${post.title}" required>
+            </div>
 
-    <label>내용:</label><br>
-    <textarea name="content" rows="10" cols="50" th:text="${post.content}" required></textarea><br><br>
+            <!-- 내용 -->
+            <div class="mb-3">
+                <label for="content" class="form-label fw-medium">내용</label>
+                <textarea class="form-control" id="content" name="content" rows="10" th:text="${post.content}" required></textarea>
+            </div>
 
-    <button type="submit">수정</button>
-</form>
+            <!-- 첨부파일 (선택 사항) -->
+            <div class="mb-3">
+                <label for="files" class="form-label fw-medium">첨부파일 (추가)</label>
+                <input class="form-control" type="file" id="files" name="files" multiple
+                       accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.txt">
+                <small class="text-muted">기존 첨부파일은 유지되며, 새 파일만 추가됩니다.</small>
+            </div>
 
-<a th:href="@{/posts/{id}(id=${post.postId})}">돌아가기</a>
+            <!-- 버튼 -->
+            <div class="d-flex justify-content-between mt-4">
+                <a th:href="@{/posts/{id}(id=${post.postId})}" class="btn btn-outline-secondary">← 돌아가기</a>
+                <button type="submit" class="btn btn-primary">수정</button>
+            </div>
+        </form>
+    </div>
+</div>
 </body>
 </html>
