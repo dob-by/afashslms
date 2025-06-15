@@ -116,17 +116,6 @@ Fullstack Developer<br/>
 - 인증, 권한, 파일 업로드, DB 마이그레이션, Docker 등 전반적인 기술 스택을 실제로 적용하며 경험치가 급상승함
 - 배포 이후 유지보수, 추가 기능 계획까지 고려하며 체계적인 프로젝트 흐름을 경험함
 
-## ⚙️ 실행 방법
-
-```bash
-# 1. 프로젝트 클론
-$ git clone https://github.com/dob-by/afashslms.git
-$ cd afashslms
-
-# 2. 실행
-$ ./gradlew bootRun
-
-```
 ---
 ## 📷 주요 기능별 스크린샷
 
