@@ -1,7 +1,7 @@
 package com.afashslms.demo.service;
 
 import com.afashslms.demo.domain.User;
-import com.afashslms.demo.dto.SignupForm;
+import com.afashslms.demo.dto.SignupFormDto;
 import com.afashslms.demo.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ class SignupServiceTest {
     @DisplayName("회원가입이 정상적으로 수행된다")
     void registerUser_success() {
         // given
-        SignupForm form = new SignupForm();
+        SignupFormDto form = new SignupFormDto();
         form.setUserId("testuser");
         form.setUsername("테스트유저");
         form.setEmail("test@example.com");
@@ -51,7 +51,7 @@ class SignupServiceTest {
     @DisplayName("중복 아이디로 회원가입 시 예외 발생")
     void registerUser_duplicateUserId() {
         // given
-        SignupForm form1 = new SignupForm();
+        SignupFormDto form1 = new SignupFormDto();
         form1.setUserId("dupuser");
         form1.setUsername("유저1");
         form1.setEmail("email1@test.com");
@@ -59,7 +59,7 @@ class SignupServiceTest {
         form1.setMilitaryId("G111111");
         form1.setRole("STUDENT");
 
-        SignupForm form2 = new SignupForm();
+        SignupFormDto form2 = new SignupFormDto();
         form2.setUserId("dupuser"); // 같은 아이디
         form2.setUsername("유저2");
         form2.setEmail("email2@test.com");
@@ -82,7 +82,7 @@ class SignupServiceTest {
     @DisplayName("중복 이메일로 회원가입 시 예외 발생")
     void registerUser_duplicateEmail() {
         // given
-        SignupForm form1 = new SignupForm();
+        SignupFormDto form1 = new SignupFormDto();
         form1.setUserId("user1");
         form1.setUsername("유저1");
         form1.setEmail("same@test.com");
@@ -90,7 +90,7 @@ class SignupServiceTest {
         form1.setMilitaryId("G111111");
         form1.setRole("STUDENT");
 
-        SignupForm form2 = new SignupForm();
+        SignupFormDto form2 = new SignupFormDto();
         form2.setUserId("user2");
         form2.setUsername("유저2");
         form2.setEmail("same@test.com"); // 같은 이메일

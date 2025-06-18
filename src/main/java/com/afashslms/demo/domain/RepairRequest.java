@@ -32,6 +32,7 @@ public class RepairRequest {
 
     @Column(name = "windows_password")
     private String windowsPassword;
+
     private String manager;            // 담당자
 
     private LocalDateTime createdAt;
@@ -42,6 +43,10 @@ public class RepairRequest {
 
     @Column(length = 1000)
     private String rejectionReason;
+
+    @ManyToOne
+    @JoinColumn(name = "device_id")
+    private Laptop laptop;
 
     @PrePersist
     public void prePersist() {

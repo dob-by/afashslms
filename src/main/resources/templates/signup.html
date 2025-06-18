@@ -74,36 +74,96 @@
     <div class="signup-card">
         <h3 class="text-center mb-4">교직원 회원가입</h3>
 
+<!--        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>-->
+<!--        <form th:action="@{/signup}" method="post">-->
+<!--            <div class="mb-3">-->
+<!--                <label for="militaryId" class="form-label">아이디(군번)</label>-->
+<!--                <input type="text" id="militaryId" name="militaryId" class="form-control" required />-->
+<!--                <small id="militaryIdWarning" class="form-text text-danger"></small>-->
+<!--            </div>-->
+<!--            <div class="mb-3">-->
+<!--                <label for="username" class="form-label">이름</label>-->
+<!--                <input type="text" id="username" name="username" class="form-control" required />-->
+<!--            </div>-->
+
+<!--            <div class="mb-3">-->
+<!--                <label for="email" class="form-label">이메일</label>-->
+<!--                <input type="email" id="email" name="email" class="form-control" required />-->
+<!--                <small id="emailWarning" class="form-text text-danger"></small>-->
+<!--            </div>-->
+
+<!--            <div class="mb-3">-->
+<!--                <label for="password" class="form-label">비밀번호</label>-->
+<!--                <input type="password" id="password" name="password" class="form-control" required />-->
+<!--            </div>-->
+
+<!--            <div class="mb-3">-->
+<!--                <label for="affiliation" class="form-label">소속</label>-->
+<!--                <select id="affiliation" name="affiliation" class="form-select" required>-->
+<!--                    <option value="">선택하세요</option>-->
+<!--                    <option value="학생대">학생대</option>-->
+<!--                    <option value="교육대">교육대</option>-->
+<!--                </select>-->
+<!--            </div>-->
+
+<!--            <div class="mb-3" id="unit-group" style="display: none;">-->
+<!--                <label for="unit" class="form-label">중대 선택</label>-->
+<!--                <select id="unit" name="unit" class="form-select">-->
+<!--                    <option value="">선택하세요</option>-->
+<!--                    <option value="1중대">1중대</option>-->
+<!--                    <option value="2중대">2중대</option>-->
+<!--                    <option value="3중대">3중대</option>-->
+<!--                </select>-->
+<!--            </div>-->
+<!--            <br>-->
+<!--            <div class="d-grid">-->
+<!--                <div class="d-grid">-->
+<!--                    <button type="submit" class="btn btn-signup">회원가입</button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="login-info-text small">※ 회원가입 후 관리자의 승인을 받은 후에 로그인하실 수 있습니다.</div>-->
+<!--        </form>-->
+        <!-- 에러 메시지 출력 -->
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-        <form th:action="@{/signup}" method="post">
+
+        <!-- DTO 바인딩 시작 -->
+        <form th:action="@{/signup}" th:object="${signupForm}" method="post">
+
             <div class="mb-3">
-                <label for="militaryId" class="form-label">아이디(군번)</label>
-                <input type="text" id="militaryId" name="militaryId" class="form-control" required />
-                <small id="militaryIdWarning" class="form-text text-danger"></small>
+                <label for="userId" class="form-label">아이디(군번)</label>
+                <input type="text" id="userId" th:field="*{userId}" class="form-control" />
+                <small class="form-text text-danger" th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}"></small>
             </div>
+
             <div class="mb-3">
                 <label for="username" class="form-label">이름</label>
-                <input type="text" id="username" name="username" class="form-control" required />
+                <input type="text" id="username" th:field="*{username}" class="form-control" />
+                <small class="form-text text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></small>
             </div>
 
             <div class="mb-3">
                 <label for="email" class="form-label">이메일</label>
-                <input type="email" id="email" name="email" class="form-control" required />
-                <small id="emailWarning" class="form-text text-danger"></small>
+                <input type="email" id="email" th:field="*{email}" class="form-control" />
+                <small class="form-text text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
             </div>
 
             <div class="mb-3">
                 <label for="password" class="form-label">비밀번호</label>
-                <input type="password" id="password" name="password" class="form-control" required />
+                <input type="password" id="password" th:field="*{password}" class="form-control" />
+                <small class="form-text text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
             </div>
 
             <div class="mb-3">
                 <label for="affiliation" class="form-label">소속</label>
-                <select id="affiliation" name="affiliation" class="form-select" required>
+                <select id="affiliation" th:field="*{affiliation}" name="affiliation" class="form-select">
                     <option value="">선택하세요</option>
                     <option value="학생대">학생대</option>
                     <option value="교육대">교육대</option>
                 </select>
+                <small class="form-text text-danger"
+                       th:if="${#fields.hasErrors('affiliation')}"
+                       th:errors="*{affiliation}">
+                </small>
             </div>
 
             <div class="mb-3" id="unit-group" style="display: none;">
@@ -114,14 +174,20 @@
                     <option value="2중대">2중대</option>
                     <option value="3중대">3중대</option>
                 </select>
+                <small class="form-text text-danger"
+                       th:if="${#fields.hasErrors('unit')}"
+                       th:errors="*{unit}">
+                </small>
             </div>
+
             <br>
             <div class="d-grid">
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-signup">회원가입</button>
-                </div>
+                <button type="submit" class="btn btn-signup">회원가입</button>
             </div>
-            <div class="login-info-text small">※ 회원가입 후 관리자의 승인을 받은 후에 로그인하실 수 있습니다.</div>
+
+            <div class="login-info-text small">
+                ※ 회원가입 후 관리자의 승인을 받은 후에 로그인하실 수 있습니다.
+            </div>
         </form>
 
     </div>

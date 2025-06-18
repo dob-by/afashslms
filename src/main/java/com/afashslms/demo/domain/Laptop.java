@@ -38,4 +38,9 @@ public class Laptop {
 
     @Column(name = "issued_at")
     private LocalDateTime issuedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "current_owner_id")
+    private User currentOwner;
+
 }

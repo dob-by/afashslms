@@ -16,6 +16,7 @@ public class RepairService {
 
     private final RepairRequestRepository repairRequestRepository;
     private final UserRepository userRepository;
+    private final OwnershipService ownershipService;
 
     public List<RepairRequest> getRepairsByUserEmail(String email) {
         User user = userRepository.findByEmail(email)

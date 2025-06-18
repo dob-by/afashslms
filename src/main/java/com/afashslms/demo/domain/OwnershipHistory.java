@@ -24,4 +24,8 @@ public class OwnershipHistory {
     private User user; //이전사용자
 
     private LocalDateTime changedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "current_owner_id")
+    private User currentOwner;
 }
