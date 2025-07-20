@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface LaptopRepository extends JpaRepository<Laptop, String> {
     List<Laptop> findByUser_UserId(String userId);
     Optional<Laptop> findTopByUser_EmailOrderByIssuedAtDesc(String email);
+    boolean existsByDeviceId(String deviceId);
 }

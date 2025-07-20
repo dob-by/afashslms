@@ -93,6 +93,10 @@ public class RepairController {
             throw new IllegalArgumentException("본인의 요청만 수정할 수 있습니다.");
         }
 
+        if (!repair.getStatus().name().equals("REQUESTED")) {
+            throw new IllegalStateException("요청이 이미 처리 중이거나 완료되어 수정할 수 없습니다.");
+        }
+
         model.addAttribute("repairRequest", repair);
         return "repair/edit";
     }

@@ -9,6 +9,7 @@ import com.afashslms.demo.repository.LaptopRepository;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -33,6 +34,7 @@ public class ExcelReaderService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public void importUsersFromExcel(MultipartFile file) throws Exception {
         InputStream inputStream = file.getInputStream();
         Workbook workbook = new XSSFWorkbook(inputStream);
@@ -50,6 +52,8 @@ public class ExcelReaderService {
             String birth = getCellValue(row.getCell(6));  // 생년월일
 
             String userId = militaryId; // 군번을 userId로
+
+            validateUserDuplicate(userId, email);
 
             LocalDateTime createdAt = parseFlexibleDate(createdAtStr);
             String rawPassword = militaryId + birth;
@@ -71,6 +75,19 @@ public class ExcelReaderService {
         workbook.close();
     }
 
+    public void validateUserDuplicate(String userId, String email) {
+        //중복검증
+        if (userRepository.existsByUserId(userId)) {
+            System.out.println("[중복검증] 이미 존재하는 군번: " + userId);
+            throw new RuntimeException("이미 존재하는 군번: " + userId);
+        }
+        if (userRepository.existsByEmail(email)) {
+            System.out.println("[중복검증] 이미 존재하는 이메일: " + email);
+            throw new RuntimeException("이미 존재하는 이메일: " + email);
+        }
+    }
+
+    @Transactional
     public void importLaptopsFromExcel(MultipartFile file) throws Exception {
         InputStream inputStream = file.getInputStream();
         Workbook workbook = new XSSFWorkbook(inputStream);
@@ -90,6 +107,11 @@ public class ExcelReaderService {
             String studentUserId = getCellValue(row.getCell(6));    // G열: 사용자 ID (이메일 아님)
             String createdAtStr = getCellValue(row.getCell(7));     // H열: 발급일자
 
+            // 중복검증
+            if (laptopRepository.existsByDeviceId(deviceId)) {
+                System.out.println("[중복검증] 이미 존재하는 일련번호: " + deviceId);
+                throw new RuntimeException("이미 존재하는 일련번호: " + deviceId);
+            }
 
             LocalDateTime createdAt = parseFlexibleDate(createdAtStr);
             LaptopStatus status = mapToLaptopStatus(statusStr);

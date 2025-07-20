@@ -34,8 +34,6 @@ class SignupServiceTest {
         form.setUsername("테스트유저");
         form.setEmail("test@example.com");
         form.setPassword("password123");
-        form.setMilitaryId("G123456");
-        form.setRole("STUDENT");
 
         // when
         signupService.registerUser(form);
@@ -56,16 +54,12 @@ class SignupServiceTest {
         form1.setUsername("유저1");
         form1.setEmail("email1@test.com");
         form1.setPassword("pass1");
-        form1.setMilitaryId("G111111");
-        form1.setRole("STUDENT");
 
         SignupFormDto form2 = new SignupFormDto();
         form2.setUserId("dupuser"); // 같은 아이디
         form2.setUsername("유저2");
         form2.setEmail("email2@test.com");
         form2.setPassword("pass2");
-        form2.setMilitaryId("G222222");
-        form2.setRole("STUDENT");
 
         // when
         signupService.registerUser(form1);
@@ -87,16 +81,12 @@ class SignupServiceTest {
         form1.setUsername("유저1");
         form1.setEmail("same@test.com");
         form1.setPassword("pass1");
-        form1.setMilitaryId("G111111");
-        form1.setRole("STUDENT");
 
         SignupFormDto form2 = new SignupFormDto();
         form2.setUserId("user2");
         form2.setUsername("유저2");
         form2.setEmail("same@test.com"); // 같은 이메일
         form2.setPassword("pass2");
-        form2.setMilitaryId("G222222");
-        form2.setRole("STUDENT");
 
         // when
         signupService.registerUser(form1);
