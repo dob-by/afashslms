@@ -49,10 +49,18 @@ GitHub에 포함된 데이터는 모두 **테스트용으로 생성된 정보**�
 <table>
   <tr>
     <td align="center">
-      <img src="./images/author-profile.jpg" width="120" /><br/><br/>
+      <!-- <img src="./images/author-profile.jpg" width="120" /><br/><br/> -->
       <strong>Lim Yeonhwa (임연화)</strong><br/>
-Fullstack Developer<br/>
-[GitHub](https://github.com/dob-by) ・ [📫 Email](mailto:yeonhwalim03@gmail.com)
+      Planning · Frontend · Backend<br/>
+      [GitHub](https://github.com/dob-by)<br/>
+      [📫 Email](mailto:yeonhwalim03@gmail.com)
+    </td>
+    <td align="center">
+      <!-- <img src="./images/author-profile.jpg" width="120" /><br/><br/> -->
+      <strong>Jung Jinsoo (정진수)</strong><br/>
+      Planning · Frontend<br/>
+      [GitHub](https://github.com/VictoryDaddy)<br/>
+      [📫 Email](mailto:wlstn820@gmail.com)
     </td>
   </tr>
 </table>
@@ -63,7 +71,7 @@ Fullstack Developer<br/>
 - **백엔드**: Spring Boot 기반 도메인 설계, REST API, 인증/인가(Spring Security)
 - **DB 설계**: MySQL 기반 테이블 구조 설계 및 데이터 흐름 설계
 - **개발 환경 구성**: Docker 기반 MySQL 로컬 환경 구성, 배포 대비 설정 정리
-> *서비스 기획은 항공과학고 선생님과 협의하여 진행하였으며, 전체 시스템은 단독 개발하였습니다.*
+> *본 기획은 항공과학고 교사와 함께 진행되었으며, 여러 교직원의 협력으로 완성되었습니다.*
 
 ---
 
