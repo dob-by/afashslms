@@ -176,6 +176,8 @@
             <form th:action="@{/login}" method="post">
                 <!-- 로그인 타입 구분 -->
                 <input type="hidden" name="loginType" value="student" />
+                <!-- CSRF -->
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
                 <div class="mb-3">
                     <label for="userId" class="form-label">아이디</label>
@@ -200,6 +202,8 @@
             <form th:action="@{/login}" method="post">
                 <!-- 로그인 타입 구분 -->
                 <input type="hidden" name="loginType" value="staff" />
+                <!-- CSRF -->
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
                 <div class="mb-3">
                     <label for="email" class="form-label">아이디</label>

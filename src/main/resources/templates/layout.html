@@ -1,201 +1,234 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content)">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <title th:text="${title}">WingITs</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
+    />
     <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            background-color: #ffffff;
-            font-family: 'Pretendard', sans-serif;
-            color: #212529;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        background-color: #ffffff;
+        font-family: "Pretendard", sans-serif;
+        color: #212529;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
 
-        body.dark-mode {
-            background-color: #121212 !important;
-            color: #eaeaea;
-        }
+      body.dark-mode {
+        background-color: #121212 !important;
+        color: #eaeaea;
+      }
 
+      .navbar {
+        background-color: #ffffff !important;
+        border-bottom: 1px solid #e0e0e0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+      }
 
-        .navbar {
-            background-color: #ffffff !important;
-            border-bottom: 1px solid #e0e0e0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-        }
+      .navbar-brand {
+        font-weight: 800;
+        color: #2e7d32 !important;
+      }
 
-        .navbar-brand {
-            font-weight: 800;
-            color: #2e7d32 !important;
-        }
+      .navbar-nav .nav-link {
+        color: #333333 !important;
+        font-weight: 500;
+        transition: color 0.2s ease;
+      }
 
-        .navbar-nav .nav-link {
-            color: #333333 !important;
-            font-weight: 500;
-            transition: color 0.2s ease;
-        }
+      .navbar-nav .nav-link:hover {
+        color: #2e7d32 !important;
+      }
 
-        .navbar-nav .nav-link:hover {
-            color: #2e7d32 !important;
-        }
+      body.dark-mode .navbar,
+      body.dark-mode .container,
+      body.dark-mode footer,
+      body.dark-mode .card,
+      body.dark-mode .list-group-item {
+        background-color: #121212 !important;
+        color: #eaeaea !important;
+        border-color: #333 !important;
+      }
 
-        body.dark-mode .navbar,
-        body.dark-mode .container,
-        body.dark-mode footer,
-        body.dark-mode .card,
-        body.dark-mode .list-group-item {
-            background-color: #121212 !important;
-            color: #eaeaea !important;
-            border-color: #333 !important;
-        }
+      body.dark-mode .nav-link,
+      body.dark-mode .navbar-brand {
+        color: #eaeaea !important;
+      }
 
-        body.dark-mode .nav-link,
-        body.dark-mode .navbar-brand {
-            color: #eaeaea !important;
-        }
+      body.dark-mode .nav-link:hover {
+        color: #81c784 !important;
+      }
 
-        body.dark-mode .nav-link:hover {
-            color: #81c784 !important;
-        }
+      .navbar-nav .nav-link {
+        position: relative;
+        padding: 8px 14px;
+        border-radius: 0.5rem;
+        transition: all 0.2s ease;
+      }
 
-        .navbar-nav .nav-link {
-            position: relative;
-            padding: 8px 14px;
-            border-radius: 0.5rem;
-            transition: all 0.2s ease;
-        }
+      .navbar-nav .nav-link:hover {
+        background-color: rgba(67, 160, 71, 0.1);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        color: #2e7d32 !important;
+      }
 
-        .navbar-nav .nav-link:hover {
-            background-color: rgba(67, 160, 71, 0.1);
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            color: #2e7d32 !important;
-        }
+      .no-underline {
+        text-decoration: none !important;
+      }
 
-        .no-underline {
-            text-decoration: none !important;
-        }
+      .btn-green {
+        background-color: #43a047 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 999px !important;
+        padding: 8px 20px !important;
+        font-weight: 400 !important;
+        display: inline-block !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+        text-decoration: none !important;
+      }
 
-        .btn-green {
-            background-color: #43a047 !important;
-            color: white !important;
-            border: none !important;
-            border-radius: 999px !important;
-            padding: 8px 20px !important;
-            font-weight: 400 !important;
-            display: inline-block !important;
-            text-align: center !important;
-            white-space: nowrap !important;
-            text-decoration: none !important;
-        }
+      .btn-green:hover {
+        background-color: #388e3c !important;
+        color: white !important;
+      }
 
-        .btn-green:hover {
-            background-color: #388e3c !important;
-            color: white !important;
-        }
+      footer {
+        background-color: #f8f9fa;
+        color: #6c757d;
+      }
 
-        footer {
-            background-color: #f8f9fa;
-            color: #6c757d;
-        }
+      body.dark-mode footer {
+        background-color: #121212;
+      }
 
-        body.dark-mode footer {
-            background-color: #121212;
-        }
+      #darkModeToggle {
+        white-space: nowrap;
+      }
 
-        #darkModeToggle {
-            white-space: nowrap;
-        }
-
-        main {
-            flex: 1;
-        }
+      main {
+        flex: 1;
+      }
     </style>
-</head>
-<body>
-
-<!-- 상단 네비게이션 바 -->
-<nav class="navbar navbar-expand-lg">
-    <div class="container-fluid d-flex justify-content-between align-items-center px-4">
+  </head>
+  <body>
+    <!-- 상단 네비게이션 바 -->
+    <nav class="navbar navbar-expand-lg">
+      <div
+        class="container-fluid d-flex justify-content-between align-items-center px-4"
+      >
         <a class="navbar-brand" th:href="@{/}">WingITs</a>
         <div class="d-flex align-items-center gap-3">
-            <span class="text-muted small">
-    사용자:
-    <strong th:if="${#authentication != null
+          <span class="text-muted small">
+            사용자:
+            <strong
+              th:if="${#authentication != null
                    and #authentication.principal != null
                    and #authentication.principal?.user != null}"
-            th:text="${#authentication.principal.user.role.displayName + ' | ' + #authentication.principal.user.username}">
-        사용자
-    </strong>
-    <strong th:unless="${#authentication?.principal?.user != null}">
-        알 수 없음
-    </strong>
-</span>
-            <a th:href="@{/mypage}" class="btn btn-outline-secondary btn-sm">마이페이지</a>
-            <form th:action="@{/logout}" method="post" class="d-inline">
-                <button type="submit" class="btn btn-sm btn-outline-danger">로그아웃</button>
-            </form>
+              th:text="${#authentication.principal.user.role.displayName + ' | ' + #authentication.principal.user.username}"
+            >
+              사용자
+            </strong>
+            <strong th:unless="${#authentication?.principal?.user != null}">
+              알 수 없음
+            </strong>
+          </span>
+          <a th:href="@{/mypage}" class="btn btn-outline-secondary btn-sm"
+            >마이페이지</a
+          >
+          <form th:action="@{/logout}" method="post" class="d-inline">
+            <button type="submit" class="btn btn-sm btn-outline-danger">
+              로그아웃
+            </button>
+          </form>
         </div>
-    </div>
-</nav>
+      </div>
+    </nav>
 
-<!-- 메뉴바 -->
-<nav class="navbar navbar-expand-lg py-2">
-    <div class="container-fluid px-4">
+    <!-- 메뉴바 -->
+    <nav class="navbar navbar-expand-lg py-2">
+      <div class="container-fluid px-4">
         <div class="collapse navbar-collapse">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-3">
-                <li class="nav-item"><a class="nav-link" th:href="@{/}">홈</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/notices}">공지사항</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/posts}">게시판</a></li>
-                <li class="nav-item" th:if="${#authorization.expression('hasRole(''STUDENT'')')}">
-                    <a class="nav-link" th:href="@{/repairs}">수리요청</a>
-                </li>
-                <li class="nav-item"
-                    th:if="${#authorization.expression('hasRole(''MID_ADMIN'') or hasRole(''TOP_ADMIN'')')}">
-                    <a class="nav-link" th:href="@{/admin/laptops}">노트북 관리</a>
-                </li>
-                <li class="nav-item"
-                    th:if="${#authorization.expression('hasRole(''MID_ADMIN'') or hasRole(''TOP_ADMIN'')')}">
-                    <a class="nav-link" th:href="@{/admin/users}">사용자 관리</a>
-                </li>
-                <li class="nav-item"
-                    th:if="${#authorization.expression('hasRole(''MID_ADMIN'') or hasRole(''TOP_ADMIN'')')}">
-                    <a class="nav-link" th:href="@{/admin/repairs}">수리요청 내역</a>
-                </li>
-            </ul>
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-3">
+            <li class="nav-item"><a class="nav-link" th:href="@{/}">홈</a></li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/notices}">공지사항</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/posts}">게시판</a>
+            </li>
+            <li
+              class="nav-item"
+              th:if="${#authorization.expression('hasRole(''STUDENT'')')}"
+            >
+              <a class="nav-link" th:href="@{/repairs}">수리요청</a>
+            </li>
+            <li
+              class="nav-item"
+              th:if="${#authorization.expression('hasRole(''MID_ADMIN'') or hasRole(''TOP_ADMIN'')')}"
+            >
+              <a class="nav-link" th:href="@{/admin/laptops}">노트북 관리</a>
+            </li>
+            <li
+              class="nav-item"
+              th:if="${#authorization.expression('hasRole(''MID_ADMIN'') or hasRole(''TOP_ADMIN'')')}"
+            >
+              <a class="nav-link" th:href="@{/admin/users}">사용자 관리</a>
+            </li>
+            <li
+              class="nav-item"
+              th:if="${#authorization.expression('hasRole(''MID_ADMIN'') or hasRole(''TOP_ADMIN'')')}"
+            >
+              <a class="nav-link" th:href="@{/admin/repairs}">수리요청 내역</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/qna}">Q&A 챗봇</a>
+            </li>
+          </ul>
         </div>
-    </div>
-</nav>
+      </div>
+    </nav>
 
-<!-- 본문 영역 -->
-<main class="container my-4">
-    <div th:replace="${content}"></div>
-</main>
+    <!-- 본문 영역 -->
+    <main class="container my-4">
+      <div th:replace="${content}"></div>
+    </main>
 
-<footer class="text-center text-muted py-3 mt-auto">
-    © 2025 WingITs. All rights reserved.
-</footer>
+    <footer class="text-center text-muted py-3 mt-auto">
+      © 2025 WingITs. All rights reserved.
+    </footer>
 
-<!-- 다크모드 스크립트 -->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
+    <!-- 다크모드 스크립트 -->
+    <!-- <script>
+      document.addEventListener("DOMContentLoaded", function () {
         const toggleBtn = document.getElementById("darkModeToggle");
         if (localStorage.getItem("darkMode") === "true") {
-            document.body.classList.add("dark-mode");
-            toggleBtn.textContent = "🌞 라이트모드";
+          document.body.classList.add("dark-mode");
+          toggleBtn.textContent = "🌞 라이트모드";
         }
 
         toggleBtn.addEventListener("click", () => {
-            const isDark = document.body.classList.toggle("dark-mode");
-            localStorage.setItem("darkMode", isDark);
-            toggleBtn.textContent = isDark ? "🌞 라이트모드" : "🌙 다크모드";
+          const isDark = document.body.classList.toggle("dark-mode");
+          localStorage.setItem("darkMode", isDark);
+          toggleBtn.textContent = isDark ? "🌞 라이트모드" : "🌙 다크모드";
         });
-    });
-</script>
+      });
+    </script> -->
 
-</body>
+    <!-- 페이지 전용 JS -->
+    <div th:if="${pageScript}">
+      <script th:src="@{${pageScript}}"></script>
+    </div>
+  </body>
 </html>

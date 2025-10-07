@@ -134,12 +134,15 @@ public class SecurityConfig {
         customFilter.setAuthenticationSuccessHandler(successHandler());
 
         http
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/import/**"))
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/import/**", "/qna/**"))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/users/check-email", "/users/check-userid", "/signup", "/login",
                                 "/css/**", "/js/**", "/h2-console/**", "/import/**"
                         ).permitAll()
+
+                        // 공개 Q&A 페이지 허용
+                        .requestMatchers("/qna/**").permitAll()
 
                         // TEMP의 GET/POST 모두 허용하도록 분리
                         .requestMatchers(HttpMethod.GET, "/admin/profile").hasAnyRole("TEMP", "MID_ADMIN", "TOP_ADMIN")

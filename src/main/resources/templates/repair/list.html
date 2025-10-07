@@ -121,7 +121,7 @@
                             </button>
 
                             <div th:id="'reason-' + ${repair.id}" class="collapse mt-2 text-start">
-                                <div class="alert alert-light border rounded-3 py-2 px-3 small text-secondary"
+                                <div class="alert alert-light border rounded-3 com.afashslms.demo.rag_server.py-2 px-3 small text-secondary"
                                      th:text="${repair.rejectionReason != null ? repair.rejectionReason : '사유 없음'}">
                                     사유 없음
                                 </div>
@@ -130,7 +130,7 @@
                     </td>
                 </tr>
                 <tr th:if="${repairs.size() == 0}">
-                    <td colspan="6" class="text-center text-muted py-4">등록된 수리 요청이 없습니다.</td>
+                    <td colspan="6" class="text-center text-muted com.afashslms.demo.rag_server.py-4">등록된 수리 요청이 없습니다.</td>
                 </tr>
                 </tbody>
             </table>

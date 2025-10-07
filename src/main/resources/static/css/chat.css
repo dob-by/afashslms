@@ -1,0 +1,92 @@
+/*:root {*/
+/*    --brand: #43a047;*/
+/*    --bubble-radius: 18px;*/
+/*}*/
+
+/*!* chat wrapper: footer 위까지 꽉 채우기 *!*/
+/*html, body {*/
+/*    height: 100%;*/
+/*}*/
+/*.chat-wrapper {*/
+/*    height: calc(100vh - 160px); !* navbar+footer 제외 *!*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*}*/
+
+/*!* 카드 *!*/
+/*.chat-card {*/
+/*    border-radius: 12px;*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    flex-grow: 1;*/
+/*}*/
+
+/*!* 메시지 영역 *!*/
+/*#chatMessages {*/
+/*    background: #fff;*/
+/*    padding: 1rem;*/
+/*    font-size: 1rem;*/
+/*    line-height: 1.5;*/
+/*    flex: 1;*/
+/*    overflow-y: auto;*/
+/*}*/
+
+/*!* 사용자 말풍선 *!*/
+/*.user-bubble {*/
+/*    background: var(--brand);*/
+/*    color: #fff;*/
+/*    padding: 10px 14px;*/
+/*    border-radius: var(--bubble-radius);*/
+/*    border-top-right-radius: 4px;*/
+/*    max-width: 70%;*/
+/*    word-break: break-word;*/
+/*}*/
+
+/*!* AI 말풍선 *!*/
+/*.ai-bubble {*/
+/*    background: #f1f3f5;*/
+/*    color: #212529;*/
+/*    padding: 10px 14px;*/
+/*    border-radius: var(--bubble-radius);*/
+/*    border-top-left-radius: 4px;*/
+/*    max-width: 70%;*/
+/*    word-break: break-word;*/
+/*}*/
+
+/*!* 입력창 *!*/
+/*.input-bar .form-control {*/
+/*    border-radius: 999px;*/
+/*    padding: 12px 16px;*/
+/*    height: 44px;*/
+/*}*/
+
+/*!* 보내기 버튼 *!*/
+/*.btn-send {*/
+/*    border-radius: 50%;*/
+/*    width: 44px;*/
+/*    height: 44px;*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*    background: var(--brand);*/
+/*    color: #fff;*/
+/*    border: none;*/
+/*    font-size: 20px;*/
+/*    transition: background 0.2s;*/
+/*}*/
+/*.btn-send:hover {*/
+/*    background: #388e3c;*/
+/*}*/
+/*.btn-send:active {*/
+/*    transform: translateY(1px);*/
+/*}*/
+
+/*!* 대화 기록 사이드바 *!*/
+/*#historyList .list-group-item {*/
+/*    cursor: pointer;*/
+/*}*/
+/*#historyList .list-group-item.active {*/
+/*    background: var(--brand);*/
+/*    color: #fff;*/
+/*    border-color: var(--brand);*/
+/*}*/

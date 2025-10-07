@@ -1,196 +1,264 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::body})}">
-<head>
-  <meta charset="UTF-8" />
-  <title>WingIT 메인</title>
-  <style>
-    .card-header {
-      font-weight: bold;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{layout :: layout(~{::body})}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <title>WingIT 메인</title>
+    <style>
+      .card-header {
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
 
-    .post-link {
-      text-decoration: none !important;
-      color: #333;
-      transition: background-color 0.2s ease;
-    }
+      .post-link {
+        text-decoration: none !important;
+        color: #333;
+        transition: background-color 0.2s ease;
+      }
 
-    .post-link:hover {
-      color: #43a047;
-      background-color: rgba(0, 0, 0, 0.05);
-    }
+      .post-link:hover {
+        color: #43a047;
+        background-color: rgba(0, 0, 0, 0.05);
+      }
 
-    .list-group-item {
-      border: none;
-      border-bottom: 1px solid #ccc;
-    }
+      .list-group-item {
+        border: none;
+        border-bottom: 1px solid #ccc;
+      }
 
-    .carousel-indicators button {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background-color: #aaa;
-      opacity: 0.7;
-      margin: 0 6px;
-      border: none;
-      transition: all 0.3s ease;
-    }
+      .carousel-indicators button {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #aaa;
+        opacity: 0.7;
+        margin: 0 6px;
+        border: none;
+        transition: all 0.3s ease;
+      }
 
-    .carousel-indicators .active {
-      background-color: #43a047;
-      opacity: 1;
-    }
+      .carousel-indicators .active {
+        background-color: #43a047;
+        opacity: 1;
+      }
 
-    .carousel-indicators button:hover {
-      background-color: #2e7d32;
-      opacity: 1;
-    }
+      .carousel-indicators button:hover {
+        background-color: #2e7d32;
+        opacity: 1;
+      }
 
-    .card {
-      transition: transform 0.2s ease;
-    }
+      .card {
+        transition: transform 0.2s ease;
+      }
 
-    .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
+      .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
 
-    .icon-grid {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 2rem;
-      padding: 2rem 0;
-    }
+      .icon-grid {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 2rem;
+        padding: 2rem 0;
+      }
 
-    .icon-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      font-size: 0.9rem;
-      color: #4e4e4e;
-    }
+      .icon-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 0.9rem;
+        color: #4e4e4e;
+      }
 
-    .icon-item img {
-      width: 36px;
-      height: 36px;
-      margin-bottom: 0.4rem;
-    }
+      .icon-item img {
+        width: 36px;
+        height: 36px;
+        margin-bottom: 0.4rem;
+      }
 
-    body.dark-mode .post-link {
-      color: #ddd;
-    }
+      body.dark-mode .post-link {
+        color: #ddd;
+      }
 
-    body.dark-mode .post-link:hover {
-      color: #a5d6a7;
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-  </style>
-</head>
-<body class="d-flex flex-column min-vh-100">
-
-<!-- Hero Carousel Section -->
-<div id="heroCarousel" class="carousel slide mt-5" data-bs-ride="carousel" data-bs-interval="3000">
-
-  <!-- 인디케이터 -->
-  <div class="carousel-indicators">
-    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="슬라이드 1"></button>
-    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="슬라이드 2"></button>
-    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="슬라이드 3"></button>
-  </div>
-
-  <!-- 슬라이드들 -->
-  <div class="carousel-inner text-center">
-
-    <!-- Slide 1 -->
-    <div class="carousel-item active" style="background: linear-gradient(135deg, #e8f5e9, #f1f8e9); padding: 5rem 0;">
-      <div class="container">
-        <h1 class="fw-bold mb-4">WingITs에 오신 것을 환영합니다 👋</h1>
-        <p class="lead text-muted">
-          노트북 대여, 수리 요청, 사용자 관리까지 한 곳에서!<br>
-          공군항공과학고 노트북 통합관리 시스템
-        </p>
+      body.dark-mode .post-link:hover {
+        color: #a5d6a7;
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+    </style>
+  </head>
+  <body class="d-flex flex-column min-vh-100">
+    <!-- Hero Carousel Section -->
+    <div
+      id="heroCarousel"
+      class="carousel slide mt-5"
+      data-bs-ride="carousel"
+      data-bs-interval="3000"
+    >
+      <!-- 인디케이터 -->
+      <div class="carousel-indicators">
+        <button
+          type="button"
+          data-bs-target="#heroCarousel"
+          data-bs-slide-to="0"
+          class="active"
+          aria-current="true"
+          aria-label="슬라이드 1"
+        ></button>
+        <button
+          type="button"
+          data-bs-target="#heroCarousel"
+          data-bs-slide-to="1"
+          aria-label="슬라이드 2"
+        ></button>
+        <button
+          type="button"
+          data-bs-target="#heroCarousel"
+          data-bs-slide-to="2"
+          aria-label="슬라이드 3"
+        ></button>
       </div>
-    </div>
 
-    <!-- Slide 2-->
-    <div class="carousel-item" style="background: linear-gradient(135deg, #e3f2fd, #e1f5fe); padding: 5rem 0;">
-      <div class="container">
-        <h1 class="fw-bold mb-4">스마트한 노트북 관리의 시작 💻</h1>
-        <p class="lead text-muted">
-          학생, 교직원 모두를 위한 쉽고 직관적인 관리 플랫폼<br>
-          노트북 사용을 더 효율적으로 관리해보세요
-        </p>
-      </div>
-    </div>
-
-    <!-- Slide 3 -->
-    <div class="carousel-item" style="background: linear-gradient(135deg, #fce4ec, #f3e5f5); padding: 5rem 0;">
-      <div class="container">
-        <h1 class="fw-bold mb-4">공군 특성에 딱 맞춘 시스템 ✈️</h1>
-        <p class="lead text-muted">
-          소프트웨어는 교육대에서, 하드웨어는 학생대에서!<br>
-          부서별 역할도 한눈에 확인할 수 있어요
-        </p>
-      </div>
-    </div>
-
-  </div>
-
-</div>
-
-<!-- 최근 공지사항 / 최근 문의 게시글 -->
-<main class="container my-5 flex-grow-1">
-  <!-- 성공 메시지 -->
-  <div th:if="${passwordSuccess}" class="alert alert-success text-center" role="alert"
-       th:text="${passwordSuccess}"></div>
-  <div class="row g-4">
-    <!-- 최근 공지사항 -->
-    <div class="col-md-6">
-      <div class="card h-100">
-        <div class="card-header d-flex justify-content-between align-items-center bg-light text-dark">
-          <span>📢 최근 공지사항</span>
-          <a th:href="@{/notices}" class="btn btn-sm btn-outline-success px-2 py-1">+ 더보기</a>
+      <!-- 슬라이드들 -->
+      <div class="carousel-inner text-center">
+        <!-- Slide 1 -->
+        <div
+          class="carousel-item active"
+          style="
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+            padding: 5rem 0;
+          "
+        >
+          <div class="container">
+            <h1 class="fw-bold mb-4">WingITs에 오신 것을 환영합니다 👋</h1>
+            <p class="lead text-muted">
+              노트북 대여, 수리 요청, 사용자 관리까지 한 곳에서!<br />
+              공군항공과학고 노트북 통합관리 시스템
+            </p>
+          </div>
         </div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item" th:each="notice : ${latestNotices}">
-            <a th:href="@{|/notices/${notice.id}|}" th:text="${notice.title}" class="post-link"></a>
-            <span class="text-muted float-end" th:text="${#dates.format(notice.createdAt, 'yyyy-MM-dd')}"></span>
-          </li>
-        </ul>
-      </div>
-    </div>
 
-    <!-- 최근 문의 게시글 -->
-    <div class="col-md-6">
-      <div class="card h-100">
-        <div class="card-header d-flex justify-content-between align-items-center bg-light text-dark">
-          <span>❓ 최근 문의 게시글</span>
-          <a th:href="@{/posts}" class="btn btn-sm btn-outline-success px-2 py-1">+ 더보기</a>
+        <!-- Slide 2-->
+        <div
+          class="carousel-item"
+          style="
+            background: linear-gradient(135deg, #e3f2fd, #e1f5fe);
+            padding: 5rem 0;
+          "
+        >
+          <div class="container">
+            <h1 class="fw-bold mb-4">스마트한 노트북 관리의 시작 💻</h1>
+            <p class="lead text-muted">
+              학생, 교직원 모두를 위한 쉽고 직관적인 관리 플랫폼<br />
+              노트북 사용을 더 효율적으로 관리해보세요
+            </p>
+          </div>
         </div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item" th:each="post : ${latestPosts}">
-            <a th:href="@{|/posts/${post.postId}|}"
-               th:text="${post.title}"
-               class="post-link"></a>
-            <span class="text-muted float-end" th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd')}"></span>
-          </li>
-        </ul>
+
+        <!-- Slide 3 -->
+        <div
+          class="carousel-item"
+          style="
+            background: linear-gradient(135deg, #fce4ec, #f3e5f5);
+            padding: 5rem 0;
+          "
+        >
+          <div class="container">
+            <h1 class="fw-bold mb-4">공군 특성에 딱 맞춘 시스템 ✈️</h1>
+            <p class="lead text-muted">
+              소프트웨어는 교육대에서, 하드웨어는 학생대에서!<br />
+              부서별 역할도 한눈에 확인할 수 있어요
+            </p>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</main>
 
-<!-- 보조 섹션 -->
-<section class="py-5 bg-light">
-  <div class="container text-center">
-    <h5 class="fw-semibold">도움이 필요하신가요?</h5>
-    <p class="text-muted">FAQ를 확인하거나 운영자에게 문의해보세요.</p>
-    <a href="/faq" class="btn btn-outline-success rounded-pill">자주 묻는 질문 보기</a>
-  </div>
-</section>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    <!-- 최근 공지사항 / 최근 문의 게시글 -->
+    <main class="container my-5 flex-grow-1">
+      <!-- 성공 메시지 -->
+      <div
+        th:if="${passwordSuccess}"
+        class="alert alert-success text-center"
+        role="alert"
+        th:text="${passwordSuccess}"
+      ></div>
+      <div class="row g-4">
+        <!-- 최근 공지사항 -->
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div
+              class="card-header d-flex justify-content-between align-items-center bg-light text-dark"
+            >
+              <span>📢 최근 공지사항</span>
+              <a
+                th:href="@{/notices}"
+                class="btn btn-sm btn-outline-success px-2 py-1"
+                >+ 더보기</a
+              >
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item" th:each="notice : ${latestNotices}">
+                <a
+                  th:href="@{|/notices/${notice.id}|}"
+                  th:text="${notice.title}"
+                  class="post-link"
+                ></a>
+                <span
+                  class="text-muted float-end"
+                  th:text="${#dates.format(notice.createdAt, 'yyyy-MM-dd')}"
+                ></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 최근 문의 게시글 -->
+        <div class="col-md-6">
+          <div class="card h-100">
+            <div
+              class="card-header d-flex justify-content-between align-items-center bg-light text-dark"
+            >
+              <span>❓ 최근 문의 게시글</span>
+              <a
+                th:href="@{/posts}"
+                class="btn btn-sm btn-outline-success px-2 py-1"
+                >+ 더보기</a
+              >
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item" th:each="post : ${latestPosts}">
+                <a
+                  th:href="@{|/posts/${post.postId}|}"
+                  th:text="${post.title}"
+                  class="post-link"
+                ></a>
+                <span
+                  class="text-muted float-end"
+                  th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd')}"
+                ></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 보조 섹션 -->
+    <section class="py-5 bg-light">
+      <div class="container text-center">
+        <h5 class="fw-semibold">도움이 필요하신가요?</h5>
+        <p class="text-muted">FAQ를 확인하거나 운영자에게 문의해보세요.</p>
+        <a href="/faq" class="btn btn-outline-success rounded-pill"
+          >자주 묻는 질문 보기</a
+        >
+      </div>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>
